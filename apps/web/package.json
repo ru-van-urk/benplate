@@ -21,18 +21,15 @@
     "@tanstack/react-query": "^5.102.8",
     "@tanstack/react-router": "^1.170.32",
     "lucide-react": "catalog:",
-    "next-themes": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "sonner": "catalog:",
-    "valibot": "catalog:"
+    "sonner": "catalog:"
   },
   "devDependencies": {
     "@maribor/oxfmt-config": "workspace:*",
     "@maribor/oxlint-config": "workspace:*",
     "@maribor/typescript-config": "workspace:*",
     "@tanstack/react-query-devtools": "^5.102.8",
-    "@tanstack/react-router-devtools": "^1.167.1",
     "@tanstack/router-plugin": "^1.168.35",
     "@types/node": "catalog:",
     "@types/react": "catalog:",

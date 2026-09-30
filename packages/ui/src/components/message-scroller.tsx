@@ -1,4 +1,4 @@
-"use client";
+" ";
 
 import { Button } from "@maribor/ui/components/button";
 import { cn } from "@maribor/ui/lib/utils";

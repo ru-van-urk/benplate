@@ -5,8 +5,6 @@ import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { ENV } from "~/env";
-
 export function createQueryClient() {
   return new QueryClient({
     defaultOptions: { queries: { retry: false } },
@@ -28,7 +26,8 @@ export function createQueryClient() {
 export const queryClient = createQueryClient();
 
 export const link = new RPCLink({
-  origin: ENV.VITE_SERVER_URL,
+  // Same origin; nginx (production) and the Vite dev server proxy /rpc to the API
+  origin: window.location.origin,
   url: "/rpc",
 });
 
