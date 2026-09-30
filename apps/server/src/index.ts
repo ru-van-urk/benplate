@@ -11,7 +11,7 @@ import { logger } from "hono/logger";
 import { createContext } from "./context";
 import { ENV } from "./env.server";
 
-const app = new Hono();
+const app = new Hono().basePath("/api");
 
 app.use(logger());
 app.use(
@@ -47,7 +47,7 @@ app.use("/*", async (c, next) => {
   const context = await createContext({ context: c });
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
-    prefix: "/rpc",
+    prefix: "/api/rpc",
     context: context,
   });
 
@@ -56,7 +56,7 @@ app.use("/*", async (c, next) => {
   }
 
   const apiResult = await apiHandler.handle(c.req.raw, {
-    prefix: "/api-reference",
+    prefix: "/api/api-reference",
     context: context,
   });
 
@@ -76,7 +76,7 @@ import { serve } from "@hono/node-server";
 serve(
   {
     fetch: app.fetch,
-    port: 3000,
+    port: 3001,
   },
   (info) => {
     console.log(`Server is running on http://localhost:${info.port}`);

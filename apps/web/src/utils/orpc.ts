@@ -5,10 +5,9 @@ import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { ENV } from "../env";
-
 export function createQueryClient() {
   return new QueryClient({
+    defaultOptions: { queries: { retry: false } },
     queryCache: new QueryCache({
       onError: (error, query) => {
         toast.error(`Error: ${error.message}`, {
@@ -26,23 +25,8 @@ export function createQueryClient() {
 
 export const queryClient = createQueryClient();
 
-function getServerUrl(url: string) {
-  const processEnv = (
-    globalThis as {
-      process?: { env?: Record<string, string | undefined> };
-    }
-  ).process?.env;
-  if (typeof window === "undefined" && processEnv?.SERVER_URL) {
-    return processEnv.SERVER_URL.endsWith("/")
-      ? processEnv.SERVER_URL.slice(0, -1)
-      : processEnv.SERVER_URL;
-  }
-
-  return url.endsWith("/") ? url.slice(0, -1) : url;
-}
-
 export const link = new RPCLink({
-  url: `${getServerUrl(ENV.VITE_SERVER_URL)}/rpc`,
+  url: `${window.location.origin}/api/rpc`,
 });
 
 export const client: AppRouterClient = createORPCClient(link);

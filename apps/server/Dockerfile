@@ -13,7 +13,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app /app
 
-EXPOSE 3000
+EXPOSE 3001
 
 WORKDIR /app/apps/server
 CMD ["node", "dist/index.mjs"]
