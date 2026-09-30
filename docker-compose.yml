@@ -5,8 +5,8 @@ services:
       dockerfile: apps/server/Dockerfile
 
     environment:
-      CORS_ORIGIN: ${CORS_ORIGIN}
-      DATABASE_URL: ${DATABASE_URL}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      DATABASE_URL: ${DATABASE_URL:-file:/data/local.db}
 
     expose:
       - "3000"
@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        VITE_SERVER_URL: ${VITE_SERVER_URL}
+        VITE_SERVER_URL: ${VITE_SERVER_URL:-http://localhost:3001}
 
     depends_on:
       server:
