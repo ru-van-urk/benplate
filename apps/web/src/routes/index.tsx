@@ -1,15 +1,27 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { orpc } from "~/utils/orpc";
 
 export const Route = createFileRoute("/")({
+  context: () => ({
+    healthCheckQueryOptions: orpc.healthCheck.queryOptions(),
+    planetQueryOptions: orpc.planet.list.queryOptions(),
+  }),
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(context.healthCheckQueryOptions),
+      context.queryClient.ensureQueryData(context.planetQueryOptions),
+    ]);
+  },
   component: HomeComponent,
 });
 
 function HomeComponent() {
-  const healthCheck = useQuery(orpc.healthCheck.queryOptions());
-  const planets = useQuery(orpc.planet.list.queryOptions());
+  const context = Route.useRouteContext();
+
+  const healthCheck = useSuspenseQuery(context.healthCheckQueryOptions);
+  const planets = useSuspenseQuery(context.planetQueryOptions);
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-2">
@@ -21,19 +33,13 @@ function HomeComponent() {
               className={`h-2 w-2 rounded-full ${healthCheck.data ? "bg-green-500" : "bg-red-500"}`}
             />
             <span className="text-sm text-muted-foreground">
-              {healthCheck.isLoading
-                ? "Checking..."
-                : healthCheck.data
-                  ? "Connected"
-                  : "Disconnected"}
+              {healthCheck.data ? "Connected" : "Disconnected"}
             </span>
           </div>
         </section>
         <section className="rounded-lg border p-4">
           <h2 className="mb-2 font-medium">Planets</h2>
-          {planets.isLoading ? (
-            <span className="text-sm text-muted-foreground">Loading...</span>
-          ) : planets.data?.length ? (
+          {planets.data?.length ? (
             <ul className="divide-y">
               {planets.data.map((planet) => (
                 <li key={planet.id} className="grid gap-0.5 py-2">
