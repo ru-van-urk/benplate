@@ -8,7 +8,8 @@ RUN --mount=type=cache,target=/pnpm-store pnpm install --store-dir /pnpm-store
 ARG VITE_SERVER_URL
 ENV VITE_SERVER_URL=${VITE_SERVER_URL}
 ENV NODE_ENV=production
-RUN --mount=type=secret,id=web_env,target=/app/apps/web/.env.local cd apps/web && pnpm run build
+
+RUN cd apps/web && pnpm run build
 
 FROM nginx:alpine AS runner
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
