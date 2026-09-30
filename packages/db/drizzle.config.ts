@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 
 import { defineConfig } from "drizzle-kit";
-import { z } from "zod";
+import * as v from "valibot";
 
 // The server app owns DATABASE_URL; an already-set env var (CI, Docker) takes precedence.
 const serverEnvFile = "../../apps/server/.env";
@@ -14,6 +14,6 @@ export default defineConfig({
   out: "./src/migrations",
   dialect: "turso",
   dbCredentials: {
-    url: z.string().min(1).parse(process.env.DATABASE_URL),
+    url: v.parse(v.pipe(v.string(), v.nonEmpty()), process.env.DATABASE_URL),
   },
 });

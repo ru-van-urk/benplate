@@ -27,7 +27,7 @@
     "@libsql/client": "0.18.0",
     "drizzle-orm": "1.0.0-rc.4",
     "libsql": "catalog:",
-    "zod": "catalog:"
+    "valibot": "catalog:"
   },
   "devDependencies": {
     "@maribor/oxlint-config": "workspace:*",

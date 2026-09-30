@@ -22,8 +22,7 @@
     "@orpc/client": "catalog:",
     "@orpc/openapi": "catalog:",
     "@orpc/server": "catalog:",
-    "@orpc/zod": "catalog:",
-    "zod": "catalog:"
+    "valibot": "catalog:"
   },
   "devDependencies": {
     "@maribor/oxlint-config": "workspace:*",

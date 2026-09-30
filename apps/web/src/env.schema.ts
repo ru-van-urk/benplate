@@ -1,10 +1,10 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 // Only `VITE_`-prefixed variables reach the client bundle. vite.config.ts validates them at dev/build time.
-export const envSchema = z.object({
-  VITE_SERVER_URL: z.url(),
+export const envSchema = v.object({
+  VITE_SERVER_URL: v.pipe(v.string(), v.url()),
 });
 
 declare global {
-  interface ImportMetaEnv extends z.infer<typeof envSchema> {}
+  interface ImportMetaEnv extends v.InferOutput<typeof envSchema> {}
 }

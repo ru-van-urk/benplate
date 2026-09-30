@@ -1,11 +1,11 @@
-import { z } from "zod";
+import * as v from "valibot";
 
 import { envSchema } from "./env.schema";
 
-const result = envSchema.safeParse(import.meta.env);
+const result = v.safeParse(envSchema, import.meta.env);
 
 if (!result.success) {
-  throw new Error(`Invalid environment variables:\n${z.prettifyError(result.error)}`);
+  throw new Error(`Invalid environment variables:\n${v.summarize(result.issues)}`);
 }
 
-export const ENV = result.data;
+export const ENV = result.output;

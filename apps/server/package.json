@@ -16,10 +16,10 @@
     "@maribor/db": "workspace:*",
     "@orpc/openapi": "catalog:",
     "@orpc/server": "catalog:",
-    "@orpc/zod": "catalog:",
+    "@orpc/valibot": "catalog:",
     "hono": "^4.13.7",
     "libsql": "catalog:",
-    "zod": "catalog:"
+    "valibot": "catalog:"
   },
   "devDependencies": {
     "@maribor/oxlint-config": "workspace:*",

@@ -25,7 +25,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "sonner": "catalog:",
-    "zod": "catalog:"
+    "valibot": "catalog:"
   },
   "devDependencies": {
     "@maribor/oxfmt-config": "workspace:*",

@@ -173,7 +173,7 @@ catalogs:
     '@orpc/server':
       specifier: ^1.15.0
       version: 1.15.4
-    '@orpc/zod':
+    '@orpc/valibot':
       specifier: ^1.15.0
       version: 1.15.4
     '@types/node':
@@ -227,9 +227,9 @@ catalogs:
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
-    zod:
-      specifier: ^4.5.4
-      version: 4.6.5
+    valibot:
+      specifier: ^1.5.0
+      version: 1.5.0
 
 importers:
 
@@ -277,18 +277,18 @@ importers:
       '@orpc/server':
         specifier: 'catalog:'
         version: 1.15.4(ws@8.22.0)
-      '@orpc/zod':
+      '@orpc/valibot':
         specifier: 'catalog:'
-        version: 1.15.4(@orpc/contract@1.15.4)(@orpc/server@1.15.4(ws@8.22.0))(ws@8.22.0)(zod@4.6.5)
+        version: 1.15.4(@orpc/contract@1.15.4)(@orpc/server@1.15.4(ws@8.22.0))(valibot@1.5.0(typescript@6.0.3))(ws@8.22.0)
       hono:
         specifier: ^4.13.7
         version: 4.13.11
       libsql:
         specifier: 'catalog:'
         version: 0.5.29
-      zod:
+      valibot:
         specifier: 'catalog:'
-        version: 4.6.5
+        version: 1.5.0(typescript@6.0.3)
     devDependencies:
       '@maribor/oxlint-config':
         specifier: workspace:*
@@ -353,9 +353,9 @@ importers:
       sonner:
         specifier: 'catalog:'
         version: 2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      zod:
+      valibot:
         specifier: 'catalog:'
-        version: 4.6.5
+        version: 1.5.0(typescript@6.0.3)
     devDependencies:
       '@maribor/oxfmt-config':
         specifier: workspace:*
@@ -417,12 +417,9 @@ importers:
       '@orpc/server':
         specifier: 'catalog:'
         version: 1.15.4(ws@8.22.0)
-      '@orpc/zod':
+      valibot:
         specifier: 'catalog:'
-        version: 1.15.4(@orpc/contract@1.15.4)(@orpc/server@1.15.4(ws@8.22.0))(ws@8.22.0)(zod@4.6.5)
-      zod:
-        specifier: 'catalog:'
-        version: 4.6.5
+        version: 1.5.0(typescript@6.0.3)
     devDependencies:
       '@maribor/oxlint-config':
         specifier: workspace:*
@@ -444,13 +441,13 @@ importers:
         version: 0.18.0
       drizzle-orm:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(@libsql/client@0.18.0)(zod@4.6.5)
+        version: 1.0.0-rc.4(@libsql/client@0.18.0)(valibot@1.5.0(typescript@6.0.3))(zod@4.6.5)
       libsql:
         specifier: 'catalog:'
         version: 0.5.29
-      zod:
+      valibot:
         specifier: 'catalog:'
-        version: 4.6.5
+        version: 1.5.0(typescript@6.0.3)
     devDependencies:
       '@maribor/oxlint-config':
         specifier: workspace:*
@@ -1221,9 +1218,6 @@ packages:
   '@orpc/interop@1.15.4':
     resolution: {integrity: sha512-ZCTNPenr1clZ2RBCJxsCsvS3eS8MJIDSx/LH1AIAKj9RjvfOXI/BnjHmgD4jUEIa6FcG+c2LV/1IXVJpC6NoTw==}
 
-  '@orpc/json-schema@1.15.4':
-    resolution: {integrity: sha512-UIPzRBWuSkWejOJwIAGFkW8H0iOvqobGJnVGRbpKOGAw1kiJW2EqHQ+2ZhE2o/cTi/A+HnQj0YG9tmrk5Vytnw==}
-
   '@orpc/openapi-client@1.15.4':
     resolution: {integrity: sha512-z+8gRUp9bhVuA2tFlzJDCaUbLV/whZec25fmYb0VtP2N6iPfY0d7hYZvX47F/WrcuwaLCTqkbVAzK8Xb2cKF/w==}
 
@@ -1278,12 +1272,12 @@ packages:
       '@orpc/client': 1.15.4
       '@tanstack/query-core': '>=5.80.2'
 
-  '@orpc/zod@1.15.4':
-    resolution: {integrity: sha512-k7W5yvagfcGztACr7qpB7Yyp3iMF9BzCJX9uDH9EEouuM2gt/WzsGtkDw//LTpPPsJQerltdKrdGfaWnbrGBhQ==}
+  '@orpc/valibot@1.15.4':
+    resolution: {integrity: sha512-EbnPNJQgzNiI9zDcNZZKm20pC1zxZfG6YKhZWq5g+s424K5OvZTu1dAq7BM4iAdkjtLAJ2CUxR0Is25vnuUbag==}
     peerDependencies:
       '@orpc/contract': 1.15.4
       '@orpc/server': 1.15.4
-      zod: '>=3.25.0'
+      valibot: '>=1.0.0'
 
   '@oxc-parser/binding-android-arm-eabi@0.150.0':
     resolution: {integrity: sha512-oQef2Zu4Prz1KLKznz3HqZzU9uVoA5PMoDZuuLmqms7hKmKSAPzlaMnLllJq3t+rgKmfJJ2siPrpZfFrW06btw==}
@@ -2229,6 +2223,11 @@ packages:
   '@types/ws@8.18.2':
     resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
 
+  '@valibot/to-json-schema@1.8.0':
+    resolution: {integrity: sha512-a0M+uwCuQZEPAo65NYkFSJ14O5c213KoSZmPdoCfuFvUhfULi4T2Z6Tpjv6lTVMW9RoLm74RpRAjNEa43KcN+g==}
+    peerDependencies:
+      valibot: ^1.5.0
+
   '@vitejs/plugin-react@6.1.1':
     resolution: {integrity: sha512-yxLaQV9gkhS8ezJqCM6+ndU7mDY6gqAg75NQ+0IjwEI8IYOmQCgkRwHKVSfWXW076DsqMo0Dk+0FK1U+M5RgFw==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2882,10 +2881,6 @@ packages:
 
   escape-html@1.0.3:
     resolution: {integrity: sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow==}
-
-  escape-string-regexp@5.0.0:
-    resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
-    engines: {node: '>=12'}
 
   esprima@4.0.1:
     resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
@@ -4189,6 +4184,14 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
+  valibot@1.5.0:
+    resolution: {integrity: sha512-nil6AkP2TChWL43Z5uJ6GTxX01CUA+g8LWUM+N/rB9NBbkUMaUsi9PUNzlUPgoKASgmx9f7eGOYpJ04/fSa6FQ==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   validate-npm-package-name@7.0.2:
     resolution: {integrity: sha512-hVDIBwsRruT73PbK7uP5ebUt+ezEtCmzZz3F59BSr2F6OVFnJ/6h8liuvdLrQ88Xmnk6/+xGGuq+pG9WwTuy3A==}
     engines: {node: ^20.17.0 || >=22.9.0}
@@ -4264,9 +4267,6 @@ packages:
     resolution: {integrity: sha512-GlaYyEb07DPxYCKhKzplCWBJtvxZcZMrL+4UkrTSJHHPyZU4mYYTv3qaOe77H7EODLSSopAUFAc6W8U4yqvscg==}
     engines: {node: ^16.13.0 || >=18.0.0}
     hasBin: true
-
-  wildcard-match@5.1.4:
-    resolution: {integrity: sha512-wldeCaczs8XXq7hj+5d/F38JE2r7EXgb6WQDM84RVwxy81T/sxB5e9+uZLK9Q9oNz1mlvjut+QtvgaOQFPVq/g==}
 
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
@@ -4936,20 +4936,6 @@ snapshots:
 
   '@orpc/interop@1.15.4': {}
 
-  '@orpc/json-schema@1.15.4(ws@8.22.0)':
-    dependencies:
-      '@orpc/contract': 1.15.4
-      '@orpc/interop': 1.15.4
-      '@orpc/openapi': 1.15.4(ws@8.22.0)
-      '@orpc/server': 1.15.4(ws@8.22.0)
-      '@orpc/shared': 1.15.4
-      json-schema-typed: 8.0.2
-    transitivePeerDependencies:
-      - '@opentelemetry/api'
-      - crossws
-      - fastify
-      - ws
-
   '@orpc/openapi-client@1.15.4':
     dependencies:
       '@orpc/client': 1.15.4
@@ -5053,16 +5039,13 @@ snapshots:
     transitivePeerDependencies:
       - '@opentelemetry/api'
 
-  '@orpc/zod@1.15.4(@orpc/contract@1.15.4)(@orpc/server@1.15.4(ws@8.22.0))(ws@8.22.0)(zod@4.6.5)':
+  '@orpc/valibot@1.15.4(@orpc/contract@1.15.4)(@orpc/server@1.15.4(ws@8.22.0))(valibot@1.5.0(typescript@6.0.3))(ws@8.22.0)':
     dependencies:
       '@orpc/contract': 1.15.4
-      '@orpc/json-schema': 1.15.4(ws@8.22.0)
       '@orpc/openapi': 1.15.4(ws@8.22.0)
       '@orpc/server': 1.15.4(ws@8.22.0)
-      '@orpc/shared': 1.15.4
-      escape-string-regexp: 5.0.0
-      wildcard-match: 5.1.4
-      zod: 4.6.5
+      '@valibot/to-json-schema': 1.8.0(valibot@1.5.0(typescript@6.0.3))
+      valibot: 1.5.0(typescript@6.0.3)
     transitivePeerDependencies:
       - '@opentelemetry/api'
       - crossws
@@ -5706,6 +5689,10 @@ snapshots:
     dependencies:
       '@types/node': 26.6.3
 
+  '@valibot/to-json-schema@1.8.0(valibot@1.5.0(typescript@6.0.3))':
+    dependencies:
+      valibot: 1.5.0(typescript@6.0.3)
+
   '@vitejs/plugin-react@6.1.1(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
@@ -6016,9 +6003,10 @@ snapshots:
       get-tsconfig: 4.14.3
       jiti: 2.7.0
 
-  drizzle-orm@1.0.0-rc.4(@libsql/client@0.18.0)(zod@4.6.5):
+  drizzle-orm@1.0.0-rc.4(@libsql/client@0.18.0)(valibot@1.5.0(typescript@6.0.3))(zod@4.6.5):
     optionalDependencies:
       '@libsql/client': 0.18.0
+      valibot: 1.5.0(typescript@6.0.3)
       zod: 4.6.5
 
   dts-resolver@3.0.0(oxc-resolver@11.24.2):
@@ -6126,8 +6114,6 @@ snapshots:
   escalade@3.2.0: {}
 
   escape-html@1.0.3: {}
-
-  escape-string-regexp@5.0.0: {}
 
   esprima@4.0.1: {}
 
@@ -7397,6 +7383,10 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
+  valibot@1.5.0(typescript@6.0.3):
+    optionalDependencies:
+      typescript: 6.0.3
+
   validate-npm-package-name@7.0.2: {}
 
   vary@1.1.2: {}
@@ -7431,8 +7421,6 @@ snapshots:
   which@4.0.0:
     dependencies:
       isexe: 3.1.5
-
-  wildcard-match@5.1.4: {}
 
   wrappy@1.0.2: {}
 

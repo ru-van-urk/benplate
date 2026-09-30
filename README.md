@@ -81,8 +81,8 @@ If you want to add app-specific blocks instead of shared primitives, run the sha
 
 Copy `.env.example` to `.env` in `apps/server` and `apps/web`. Env files are ignored by git; keep secrets in them or in your deployment platform.
 
-- **Server**: `apps/server/src/env.ts` validates `process.env` with Zod at startup and exports a typed `ENV`. The `dev` and `start` scripts load `.env` with Node's `--env-file-if-exists`, so variables already set in the environment (Docker, CI) still apply.
-- **Web**: only `VITE_`-prefixed variables reach the client bundle. `apps/web/src/env.ts` holds the Zod schema, which `vite.config.ts` checks on dev and build, and types `import.meta.env`.
+- **Server**: `apps/server/src/env.ts` validates `process.env` with Valibot at startup and exports a typed `ENV`. The `dev` and `start` scripts load `.env` with Node's `--env-file-if-exists`, so variables already set in the environment (Docker, CI) still apply.
+- **Web**: only `VITE_`-prefixed variables reach the client bundle. `apps/web/src/env.ts` holds the Valibot schema, which `vite.config.ts` checks on dev and build, and types `import.meta.env`.
 - **Database tooling**: `drizzle.config.ts` reads `DATABASE_URL` from `apps/server/.env` when the variable is not already set.
 
 Shared database and auth packages receive configuration or initialized clients from the application.
