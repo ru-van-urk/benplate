@@ -11,7 +11,7 @@ import { logger } from "hono/logger";
 import { createContext } from "./context";
 import { ENV } from "./env";
 
-const app = new Hono().basePath("/api");
+const app = new Hono();
 
 app.use(logger());
 app.use(
@@ -47,7 +47,7 @@ app.use("/*", async (c, next) => {
   const context = await createContext({ context: c });
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
-    prefix: "/api/rpc",
+    prefix: "/rpc",
     context: context,
   });
 
@@ -56,7 +56,7 @@ app.use("/*", async (c, next) => {
   }
 
   const apiResult = await apiHandler.handle(c.req.raw, {
-    prefix: "/api/api-reference",
+    prefix: "/api-reference",
     context: context,
   });
 

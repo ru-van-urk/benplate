@@ -1,10 +1,11 @@
 import { z } from "zod";
 
-// Only `VITE_`-prefixed variables reach the client bundle. vite.config.ts validates them at dev/build time.
-export const envSchema = z.object({
-  VITE_SERVER_URL: z.url(),
-});
+import { envSchema } from "./env.schema";
 
-declare global {
-  interface ImportMetaEnv extends z.infer<typeof envSchema> {}
+const result = envSchema.safeParse(import.meta.env);
+
+if (!result.success) {
+  throw new Error(`Invalid environment variables:\n${z.prettifyError(result.error)}`);
 }
+
+export const ENV = result.data;

@@ -49,7 +49,7 @@ pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the web application.
-The API is running at [http://localhost:3001/api](http://localhost:3001/api).
+The API is running at [http://localhost:3001](http://localhost:3001).
 
 ## UI Customization
 
