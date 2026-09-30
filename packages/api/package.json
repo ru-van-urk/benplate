@@ -2,12 +2,19 @@
   "name": "@maribor/api",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./*": "./src/*.ts"
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "types": "./dist/src/*.d.ts",
+      "default": "./src/*.ts"
+    }
   },
   "scripts": {
-    "build": "tsc -b",
-    "check-types": "tsc -b"
+    "build": "tsc",
+    "dev": "tsc --watch --preserveWatchOutput",
+    "check-types": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
     "@maribor/db": "workspace:*",
@@ -18,7 +25,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@maribor/config": "workspace:*",
+    "@maribor/typescript-config": "workspace:*",
     "typescript": "catalog:"
   }
 }

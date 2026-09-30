@@ -1,0 +1,10 @@
+{
+  "extends": "@maribor/typescript-config/vite.json",
+  "include": ["src"],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "@maribor/ui/*": ["../../packages/ui/src/*"]
+    }
+  }
+}

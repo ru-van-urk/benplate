@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/*
+  - tooling/*
 allowBuilds:
   esbuild: true
   sharp: true
@@ -21,3 +22,5 @@ catalog:
   "@types/react": ^19.2.18
   "@types/react-dom": ^19.2.7
   tailwindcss: ^4.3.3
+  oxlint: ^1.81.0
+  oxfmt: ^0.66.0

@@ -1,12 +1,4 @@
 {
-  "extends": "@maribor/config/tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
-    "outDir": "dist"
-  },
-  "include": ["src/**/*.ts"],
-  "references": [{ "path": "../db" }]
+  "extends": "@maribor/typescript-config/internal-package.json",
+  "include": ["src"]
 }

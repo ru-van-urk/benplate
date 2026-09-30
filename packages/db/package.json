@@ -2,11 +2,18 @@
   "name": "@maribor/db",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./*": "./src/*.ts"
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "types": "./dist/src/*.d.ts",
+      "default": "./src/*.ts"
+    }
   },
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -p tsconfig.package.json",
+    "dev": "tsc -p tsconfig.package.json --watch --preserveWatchOutput",
     "check-types": "tsc -b",
     "db:local": "turso dev --db-file local.db",
     "db:push": "drizzle-kit push",
@@ -22,7 +29,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@maribor/config": "workspace:*",
+    "@maribor/typescript-config": "workspace:*",
     "drizzle-kit": "1.0.0-rc.4",
     "typescript": "catalog:"
   }

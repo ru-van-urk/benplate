@@ -1,0 +1,18 @@
+{
+  "name": "@maribor/oxlint-config",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./base": "./base.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "oxlint": "catalog:"
+  },
+  "devDependencies": {
+    "@maribor/typescript-config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

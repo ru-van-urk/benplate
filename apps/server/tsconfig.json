@@ -1,12 +1,11 @@
 {
-  "extends": "@maribor/config/tsconfig.base.json",
-  "references": [{ "path": "../../packages/api" }],
+  "extends": "@maribor/typescript-config/base.json",
   "compilerOptions": {
-    "noEmit": true,
+    "types": ["node"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    }
   }
 }

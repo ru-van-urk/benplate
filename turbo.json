@@ -5,14 +5,11 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"]
-    },
-    "lint": {
-      "dependsOn": ["^lint"]
+      "outputs": ["dist/**", ".cache/tsbuildinfo*.json"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"],
-      "outputs": ["dist/**"]
+      "dependsOn": ["^build"],
+      "outputs": [".cache/tsbuildinfo*.json"]
     },
     "dev": {
       "cache": false,
@@ -39,16 +36,6 @@
       "persistent": true
     }
   },
-  "globalEnv": [
-    "CI",
-    "CORS_ORIGIN",
-    "DATABASE_URL",
-    "NODE_ENV",
-    "VERCEL",
-    "VERCEL_ENV",
-    "VERCEL_PROJECT_PRODUCTION_URL",
-    "VERCEL_URL",
-    "VITE_SERVER_URL"
-  ],
+  "globalEnv": ["CI", "CORS_ORIGIN", "DATABASE_URL", "NODE_ENV", "VITE_SERVER_URL"],
   "globalDependencies": [".env*", "apps/*/.env*", "packages/*/.env*"]
 }

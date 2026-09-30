@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "tooling/*"
   ],
   "type": "module",
   "scripts": {
@@ -21,16 +22,17 @@
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
-    "check": "oxlint && oxfmt --write"
+    "check": "oxlint -c tooling/oxlint/base.ts && oxfmt -c tooling/oxfmt/base.ts --write"
   },
   "dependencies": {
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@maribor/config": "workspace:*",
+    "@maribor/oxfmt-config": "workspace:*",
+    "@maribor/oxlint-config": "workspace:*",
     "@types/node": "catalog:",
-    "oxfmt": "^0.66.0",
-    "oxlint": "^1.81.0",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
     "turbo": "^2.10.12",
     "typescript": "catalog:"
   },

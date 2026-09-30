@@ -1,0 +1,9 @@
+{
+  "extends": "@maribor/typescript-config/base.json",
+  "include": ["vite.config.ts", "src/env.schema.ts"],
+  "compilerOptions": {
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo.node.json"
+  }
+}

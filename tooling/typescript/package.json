@@ -1,0 +1,8 @@
+{
+  "name": "@maribor/typescript-config",
+  "private": true,
+  "files": [
+    "*.json"
+  ],
+  "type": "module"
+}

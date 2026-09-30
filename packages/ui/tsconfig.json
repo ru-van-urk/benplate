@@ -1,13 +1,12 @@
 {
-  "extends": "@maribor/config/tsconfig.base.json",
+  "extends": "@maribor/typescript-config/base.json",
+  "include": ["src"],
   "compilerOptions": {
-    "jsx": "react-jsx",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "types": [],
+    "jsx": "react-jsx",
     "paths": {
       "@maribor/ui/*": ["./src/*"]
     }
-  },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules"]
+  }
 }

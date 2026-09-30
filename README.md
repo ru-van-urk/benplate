@@ -119,6 +119,10 @@ maribor/
 │   ├── ui/          # Shared shadcn/ui components and styles
 │   ├── api/         # API layer / business logic
 │   └── db/          # Database schema & queries
+├── tooling/
+│   ├── typescript/  # Shared tsconfig presets (base, internal-package, vite)
+│   ├── oxlint/      # Oxlint config
+│   └── oxfmt/       # Oxfmt config
 ```
 
 ## Available Scripts

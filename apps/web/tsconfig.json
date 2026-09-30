@@ -1,19 +1,4 @@
 {
-  "references": [{ "path": "../../packages/api" }],
-  "compilerOptions": {
-    "strict": true,
-    "allowImportingTsExtensions": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "skipLibCheck": true,
-    "types": ["vite/client"],
-    "rootDirs": ["."],
-    "paths": {
-      "@/*": ["./src/*"],
-      "@maribor/ui/*": ["../../packages/ui/src/*"]
-    }
-  }
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }
