@@ -12,11 +12,11 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@/components",
+    "components": "~/components",
     "utils": "@maribor/ui/lib/utils",
     "ui": "@maribor/ui/components",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+    "lib": "~/lib",
+    "hooks": "~/hooks"
   },
   "menuColor": "default",
   "menuAccent": "subtle",

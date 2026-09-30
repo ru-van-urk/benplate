@@ -1,17 +1,29 @@
-FROM node:24-slim AS builder
+FROM node:24-slim AS base
+ENV TURBO_TELEMETRY_DISABLED=1
 RUN corepack enable
 WORKDIR /app
 
+# Reduce the monorepo to the server and its workspace dependencies
+FROM base AS pruner
+RUN npm install -g turbo@^2.10.12
 COPY . .
-RUN --mount=type=cache,target=/pnpm-store pnpm install --store-dir /pnpm-store
+RUN turbo prune server --docker
 
-ENV NODE_ENV=production
-RUN cd apps/server && pnpm run build
+FROM base AS builder
+COPY --from=pruner /app/out/json/ .
+RUN --mount=type=cache,target=/pnpm-store pnpm install --frozen-lockfile --store-dir /pnpm-store
 
-FROM node:24-slim AS runner
-WORKDIR /app
+COPY --from=pruner /app/out/full/ .
 ENV NODE_ENV=production
-COPY --from=builder /app /app
+RUN --mount=type=cache,target=/app/.turbo pnpm turbo run build --filter=server
+
+FROM base AS runner
+ENV NODE_ENV=production
+
+# Workspace packages are bundled into dist, so only production deps are needed at runtime
+COPY --from=pruner /app/out/json/ .
+RUN --mount=type=cache,target=/pnpm-store pnpm install --prod --frozen-lockfile --store-dir /pnpm-store
+COPY --from=builder /app/apps/server/dist ./apps/server/dist
 
 ENV PORT=3000
 EXPOSE 3000

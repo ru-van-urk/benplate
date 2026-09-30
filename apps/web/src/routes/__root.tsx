@@ -5,9 +5,9 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
-import Header from "@/components/header";
-import { ThemeProvider } from "@/components/theme-provider";
-import { orpc } from "@/utils/orpc";
+import Header from "~/components/header";
+import { ThemeProvider } from "~/components/theme-provider";
+import { orpc } from "~/utils/orpc";
 
 import "../index.css";
 

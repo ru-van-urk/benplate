@@ -3,7 +3,7 @@
   "include": ["src"],
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/*"],
+      "~/*": ["./src/*"],
       "@maribor/ui/*": ["../../packages/ui/src/*"]
     }
   }
