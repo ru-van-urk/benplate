@@ -76,7 +76,7 @@ import { serve } from "@hono/node-server";
 serve(
   {
     fetch: app.fetch,
-    port: 3001,
+    port: ENV.PORT,
   },
   (info) => {
     console.log(`Server is running on http://localhost:${info.port}`);

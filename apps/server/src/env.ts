@@ -4,6 +4,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   CORS_ORIGIN: z.url(),
   DATABASE_URL: z.string().min(1),
+  PORT: z.coerce.number().int().positive().default(3001),
 });
 
 const result = envSchema.safeParse(process.env);
