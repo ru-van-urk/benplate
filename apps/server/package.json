@@ -6,9 +6,8 @@
     "build": "tsc -b ../../packages/api && tsdown",
     "check-types": "tsc -b ../../packages/api && tsc --noEmit",
     "compile": "bun build --compile --no-compile-autoload-dotenv --minify --sourcemap --bytecode ./src/index.ts --outfile server",
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.mjs",
-    "env:generate": "varlock codegen"
+    "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
+    "start": "node --env-file-if-exists=.env dist/index.mjs"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.1",
@@ -19,7 +18,6 @@
     "@orpc/zod": "catalog:",
     "hono": "^4.13.7",
     "libsql": "catalog:",
-    "varlock": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

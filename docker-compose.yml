@@ -7,7 +7,6 @@ services:
       dockerfile: apps/web/Dockerfile
       secrets:
         - web_env
-        - server_env
       args:
         VITE_SERVER_URL: http://localhost:3001
     init: true
@@ -31,9 +30,6 @@ services:
     build:
       context: .
       dockerfile: apps/server/Dockerfile
-      secrets:
-        - web_env
-        - server_env
     init: true
     ports:
       - "3001:3001"
@@ -67,5 +63,3 @@ services:
 secrets:
   web_env:
     file: apps/web/.env
-  server_env:
-    file: apps/server/.env

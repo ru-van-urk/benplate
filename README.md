@@ -34,7 +34,7 @@ This project uses SQLite with Drizzle ORM.
 pnpm run db:local
 ```
 
-2. Update your `.env` file in the `apps/server` directory with the appropriate connection details if needed.
+2. Copy `apps/server/.env.example` to `apps/server/.env` and update the connection details if needed.
 
 3. Apply the schema to your database:
 
@@ -79,13 +79,13 @@ If you want to add app-specific blocks instead of shared primitives, run the sha
 
 ## Environment Configuration
 
-Each app owns its environment schema in `.env.schema`. Varlock generates `src/env.ts` during installation; run `pnpm run env:generate` after changing a schema. Commit schemas, and keep secrets in ignored env files or your deployment platform.
+Copy `.env.example` to `.env` in `apps/server` and `apps/web`. Env files are ignored by git; keep secrets in them or in your deployment platform.
 
-Import the generated `ENV` accessor in application code. Shared database and auth packages receive configuration or initialized clients from the application. See [Varlock's monorepo guide](https://varlock.dev/guides/monorepos/).
+- **Server**: `apps/server/src/env.ts` validates `process.env` with Zod at startup and exports a typed `ENV`. The `dev` and `start` scripts load `.env` with Node's `--env-file-if-exists`, so variables already set in the environment (Docker, CI) still apply.
+- **Web**: only `VITE_`-prefixed variables reach the client bundle. `apps/web/src/env.ts` holds the Zod schema, which `vite.config.ts` checks on dev and build, and types `import.meta.env`.
+- **Database tooling**: `drizzle.config.ts` reads `DATABASE_URL` from `apps/server/.env` when the variable is not already set.
 
-Bun's automatic env loading is disabled in `bunfig.toml`; the framework integration or server bootstrap loads Varlock. Node deployments must include Varlock and its dependencies alongside the app schema.
-
-Run standalone Node/Bun tools that use Varlock from the owning app directory so they load that app's schema and env files. `env:generate` only generates TypeScript files; it does not initialize environment values in a subsequent command.
+Shared database and auth packages receive configuration or initialized clients from the application.
 
 ## Deployment
 

@@ -8,8 +8,7 @@
     "build": "tsc -b ../../packages/api && vite build",
     "serve": "vite preview",
     "start": "vite",
-    "check-types": "tsc -b ../../packages/api && vite build && tsc --noEmit",
-    "env:generate": "varlock codegen"
+    "check-types": "tsc -b ../../packages/api && vite build && tsc --noEmit"
   },
   "dependencies": {
     "@maribor/api": "workspace:*",
@@ -20,13 +19,11 @@
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-query": "^5.102.8",
     "@tanstack/react-router": "^1.170.32",
-    "@varlock/vite-integration": "1.5.1",
     "lucide-react": "catalog:",
     "next-themes": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "sonner": "catalog:",
-    "varlock": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
