@@ -22,6 +22,7 @@
     "@orpc/client": "catalog:",
     "@orpc/openapi": "catalog:",
     "@orpc/server": "catalog:",
+    "drizzle-orm": "catalog:",
     "valibot": "catalog:"
   },
   "devDependencies": {

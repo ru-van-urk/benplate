@@ -36,10 +36,10 @@ pnpm run db:local
 
 2. Copy `apps/server/.env.example` to `apps/server/.env` and update the connection details if needed.
 
-3. Apply the schema to your database:
+3. The server applies pending migrations from `packages/db/src/migrations` on startup, so a fresh database is created and seeded automatically. After changing the schema in `packages/db/src/schema`, generate a new migration:
 
 ```bash
-pnpm run db:push
+pnpm run db:generate
 ```
 
 Then, run the development server:
@@ -98,9 +98,9 @@ Shared database and auth packages receive configuration or initialized clients f
 - Logs: pnpm run docker:logs
 - Stop: pnpm run docker:down
 
-Environment variables are read from each app's `.env` file (baked into web builds for public variables) and overridden in `docker-compose.yml` for container networking.
+Environment variables come from the shell or deployment platform (e.g. Dokploy), with local defaults in `docker-compose.yml`. `VITE_SERVER_URL` is baked into the web build.
 
-Docker Compose uses the local `./.data/local.db` file. Run `pnpm run db:push` before starting the stack.
+The server stores SQLite in the `data` volume (`/data/local.db`) and migrates it on startup.
 
 For more details, see the guide on [Deploying with Docker Compose](https://www.better-t-stack.dev/docs/guides/docker).
 

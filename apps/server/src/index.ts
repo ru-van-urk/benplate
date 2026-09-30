@@ -1,15 +1,20 @@
 import { appRouter } from "@maribor/api/routers/index";
+import { migrateDb } from "@maribor/db/migrate";
+import { OpenAPIGenerator } from "@orpc/openapi";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
-import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
+import { OpenAPIReferenceHandlerPlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
-import { experimental_ValibotToJsonSchemaConverter as ValibotToJsonSchemaConverter } from "@orpc/valibot";
+import { ValibotToJsonSchemaConverter } from "@orpc/valibot";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 import { createContext } from "./context";
 import { ENV } from "./env";
+import { db } from "./services";
+
+await migrateDb(db);
 
 const app = new Hono();
 
@@ -22,10 +27,17 @@ app.use(
   }),
 );
 
+const openAPIGenerator = new OpenAPIGenerator({
+  converters: [new ValibotToJsonSchemaConverter()],
+});
+
 export const apiHandler = new OpenAPIHandler(appRouter, {
   plugins: [
-    new OpenAPIReferencePlugin({
-      schemaConverters: [new ValibotToJsonSchemaConverter()],
+    new OpenAPIReferenceHandlerPlugin({
+      spec: () =>
+        openAPIGenerator.generate(appRouter, {
+          base: { info: { title: "maribor", version: "1.0.0" } },
+        }),
     }),
   ],
   interceptors: [

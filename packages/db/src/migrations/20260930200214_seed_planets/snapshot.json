@@ -1,0 +1,107 @@
+{
+  "id": "897bbdbb-c1de-4163-8737-e1a6b3ce66e7",
+  "prevIds": ["f310b249-28e4-41fe-9828-a5cea232488a"],
+  "version": "7",
+  "dialect": "sqlite",
+  "ddl": [
+    {
+      "name": "planets",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "planets"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "planets"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "planets"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "type",
+      "entityType": "columns",
+      "table": "planets"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "moons",
+      "entityType": "columns",
+      "table": "planets"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "diameterKm",
+      "entityType": "columns",
+      "table": "planets"
+    },
+    {
+      "type": "real",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "distanceFromSunAu",
+      "entityType": "columns",
+      "table": "planets"
+    },
+    {
+      "type": "real",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "orbitalPeriodDays",
+      "entityType": "columns",
+      "table": "planets"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "planets_pk",
+      "table": "planets",
+      "entityType": "pks"
+    },
+    {
+      "columns": ["name"],
+      "nameExplicit": false,
+      "name": "planets_name_unique",
+      "entityType": "uniques",
+      "table": "planets"
+    }
+  ],
+  "renames": []
+}

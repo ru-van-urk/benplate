@@ -28,7 +28,8 @@ export function createQueryClient() {
 export const queryClient = createQueryClient();
 
 export const link = new RPCLink({
-  url: `${ENV.VITE_SERVER_URL}/rpc`,
+  origin: ENV.VITE_SERVER_URL,
+  url: "/rpc",
 });
 
 export const client: AppRouterClient = createORPCClient(link);

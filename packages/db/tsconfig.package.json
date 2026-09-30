@@ -1,4 +1,7 @@
 {
   "extends": "@maribor/typescript-config/internal-package.json",
-  "include": ["src"]
+  "include": ["src"],
+  "compilerOptions": {
+    "types": ["node"]
+  }
 }

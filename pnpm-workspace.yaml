@@ -10,15 +10,17 @@ catalog:
   typescript: ^6.0.3
   "@types/node": ^26.4.1
   libsql: 0.5.29
-  "@orpc/server": ^1.15.0
-  "@orpc/openapi": ^1.15.0
-  "@orpc/valibot": ^1.15.0
+  drizzle-orm: 1.0.0-rc.4
+  "@orpc/server": 2.0.0-beta.40
+  "@orpc/openapi": 2.0.0-beta.40
+  "@orpc/valibot": 2.0.0-beta.40
   lucide-react: ^1.41.0
   next-themes: ^0.4.6
   react: ^19.2.8
   react-dom: ^19.2.8
   sonner: ^2.0.8
-  "@orpc/client": ^1.15.0
+  "@orpc/client": 2.0.0-beta.40
+  "@orpc/tanstack-query": 2.0.0-beta.40
   "@types/react": ^19.2.18
   "@types/react-dom": ^19.2.7
   tailwindcss: ^4.3.3
