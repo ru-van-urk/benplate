@@ -1,6 +1,4 @@
 {
-  "oxc.configPath": "tooling/oxlint/base.ts",
-  "oxc.fmt.configPath": "tooling/oxfmt/base.ts",
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "[typescriptreact]": {

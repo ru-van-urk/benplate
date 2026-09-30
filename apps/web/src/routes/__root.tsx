@@ -7,7 +7,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import Header from "~/components/header";
 import { ThemeProvider } from "~/components/theme-provider";
-import { orpc } from "~/utils/orpc";
+import { type orpc } from "~/utils/orpc";
 
 import "../index.css";
 
@@ -47,7 +47,7 @@ function RootComponent() {
         disableTransitionOnChange
         storageKey="vite-ui-theme"
       >
-        <div className="grid grid-rows-[auto_1fr] h-svh">
+        <div className="grid h-svh grid-rows-[auto_1fr]">
           <Header />
           <Outlet />
         </div>

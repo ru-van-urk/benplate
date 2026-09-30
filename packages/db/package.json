@@ -14,13 +14,14 @@
   "scripts": {
     "build": "tsc -p tsconfig.package.json",
     "dev": "tsc -p tsconfig.package.json --watch --preserveWatchOutput",
-    "check-types": "tsc -b",
+    "typecheck": "tsc -b",
     "db:local": "turso dev --db-file local.db",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate:deploy": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "@libsql/client": "0.18.0",
@@ -29,8 +30,11 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@maribor/oxlint-config": "workspace:*",
     "@maribor/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
     "drizzle-kit": "1.0.0-rc.4",
+    "oxlint": "catalog:",
     "typescript": "catalog:"
   }
 }

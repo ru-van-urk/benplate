@@ -12,7 +12,7 @@ const router = createRouter({
   scrollRestoration: true,
   defaultPendingComponent: () => <Loader />,
   context: { orpc, queryClient },
-  Wrap: function WrapComponent({ children }: { children: React.ReactNode }) {
+  Wrap: ({ children }: { children: React.ReactNode }) => {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   },
 });

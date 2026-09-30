@@ -14,7 +14,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch --preserveWatchOutput",
-    "check-types": "tsc --noEmit --emitDeclarationOnly false"
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "@maribor/db": "workspace:*",
@@ -25,7 +26,9 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@maribor/oxlint-config": "workspace:*",
     "@maribor/typescript-config": "workspace:*",
+    "oxlint": "catalog:",
     "typescript": "catalog:"
   }
 }

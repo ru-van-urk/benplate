@@ -104,9 +104,11 @@ Docker Compose uses the local `./.data/local.db` file. Run `pnpm run db:push` be
 
 For more details, see the guide on [Deploying with Docker Compose](https://www.better-t-stack.dev/docs/guides/docker).
 
-## Git Hooks and Formatting
+## Linting and Formatting
 
-- Run checks: `pnpm run check`
+Oxlint and Oxfmt run once from the root. Each package's `oxlint.config.ts` / `oxfmt.config.ts` picks the preset from `tooling/` (`node` or `react`); anything without its own config falls back to the root `base`.
+
+- Fix and verify everything: `pnpm run check` (lint with fixes, format, then typecheck; stops at the first failure)
 
 ## Project Structure
 
@@ -121,8 +123,8 @@ maribor/
 │   └── db/          # Database schema & queries
 ├── tooling/
 │   ├── typescript/  # Shared tsconfig presets (base, internal-package, vite)
-│   ├── oxlint/      # Oxlint config
-│   └── oxfmt/       # Oxfmt config
+│   ├── oxlint/      # Oxlint presets (base, node, react)
+│   └── oxfmt/       # Oxfmt presets (base, react)
 ```
 
 ## Available Scripts
@@ -131,13 +133,18 @@ maribor/
 - `pnpm run build`: Build all applications
 - `pnpm run dev:web`: Start only the web application
 - `pnpm run dev:server`: Start only the server
-- `pnpm run check-types`: Check TypeScript types across all apps
+- `pnpm run typecheck`: Check TypeScript types across all packages
 - `pnpm run db:push`: Push schema changes to database
 - `pnpm run db:generate`: Generate database client/types
 - `pnpm run db:migrate`: Run database migrations
 - `pnpm run db:studio`: Open database studio UI
 - `pnpm run db:local`: Start the local SQLite database
-- `pnpm run check`: Run Oxlint and Oxfmt
+- `pnpm run lint` / `lint:check`: Run Oxlint with / without fixes
+- `pnpm run format` / `format:check`: Write / check Oxfmt formatting
+- `pnpm run check`: Run `lint`, `format` and `typecheck`, stopping at the first failure
+- `pnpm run knip`: Find unused files, dependencies and exports
+- `pnpm run deps:check` / `deps:update`: Report / write dependency updates with Taze
+- `pnpm run clean`: Remove build output, caches and `node_modules`
 - `pnpm run docker:build`: Build the Docker Compose images
 - `pnpm run docker:up`: Build and start the Docker Compose stack
 - `pnpm run docker:logs`: Tail logs from the Docker Compose stack

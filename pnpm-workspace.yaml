@@ -24,3 +24,7 @@ catalog:
   tailwindcss: ^4.3.3
   oxlint: ^1.81.0
   oxfmt: ^0.66.0
+  oxlint-tsgolint: ^7.0.2003
+  knip: ^6.38.0
+  taze: ^21.2.0
+  turbo: ^2.10.12

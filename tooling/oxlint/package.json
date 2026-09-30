@@ -3,10 +3,13 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./base": "./base.ts"
+    "./base": "./base.ts",
+    "./react": "./react.ts",
+    "./node": "./node.ts"
   },
   "scripts": {
-    "check-types": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "oxlint": "catalog:"

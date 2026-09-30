@@ -8,7 +8,8 @@
     "build": "vite build",
     "serve": "vite preview",
     "start": "vite",
-    "check-types": "vite build && tsc -b"
+    "typecheck": "vite build && tsc -b",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "@maribor/api": "workspace:*",
@@ -27,6 +28,8 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@maribor/oxfmt-config": "workspace:*",
+    "@maribor/oxlint-config": "workspace:*",
     "@maribor/typescript-config": "workspace:*",
     "@tanstack/react-query-devtools": "^5.102.8",
     "@tanstack/react-router-devtools": "^1.167.1",
@@ -35,6 +38,8 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "^6.1.1",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "^8.2.2"

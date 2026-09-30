@@ -1,16 +1,13 @@
 {
   "name": "maribor",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "tooling/*"
-  ],
   "type": "module",
   "scripts": {
-    "dev": "turbo run dev",
+    "check": "pnpm lint && pnpm format && pnpm typecheck",
     "build": "turbo run build",
-    "check-types": "turbo run check-types",
+    "clean": "turbo run clean",
+    "postclean": "git clean -xdf .cache .turbo node_modules",
+    "dev": "turbo run dev",
     "dev:web": "turbo run dev -F web --",
     "dev:server": "turbo run dev -F server --",
     "db:push": "turbo run db:push -F @maribor/db --",
@@ -22,19 +19,27 @@
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
-    "check": "oxlint -c tooling/oxlint/base.ts && oxfmt -c tooling/oxfmt/base.ts --write"
-  },
-  "dependencies": {
-    "zod": "catalog:"
+    "typecheck": "turbo run typecheck",
+    "lint": "oxlint --fix",
+    "lint:check": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "knip": "knip",
+    "deps:check": "taze",
+    "deps:update": "taze -w"
   },
   "devDependencies": {
     "@maribor/oxfmt-config": "workspace:*",
     "@maribor/oxlint-config": "workspace:*",
-    "@types/node": "catalog:",
+    "knip": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
-    "turbo": "^2.10.12",
-    "typescript": "catalog:"
+    "oxlint-tsgolint": "catalog:",
+    "taze": "catalog:",
+    "turbo": "catalog:"
+  },
+  "engines": {
+    "node": ">=24.14.0"
   },
   "packageManager": "pnpm@12.6.0"
 }
