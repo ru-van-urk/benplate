@@ -1,0 +1,5 @@
+# Local only: `docker compose` merges this file automatically, Dokploy deploys with `-f docker-compose.yml` and skips it
+services:
+  web:
+    ports:
+      - "${WEB_PORT:-3030}:80"

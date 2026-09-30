@@ -97,12 +97,13 @@ Shared database and auth packages receive configuration or initialized clients f
 
 - Target: web + server
 - Config: `docker-compose.yml` (app Dockerfiles live in `apps/*/Dockerfile`)
+- Local: `docker-compose.override.yml` publishes `web` on http://localhost:3030 (override with `WEB_PORT`); Dokploy ignores it
 - Build images: pnpm run docker:build
 - Start: pnpm run docker:up
 - Logs: pnpm run docker:logs
 - Stop: pnpm run docker:down
 
-Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST, `/api/rpc` and `/api/docs`) to `server:3000` over the internal Compose network. On Dokploy, add the domain to the `web` service in the Domains tab and leave `server` without one. `DATABASE_URL` defaults to the volume and can be overridden from the shell or deployment platform.
+Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST, `/api/rpc` and `/api/docs`) to `server:3000` over the internal Compose network. On Dokploy, add the domain to the `web` service in the Domains tab. For a public API subdomain, add `api.<domain>` to the `server` service (container port `3000`, path `/`, internal path `/api`) so `api.<domain>/planets` reaches `/api/planets`. `DATABASE_URL` defaults to the volume and can be overridden from the shell or deployment platform.
 
 The server stores SQLite in the `data` volume (`/data/local.db`) and migrates it on startup.
 

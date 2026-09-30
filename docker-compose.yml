@@ -7,9 +7,6 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:-file:/data/local.db}
 
-    expose:
-      - "3000"
-
     healthcheck:
       test:
         - CMD
