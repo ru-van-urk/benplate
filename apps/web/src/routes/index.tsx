@@ -10,8 +10,8 @@ export const Route = createFileRoute("/")({
   }),
   loader: async ({ context }) => {
     await Promise.all([
-      context.queryClient.ensureQueryData(context.healthCheckQueryOptions),
-      context.queryClient.ensureQueryData(context.planetQueryOptions),
+      context.queryClient.query({ ...context.healthCheckQueryOptions, staleTime: "static" }),
+      context.queryClient.query({ ...context.planetQueryOptions, staleTime: "static" }),
     ]);
   },
   component: HomeComponent,
