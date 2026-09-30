@@ -49,11 +49,11 @@ pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the web application.
-The server runs at [http://localhost:3001](http://localhost:3001), and the Vite dev server proxies `/api` and `/docs` to it:
+The server runs at [http://localhost:3001](http://localhost:3001), and the Vite dev server proxies `/api` to it:
 
 - REST API: [http://localhost:3000/api](http://localhost:3000/api/planets) (e.g. `GET /api/planets`, `GET /api/planets/{id}`, `POST /api/planets`)
 - oRPC endpoint used by the web app: `/api/rpc`
-- API docs and OpenAPI spec: [http://localhost:3000/docs](http://localhost:3000/docs), `/docs/spec.json`
+- API docs and OpenAPI spec: [http://localhost:3000/api/docs](http://localhost:3000/api/docs), `/api/docs/spec.json`
 
 ## UI Customization
 
@@ -102,7 +102,7 @@ Shared database and auth packages receive configuration or initialized clients f
 - Logs: pnpm run docker:logs
 - Stop: pnpm run docker:down
 
-Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST and `/api/rpc`) and `/docs` to `server:3000` over the internal Compose network. On Dokploy, add the domain to the `web` service in the Domains tab and leave `server` without one. `DATABASE_URL` defaults to the volume and can be overridden from the shell or deployment platform.
+Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST, `/api/rpc` and `/api/docs`) to `server:3000` over the internal Compose network. On Dokploy, add the domain to the `web` service in the Domains tab and leave `server` without one. `DATABASE_URL` defaults to the volume and can be overridden from the shell or deployment platform.
 
 The server stores SQLite in the `data` volume (`/data/local.db`) and migrates it on startup.
 

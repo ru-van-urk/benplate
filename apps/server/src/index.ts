@@ -32,28 +32,24 @@ export const rpcHandler = new RPCHandler(appRouter, { interceptors: [onError(log
 
 // REST for everyone else; coercion turns path and query strings (`/planets/2`) into schema types
 export const apiHandler = new OpenAPIHandler(appRouter, {
-  plugins: [new SmartCoercionHandlerPlugin({ converters })],
+  plugins: [
+    new SmartCoercionHandlerPlugin({ converters }),
+    // Paths are relative to the handler prefix: /api/docs and /api/docs/spec.json
+    new OpenAPIReferenceHandlerPlugin({
+      docsPath: "/docs",
+      specPath: "/docs/spec.json",
+      spec: () =>
+        openAPIGenerator.generate(appRouter, {
+          base: {
+            info: { title: "maribor", version: "1.0.0" },
+            // Relative, so "try it" works through both the nginx and Vite proxies
+            servers: [{ url: "/api" }],
+          },
+        }),
+    }),
+  ],
   interceptors: [onError(logError)],
 });
-
-// Docs sit outside /api, so they get their own handler without procedures
-const docsHandler = new OpenAPIHandler(
-  {},
-  {
-    plugins: [
-      new OpenAPIReferenceHandlerPlugin({
-        spec: () =>
-          openAPIGenerator.generate(appRouter, {
-            base: {
-              info: { title: "maribor", version: "1.0.0" },
-              // Relative, so "try it" works through both the nginx and Vite proxies
-              servers: [{ url: "/api" }],
-            },
-          }),
-      }),
-    ],
-  },
-);
 
 app.use("/*", async (c, next) => {
   const context = await createContext({ context: c });
@@ -74,12 +70,6 @@ app.use("/*", async (c, next) => {
 
   if (apiResult.matched) {
     return c.newResponse(apiResult.response.body, apiResult.response);
-  }
-
-  const docsResult = await docsHandler.handle(c.req.raw, { prefix: "/docs" });
-
-  if (docsResult.matched) {
-    return c.newResponse(docsResult.response.body, docsResult.response);
   }
 
   await next();
