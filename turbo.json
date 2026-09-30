@@ -40,6 +40,6 @@
       "cache": false
     }
   },
-  "globalEnv": ["CI", "CORS_ORIGIN", "DATABASE_URL", "NODE_ENV", "VITE_SERVER_URL"],
+  "globalEnv": ["CI", "DATABASE_URL", "NODE_ENV"],
   "globalDependencies": [".env*", "apps/*/.env*", "packages/*/.env*"]
 }

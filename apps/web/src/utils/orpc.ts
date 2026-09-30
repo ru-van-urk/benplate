@@ -26,9 +26,9 @@ export function createQueryClient() {
 export const queryClient = createQueryClient();
 
 export const link = new RPCLink({
-  // Same origin; nginx (production) and the Vite dev server proxy /rpc to the API
+  // Same origin; nginx (production) and the Vite dev server proxy /api to the server
   origin: window.location.origin,
-  url: "/rpc",
+  url: "/api/rpc",
 });
 
 export const client: AppRouterClient = createORPCClient(link);

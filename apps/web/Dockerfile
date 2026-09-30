@@ -14,8 +14,6 @@ COPY --from=pruner /app/out/json/ .
 RUN --mount=type=cache,target=/pnpm-store pnpm install --frozen-lockfile --store-dir /pnpm-store
 
 COPY --from=pruner /app/out/full/ .
-ARG VITE_SERVER_URL
-ENV VITE_SERVER_URL=${VITE_SERVER_URL}
 ENV NODE_ENV=production
 RUN --mount=type=cache,target=/app/.turbo pnpm turbo run build --filter=web
 

@@ -167,6 +167,9 @@ catalogs:
     '@orpc/client':
       specifier: 2.0.0-beta.40
       version: 2.0.0-beta.40
+    '@orpc/json-schema':
+      specifier: 2.0.0-beta.40
+      version: 2.0.0-beta.40
     '@orpc/openapi':
       specifier: 2.0.0-beta.40
       version: 2.0.0-beta.40
@@ -274,6 +277,9 @@ importers:
       '@maribor/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@orpc/json-schema':
+        specifier: 'catalog:'
+        version: 2.0.0-beta.40
       '@orpc/openapi':
         specifier: 'catalog:'
         version: 2.0.0-beta.40

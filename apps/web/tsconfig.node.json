@@ -1,6 +1,6 @@
 {
   "extends": "@maribor/typescript-config/base.json",
-  "include": ["vite.config.ts", "src/env.schema.ts"],
+  "include": ["vite.config.ts"],
   "compilerOptions": {
     "types": ["node"],
     "allowImportingTsExtensions": true,

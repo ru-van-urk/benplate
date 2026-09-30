@@ -49,7 +49,11 @@ pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the web application.
-The API is running at [http://localhost:3001](http://localhost:3001).
+The server runs at [http://localhost:3001](http://localhost:3001), and the Vite dev server proxies `/api` and `/docs` to it:
+
+- REST API: [http://localhost:3000/api](http://localhost:3000/api/planets) (e.g. `GET /api/planets`, `GET /api/planets/{id}`, `POST /api/planets`)
+- oRPC endpoint used by the web app: `/api/rpc`
+- API docs and OpenAPI spec: [http://localhost:3000/docs](http://localhost:3000/docs), `/docs/spec.json`
 
 ## UI Customization
 
@@ -79,10 +83,10 @@ If you want to add app-specific blocks instead of shared primitives, run the sha
 
 ## Environment Configuration
 
-Copy `.env.example` to `.env` in `apps/server` and `apps/web`. Env files are ignored by git; keep secrets in them or in your deployment platform.
+Copy `.env.example` to `.env` in `apps/server`. Env files are ignored by git; keep secrets in them or in your deployment platform.
 
 - **Server**: `apps/server/src/env.ts` validates `process.env` with Valibot at startup and exports a typed `ENV`. The `dev` and `start` scripts load `.env` with Node's `--env-file-if-exists`, so variables already set in the environment (Docker, CI) still apply.
-- **Web**: only `VITE_`-prefixed variables reach the client bundle. `apps/web/src/env.ts` holds the Valibot schema, which `vite.config.ts` checks on dev and build, and types `import.meta.env`.
+- **Web**: needs no configuration. The client calls `/api/rpc` on its own origin, which the Vite dev server (`vite.config.ts`) and nginx in production (`apps/web/nginx.conf`) proxy to the server. There is no CORS, and the same web image works in every environment.
 - **Database tooling**: `drizzle.config.ts` reads `DATABASE_URL` from `apps/server/.env` when the variable is not already set.
 
 Shared database and auth packages receive configuration or initialized clients from the application.
@@ -98,7 +102,7 @@ Shared database and auth packages receive configuration or initialized clients f
 - Logs: pnpm run docker:logs
 - Stop: pnpm run docker:down
 
-Environment variables come from the shell or deployment platform (e.g. Dokploy), with local defaults in `docker-compose.yml`. `VITE_SERVER_URL` is baked into the web build.
+Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST and `/api/rpc`) and `/docs` to `server:3000` over the internal Compose network. On Dokploy, add the domain to the `web` service in the Domains tab and leave `server` without one. `DATABASE_URL` defaults to the volume and can be overridden from the shell or deployment platform.
 
 The server stores SQLite in the `data` volume (`/data/local.db`) and migrates it on startup.
 

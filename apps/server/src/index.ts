@@ -1,5 +1,6 @@
 import { appRouter } from "@maribor/api/routers/index";
 import { migrateDb } from "@maribor/db/migrate";
+import { SmartCoercionHandlerPlugin } from "@orpc/json-schema";
 import { OpenAPIGenerator } from "@orpc/openapi";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
 import { OpenAPIReferenceHandlerPlugin } from "@orpc/openapi/plugins";
@@ -7,7 +8,6 @@ import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ValibotToJsonSchemaConverter } from "@orpc/valibot";
 import { Hono } from "hono";
-import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 import { createContext } from "./context";
@@ -19,47 +19,47 @@ await migrateDb(db);
 const app = new Hono();
 
 app.use(logger());
-app.use(
-  "/*",
-  cors({
-    origin: ENV.CORS_ORIGIN,
-    allowMethods: ["GET", "POST", "OPTIONS"],
-  }),
-);
 
-const openAPIGenerator = new OpenAPIGenerator({
-  converters: [new ValibotToJsonSchemaConverter()],
-});
+const converters = [new ValibotToJsonSchemaConverter()];
+const openAPIGenerator = new OpenAPIGenerator({ converters });
 
+const logError = (error: unknown) => {
+  console.error(error);
+};
+
+// oRPC protocol for the typed client in apps/web
+export const rpcHandler = new RPCHandler(appRouter, { interceptors: [onError(logError)] });
+
+// REST for everyone else; coercion turns path and query strings (`/planets/2`) into schema types
 export const apiHandler = new OpenAPIHandler(appRouter, {
-  plugins: [
-    new OpenAPIReferenceHandlerPlugin({
-      spec: () =>
-        openAPIGenerator.generate(appRouter, {
-          base: { info: { title: "maribor", version: "1.0.0" } },
-        }),
-    }),
-  ],
-  interceptors: [
-    onError((error) => {
-      console.error(error);
-    }),
-  ],
+  plugins: [new SmartCoercionHandlerPlugin({ converters })],
+  interceptors: [onError(logError)],
 });
 
-export const rpcHandler = new RPCHandler(appRouter, {
-  interceptors: [
-    onError((error) => {
-      console.error(error);
-    }),
-  ],
-});
+// Docs sit outside /api, so they get their own handler without procedures
+const docsHandler = new OpenAPIHandler(
+  {},
+  {
+    plugins: [
+      new OpenAPIReferenceHandlerPlugin({
+        spec: () =>
+          openAPIGenerator.generate(appRouter, {
+            base: {
+              info: { title: "maribor", version: "1.0.0" },
+              // Relative, so "try it" works through both the nginx and Vite proxies
+              servers: [{ url: "/api" }],
+            },
+          }),
+      }),
+    ],
+  },
+);
 
 app.use("/*", async (c, next) => {
   const context = await createContext({ context: c });
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
-    prefix: "/rpc",
+    prefix: "/api/rpc",
     context: context,
   });
 
@@ -68,12 +68,18 @@ app.use("/*", async (c, next) => {
   }
 
   const apiResult = await apiHandler.handle(c.req.raw, {
-    prefix: "/api-reference",
+    prefix: "/api",
     context: context,
   });
 
   if (apiResult.matched) {
     return c.newResponse(apiResult.response.body, apiResult.response);
+  }
+
+  const docsResult = await docsHandler.handle(c.req.raw, { prefix: "/docs" });
+
+  if (docsResult.matched) {
+    return c.newResponse(docsResult.response.body, docsResult.response);
   }
 
   await next();

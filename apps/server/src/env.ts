@@ -2,7 +2,6 @@ import * as v from "valibot";
 
 const envSchema = v.object({
   NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
-  CORS_ORIGIN: v.pipe(v.string(), v.url()),
   DATABASE_URL: v.pipe(v.string(), v.nonEmpty()),
   PORT: v.pipe(v.optional(v.string(), "3001"), v.toNumber(), v.integer(), v.minValue(1)),
 });

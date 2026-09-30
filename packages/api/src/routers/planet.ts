@@ -1,16 +1,45 @@
-import { planets, planetTypes } from "@maribor/db/schema/index";
+import { planets } from "@maribor/db/schema/index";
+import { openapi } from "@orpc/openapi";
 import { ORPCError } from "@orpc/server";
 import { eq } from "drizzle-orm";
+import { createInsertSchema, createSelectSchema } from "drizzle-orm/valibot";
 import * as v from "valibot";
 
 import { publicProcedure } from "../index";
 
-export const listPlanets = publicProcedure.handler(({ context }) => {
-  return context.db.select().from(planets).orderBy(planets.distanceFromSunAu);
-});
+const tags = ["Planets"];
+
+const planetSchema = createSelectSchema(planets);
+
+const newPlanetSchema = v.omit(
+  createInsertSchema(planets, {
+    name: (schema) => v.pipe(schema, v.nonEmpty()),
+    moons: (schema) => v.pipe(schema, v.minValue(0)),
+    diameterKm: (schema) => v.pipe(schema, v.minValue(1)),
+    distanceFromSunAu: (schema) => v.pipe(schema, v.minValue(0)),
+    orbitalPeriodDays: (schema) => v.pipe(schema, v.minValue(0)),
+  }),
+  ["id"],
+);
+
+export const listPlanets = publicProcedure
+  .meta(
+    openapi({
+      method: "GET",
+      path: "/planets",
+      tags,
+      summary: "List planets, ordered from the Sun",
+    }),
+  )
+  .output(v.array(planetSchema))
+  .handler(({ context }) => {
+    return context.db.select().from(planets).orderBy(planets.distanceFromSunAu);
+  });
 
 export const findPlanet = publicProcedure
+  .meta(openapi({ method: "GET", path: "/planets/{id}", tags, summary: "Find a planet by id" }))
   .input(v.object({ id: v.pipe(v.number(), v.integer()) }))
+  .output(planetSchema)
   .handler(async ({ context, input }) => {
     const [planet] = await context.db.select().from(planets).where(eq(planets.id, input.id));
 
@@ -22,21 +51,19 @@ export const findPlanet = publicProcedure
   });
 
 export const createPlanet = publicProcedure
-  .input(
-    v.object({
-      name: v.pipe(v.string(), v.nonEmpty()),
-      description: v.optional(v.string()),
-      type: v.picklist(planetTypes),
-      moons: v.optional(v.pipe(v.number(), v.integer(), v.minValue(0))),
-      diameterKm: v.pipe(v.number(), v.integer(), v.minValue(1)),
-      distanceFromSunAu: v.pipe(v.number(), v.minValue(0)),
-      orbitalPeriodDays: v.pipe(v.number(), v.minValue(0)),
+  .meta(
+    openapi({
+      method: "POST",
+      path: "/planets",
+      successStatus: 201,
+      tags,
+      summary: "Create a planet",
     }),
   )
-  .handler(async ({ context, input }) => {
-    const [planet] = await context.db.insert(planets).values(input).returning();
-
-    return planet;
+  .input(newPlanetSchema)
+  .output(planetSchema)
+  .handler(({ context, input }) => {
+    return context.db.insert(planets).values(input).returning().get();
   });
 
 export const planetRouter = {
