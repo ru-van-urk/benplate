@@ -1,3 +1,4 @@
+import { serve } from "@hono/node-server";
 import { createApi } from "@maribor/api/server";
 import { migrateDb } from "@maribor/db/migrate";
 import { Hono } from "hono";
@@ -30,8 +31,6 @@ app.use("/*", async (c, next) => {
 
   await next();
 });
-
-import { serve } from "@hono/node-server";
 
 serve(
   {

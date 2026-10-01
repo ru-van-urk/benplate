@@ -1,5 +1,6 @@
 {
   "name": "@maribor/db",
+  "private": true,
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
@@ -7,10 +8,9 @@
   },
   "scripts": {
     "typecheck": "tsc -b",
-    "db:local": "turso dev --db-file local.db",
+    "db:local": "turso dev --db-file ../../.data/local.db",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
-    "db:migrate:deploy": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:migrate": "drizzle-kit migrate",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
@@ -18,14 +18,13 @@
   "dependencies": {
     "@libsql/client": "0.18.0",
     "drizzle-orm": "catalog:",
-    "libsql": "catalog:",
     "valibot": "catalog:"
   },
   "devDependencies": {
     "@maribor/oxlint-config": "workspace:*",
     "@maribor/typescript-config": "workspace:*",
     "@types/node": "catalog:",
-    "drizzle-kit": "1.0.0-rc.4",
+    "drizzle-kit": "catalog:",
     "oxlint": "catalog:",
     "typescript": "catalog:"
   }

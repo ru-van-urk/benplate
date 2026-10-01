@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "pnpm lint && pnpm format && pnpm typecheck",
+    "check": "pnpm lint && pnpm format && pnpm typecheck && pnpm knip",
     "build": "turbo run build",
     "clean": "turbo run clean",
     "postclean": "git clean -xdf .cache .turbo node_modules",
@@ -19,7 +19,7 @@
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
-    "typecheck": "turbo run typecheck",
+    "typecheck": "turbo run typecheck && tsc",
     "lint": "oxlint --fix",
     "lint:check": "oxlint",
     "format": "oxfmt",
@@ -31,12 +31,14 @@
   "devDependencies": {
     "@maribor/oxfmt-config": "workspace:*",
     "@maribor/oxlint-config": "workspace:*",
+    "@maribor/typescript-config": "workspace:*",
     "knip": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
     "oxlint-tsgolint": "catalog:",
     "taze": "catalog:",
-    "turbo": "catalog:"
+    "turbo": "catalog:",
+    "typescript": "catalog:"
   },
   "engines": {
     "node": ">=24.14.0"

@@ -34,13 +34,15 @@ This project uses SQLite with Drizzle ORM.
 pnpm run db:local
 ```
 
-2. Copy `apps/server/.env.example` to `apps/server/.env` and update the connection details if needed.
+2. Copy `apps/server/.env.example` to `apps/server/.env` and update the connection details if needed. By default the database is the file `.data/local.db` at the repository root; `.data/` stays out of git and Docker.
 
 3. The server applies pending migrations from `packages/db/src/migrations` on startup, so a fresh database is created and seeded automatically. After changing the schema in `packages/db/src/schema`, generate a new migration:
 
 ```bash
 pnpm run db:generate
 ```
+
+`pnpm run db:push` writes schema changes straight to the database without a migration. Use it only for throwaway prototyping: the server applies migrations, so a pushed change is missing from every other database.
 
 Then, run the development server:
 
@@ -89,7 +91,7 @@ Copy `.env.example` to `.env` in `apps/server`. Env files are ignored by git; ke
 - **Web**: needs no configuration. The client calls the REST API under `/api` on its own origin, which the Vite dev server (`vite.config.ts`) and nginx in production (`apps/web/nginx.conf`) proxy to the server. There is no CORS, and the same web image works in every environment.
 - **Database tooling**: `drizzle.config.ts` reads `DATABASE_URL` from `apps/server/.env` when the variable is not already set.
 
-Shared database and auth packages receive configuration or initialized clients from the application.
+Shared packages (`@maribor/db`, `@maribor/api`) receive configuration or initialized clients from the application.
 
 ## Deployment
 
@@ -109,11 +111,12 @@ The server stores SQLite in the `data` volume (`/data/local.db`) and migrates it
 
 For more details, see the guide on [Deploying with Docker Compose](https://www.better-t-stack.dev/docs/guides/docker).
 
-## Linting and Formatting
+## Linting, Formatting and CI
 
 Oxlint and Oxfmt run once from the root. Each package's `oxlint.config.ts` / `oxfmt.config.ts` picks the preset from `tooling/` (`node` or `react`); anything without its own config falls back to the root `base`.
 
-- Fix and verify everything: `pnpm run check` (lint with fixes, format, then typecheck; stops at the first failure)
+- Fix and verify everything: `pnpm run check` (lint with fixes, format, typecheck, then knip; stops at the first failure)
+- CI (`.github/workflows/ci.yml`) runs the non-fixing variants on pushes to `main` and on pull requests: `typecheck`, `lint:check`, `format:check` and `knip`
 
 ## Project Structure
 
@@ -139,14 +142,14 @@ maribor/
 - `pnpm run dev:web`: Start only the web application
 - `pnpm run dev:server`: Start only the server
 - `pnpm run typecheck`: Check TypeScript types across all packages
-- `pnpm run db:push`: Push schema changes to database
-- `pnpm run db:generate`: Generate database client/types
-- `pnpm run db:migrate`: Run database migrations
+- `pnpm run db:push`: Push schema changes straight to the database, without a migration (prototyping only)
+- `pnpm run db:generate`: Generate a migration from schema changes
+- `pnpm run db:migrate`: Apply pending migrations (the server also does this on startup)
 - `pnpm run db:studio`: Open database studio UI
 - `pnpm run db:local`: Start the local SQLite database
 - `pnpm run lint` / `lint:check`: Run Oxlint with / without fixes
 - `pnpm run format` / `format:check`: Write / check Oxfmt formatting
-- `pnpm run check`: Run `lint`, `format` and `typecheck`, stopping at the first failure
+- `pnpm run check`: Run `lint`, `format`, `typecheck` and `knip`, stopping at the first failure
 - `pnpm run knip`: Find unused files, dependencies and exports
 - `pnpm run deps:check` / `deps:update`: Report / write dependency updates with Taze
 - `pnpm run clean`: Remove build output, caches and `node_modules`

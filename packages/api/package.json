@@ -1,5 +1,6 @@
 {
   "name": "@maribor/api",
+  "private": true,
   "type": "module",
   "exports": {
     "./client": "./src/client/index.ts",

@@ -5,7 +5,8 @@ WORKDIR /app
 
 # Reduce the monorepo to the server and its workspace dependencies
 FROM base AS pruner
-RUN npm install -g turbo@^2.10.12
+# Same major as the repo's turbo, so `prune` understands turbo.json; bump together with the catalog
+RUN npm install -g turbo@^2
 COPY . .
 RUN turbo prune server --docker
 

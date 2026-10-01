@@ -1,11 +1,11 @@
 {
   "name": "server",
+  "private": true,
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
     "build": "tsdown",
     "typecheck": "tsc --noEmit",
-    "compile": "bun build --compile --no-compile-autoload-dotenv --minify --sourcemap --bytecode ./src/index.ts --outfile server",
     "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
     "start": "node --env-file-if-exists=.env dist/index.mjs",
     "clean": "git clean -xdf .cache .turbo dist node_modules"

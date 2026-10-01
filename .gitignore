@@ -1,58 +1,31 @@
 # Dependencies
 node_modules
-.pnp
-.pnp.js
 
-# Build outputs
+# Build outputs and caches
 dist
-build
+.cache
+.turbo
 *.tsbuildinfo
 
-# Generated files
-apps/web/src/routeTree.gen.ts
+# Generated (TanStack's routeTree.gen.ts is committed: it is part of the app, not a build artifact)
+.tanstack
+
+# Local data (.data/ ignores its own contents) and environment
 local.db
 local.db-*
+.env*
+!.env.example
+*.pem
 
-# Environment variables
-.env
-.env*.local
-
-# IDEs and editors
+# Editors and OS
 .vscode/*
 !.vscode/settings.json
+!.vscode/extensions.json
 !.vscode/tasks.json
 !.vscode/launch.json
-!.vscode/extensions.json
 .idea
 *.swp
-*.swo
-*~
 .DS_Store
 
 # Logs
-logs
-.evlog/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
-
-# Turbo
-.turbo
-.nx
-
-# Better-T-Stack
-.alchemy
-.vercel
-
-# Testing
-coverage
-.nyc_output
-
-# Misc
-*.tgz
-.cache
-tmp
-temp

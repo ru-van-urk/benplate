@@ -2,7 +2,7 @@ import { createTanstackQueryAPIClient } from "@maribor/api/client";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export function createQueryClient() {
+function createQueryClient() {
   return new QueryClient({
     defaultOptions: { queries: { retry: false } },
     queryCache: new QueryCache({

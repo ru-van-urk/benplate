@@ -7,14 +7,13 @@
     "dev": "vite dev",
     "build": "vite build",
     "serve": "vite preview",
-    "start": "vite",
-    "typecheck": "vite build && tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "@maribor/api": "workspace:*",
     "@maribor/ui": "workspace:*",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/vite": "catalog:",
     "@tanstack/react-query": "^5.102.8",
     "@tanstack/react-router": "^1.170.32",
     "lucide-react": "catalog:",
@@ -34,7 +33,6 @@
     "@vitejs/plugin-react": "^6.1.1",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
-    "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "^8.2.2"
   }
