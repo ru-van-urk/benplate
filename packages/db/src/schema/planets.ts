@@ -1,8 +1,8 @@
-import { pgTable } from "drizzle-orm/pg-core";
+import { snakeCase } from "drizzle-orm/pg-core";
 
 export const planetTypes = ["terrestrial", "gas giant", "ice giant"] as const;
 
-export const planets = pgTable("planets", (t) => ({
+export const planets = snakeCase.table("planets", (t) => ({
   id: t.integer().primaryKey().generatedAlwaysAsIdentity(),
 
   name: t.text().notNull().unique(),
