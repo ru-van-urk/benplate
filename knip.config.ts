@@ -1,7 +1,6 @@
 import type { KnipConfig } from "knip";
 
 export default {
-  ignoreBinaries: ["turso"],
   workspaces: {
     ".": {
       entry: ["taze.config.ts"],

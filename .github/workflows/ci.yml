@@ -29,6 +29,18 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Fails when the schema changed without a committed migration. generate only diffs against the
+      # snapshots in packages/db/src/migrations and never connects, but drizzle.config.ts requires a URL
+      - name: Check migrations match the schema
+        env:
+          DATABASE_URL: postgres://unused
+        run: |
+          pnpm --filter @maribor/db exec drizzle-kit generate
+          if [ -n "$(git status --porcelain packages/db/src/migrations)" ]; then
+            echo "::error::The schema changed without a migration: run pnpm run db:generate and commit the result"
+            exit 1
+          fi
+
       - run: pnpm typecheck
 
       # Non-fixing variants, so CI fails instead of rewriting files

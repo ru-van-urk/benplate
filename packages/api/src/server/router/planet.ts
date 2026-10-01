@@ -17,8 +17,15 @@ const findPlanet = os.planet.find.handler(async ({ context, input, errors }) => 
   return planet;
 });
 
-const createPlanet = os.planet.create.handler(({ context, input }) => {
-  return context.db.insert(planets).values(input).returning().get();
+const createPlanet = os.planet.create.handler(async ({ context, input }) => {
+  const [planet] = await context.db.insert(planets).values(input).returning();
+
+  // Unreachable: a single-row insert either throws or returns that row
+  if (!planet) {
+    throw new Error("Insert returned no planet");
+  }
+
+  return planet;
 });
 
 export const planetRouter = os.planet.router({

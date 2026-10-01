@@ -25,14 +25,14 @@
       "cache": false,
       "interactive": true
     },
-    "db:seed": {
+    "db:generate": {
+      "cache": false,
+      "interactive": true
+    },
+    "db:migrate": {
       "cache": false
     },
     "db:studio": {
-      "cache": false,
-      "persistent": true
-    },
-    "db:local": {
       "cache": false,
       "persistent": true
     },

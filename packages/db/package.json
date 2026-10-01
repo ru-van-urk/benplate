@@ -8,9 +8,9 @@
   },
   "scripts": {
     "typecheck": "tsc -b",
-    "db:local": "turso dev --db-file ../../.data/local.db",
     "db:push": "drizzle-kit push",
-    "db:seed": "tsx src/seed.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
@@ -26,7 +26,6 @@
     "@types/pg": "^8.23.1",
     "drizzle-kit": "catalog:",
     "oxlint": "catalog:",
-    "tsx": "^4.23.13",
     "typescript": "catalog:"
   }
 }

@@ -8,16 +8,13 @@ const tags = ["Planets"];
 
 const planetSchema = createSelectSchema(planets);
 
-const newPlanetSchema = v.omit(
-  createInsertSchema(planets, {
-    name: (schema) => v.pipe(schema, v.nonEmpty()),
-    moons: (schema) => v.pipe(schema, v.minValue(0)),
-    diameterKm: (schema) => v.pipe(schema, v.minValue(1)),
-    distanceFromSunAu: (schema) => v.pipe(schema, v.minValue(0)),
-    orbitalPeriodDays: (schema) => v.pipe(schema, v.minValue(0)),
-  }),
-  ["id"],
-);
+const newPlanetSchema = createInsertSchema(planets, {
+  name: (schema) => v.pipe(schema, v.nonEmpty()),
+  moons: (schema) => v.pipe(schema, v.minValue(0)),
+  diameterKm: (schema) => v.pipe(schema, v.minValue(1)),
+  distanceFromSunAu: (schema) => v.pipe(schema, v.minValue(0)),
+  orbitalPeriodDays: (schema) => v.pipe(schema, v.minValue(0)),
+});
 
 const listPlanets = oc
   .meta(
