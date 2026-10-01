@@ -1,13 +1,10 @@
 import { serve } from "@hono/node-server";
 import { createApi } from "@maribor/api/server";
-import { migrateDb } from "@maribor/db/migrate";
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 
 import { ENV } from "./env";
 import { db } from "./services";
-
-await migrateDb(db);
 
 const api = createApi({ db, apiPath: "/api" });
 

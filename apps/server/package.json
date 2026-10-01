@@ -15,7 +15,6 @@
     "@maribor/api": "workspace:*",
     "@maribor/db": "workspace:*",
     "hono": "^4.13.7",
-    "libsql": "catalog:",
     "valibot": "catalog:"
   },
   "devDependencies": {

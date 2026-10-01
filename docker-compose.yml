@@ -1,11 +1,55 @@
 services:
+  db:
+    image: postgres:18
+
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD, see .env.example}
+      POSTGRES_DB: maribor
+
+    healthcheck:
+      test:
+        - CMD
+        - pg_isready
+        - -U
+        - postgres
+        - -d
+        - maribor
+      timeout: 5s
+      interval: 10s
+      retries: 5
+      start_period: 10s
+
+    restart: unless-stopped
+
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  # One-off: syncs the schema with `drizzle-kit push`, then exits; the server waits for it to succeed
+  drizzle:
+    build:
+      context: .
+      dockerfile: packages/db/Dockerfile
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL, see .env.example}
+
+    restart: "no"
+
   server:
     build:
       context: .
       dockerfile: apps/server/Dockerfile
 
+    depends_on:
+      drizzle:
+        condition: service_completed_successfully
+
     environment:
-      DATABASE_URL: ${DATABASE_URL:-file:/data/local.db}
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL, see .env.example}
 
     healthcheck:
       test:
@@ -20,9 +64,6 @@ services:
 
     init: true
     restart: unless-stopped
-
-    volumes:
-      - data:/data
 
   web:
     build:
@@ -52,4 +93,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  data:
+  postgres_data:

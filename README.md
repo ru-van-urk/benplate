@@ -12,7 +12,7 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **oRPC** - End-to-end type-safe APIs with OpenAPI integration
 - **Node.js** - Runtime environment
 - **Drizzle** - TypeScript-first ORM
-- **SQLite/Turso** - Database engine
+- **Postgresql** - Database engine
 - **Oxlint** - Oxlint + Oxfmt (linting & formatting)
 - **Turborepo** - Optimized monorepo build system
 
@@ -26,9 +26,9 @@ pnpm install
 
 ## Database Setup
 
-This project uses SQLite with Drizzle ORM.
+This project uses Postgresql with Drizzle ORM.
 
-1. Start the local SQLite database (optional):
+1. Start the local Postgresql database (optional):
 
 ```bash
 pnpm run db:local
@@ -36,13 +36,12 @@ pnpm run db:local
 
 2. Copy `apps/server/.env.example` to `apps/server/.env` and update the connection details if needed. By default the database is the file `.data/local.db` at the repository root; `.data/` stays out of git and Docker.
 
-3. The server applies pending migrations from `packages/db/src/migrations` on startup, so a fresh database is created and seeded automatically. After changing the schema in `packages/db/src/schema`, generate a new migration:
+3. Create the tables from `packages/db/src/schema` and fill them with example data. Run `db:push` again after every schema change; the seed skips rows that already exist, so it is safe to rerun:
 
 ```bash
-pnpm run db:generate
+pnpm run db:push
+pnpm run db:seed
 ```
-
-`pnpm run db:push` writes schema changes straight to the database without a migration. Use it only for throwaway prototyping: the server applies migrations, so a pushed change is missing from every other database.
 
 Then, run the development server:
 
@@ -97,17 +96,18 @@ Shared packages (`@maribor/db`, `@maribor/api`) receive configuration or initial
 
 ### Docker Compose
 
-- Target: web + server
-- Config: `docker-compose.yml` (app Dockerfiles live in `apps/*/Dockerfile`)
+- Target: web + server, with a Postgresql `db` and a one-off `drizzle` service that syncs the schema
+- Config: `docker-compose.yml` (Dockerfiles live in `apps/*/Dockerfile` and `packages/db/Dockerfile`)
 - Local: `docker-compose.override.yml` publishes `web` on http://localhost:3030 (override with `WEB_PORT`); Dokploy ignores it
+- Env: copy `.env.example` to `.env` (Compose reads it from the repository root); on Dokploy, set the same variables in the Environment tab
 - Build images: pnpm run docker:build
 - Start: pnpm run docker:up
 - Logs: pnpm run docker:logs
 - Stop: pnpm run docker:down
 
-Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST, `/api/docs` and `/api/health`) to `server:3000` over the internal Compose network. On Dokploy, add the domain to the `web` service in the Domains tab. For a public API subdomain, add `api.<domain>` to the `server` service (container port `3000`, path `/`, internal path `/api`) so `api.<domain>/planets` reaches `/api/planets`. `DATABASE_URL` defaults to the volume and can be overridden from the shell or deployment platform.
+Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST, `/api/docs` and `/api/health`) to `server:3000` over the internal Compose network. On Dokploy, add the domain to the `web` service in the Domains tab. For a public API subdomain, add `api.<domain>` to the `server` service (container port `3000`, path `/`, internal path `/api`) so `api.<domain>/planets` reaches `/api/planets`. `POSTGRES_PASSWORD` and `DATABASE_URL` are required: Compose refuses to start without them. `DATABASE_URL` must contain the same password and point at the `db` service, or at an external Postgresql instead.
 
-The server stores SQLite in the `data` volume (`/data/local.db`) and migrates it on startup.
+Postgresql stores its data in the `postgres_data` volume. On every start, the `drizzle` service runs `drizzle-kit push` and exits, and the server starts only after it succeeds. A change that would lose data needs confirmation, so the push fails and the server stays down: apply that change by hand with `pnpm run db:push` against the deployed `DATABASE_URL`. The seed does not run in Docker; run `pnpm run db:seed` against the same URL if wanted.
 
 For more details, see the guide on [Deploying with Docker Compose](https://www.better-t-stack.dev/docs/guides/docker).
 
@@ -142,11 +142,10 @@ maribor/
 - `pnpm run dev:web`: Start only the web application
 - `pnpm run dev:server`: Start only the server
 - `pnpm run typecheck`: Check TypeScript types across all packages
-- `pnpm run db:push`: Push schema changes straight to the database, without a migration (prototyping only)
-- `pnpm run db:generate`: Generate a migration from schema changes
-- `pnpm run db:migrate`: Apply pending migrations (the server also does this on startup)
+- `pnpm run db:push`: Push the schema straight to the database
+- `pnpm run db:seed`: Insert the example planets (skips existing rows)
 - `pnpm run db:studio`: Open database studio UI
-- `pnpm run db:local`: Start the local SQLite database
+- `pnpm run db:local`: Start the local Postgresql database
 - `pnpm run lint` / `lint:check`: Run Oxlint with / without fixes
 - `pnpm run format` / `format:check`: Write / check Oxfmt formatting
 - `pnpm run check`: Run `lint`, `format`, `typecheck` and `knip`, stopping at the first failure

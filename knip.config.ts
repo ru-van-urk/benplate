@@ -6,11 +6,6 @@ export default {
     ".": {
       entry: ["taze.config.ts"],
     },
-    "apps/server": {
-      // Never imported by the server's source, but the bundled @libsql/client imports this native module
-      // at runtime, and tsdown leaves it external because it is listed here
-      ignoreDependencies: ["libsql"],
-    },
     "apps/web": {
       entry: ["src/routes/**/*.tsx"],
       vite: {
