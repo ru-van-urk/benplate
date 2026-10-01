@@ -12,13 +12,14 @@ const api = createApi({ db, apiPath: "/api" });
 
 const app = new Hono();
 
-app.use(logger());
-
 // Liveness for Docker and uptime checks: answered by Hono before the API, so it stays independent of
-// oRPC middleware; under /api so the nginx and Vite proxies forward it
+// oRPC middleware; under /api so the nginx and Vite proxies forward it. Registered before the
+// logger, which therefore never runs for it: Docker polls every 10s
 app.get("/api/health", (c) => {
   return c.text("OK");
 });
+
+app.use(logger());
 
 app.use("/*", async (c, next) => {
   const result = await api.handler(c.req.raw);
