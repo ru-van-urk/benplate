@@ -1,11 +1,8 @@
 import { planets } from "@maribor/db/schema/index";
+import { oc } from "@orpc/contract";
 import { openapi } from "@orpc/openapi";
-import { ORPCError } from "@orpc/server";
-import { eq } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-orm/valibot";
 import * as v from "valibot";
-
-import { publicProcedure } from "../index";
 
 const tags = ["Planets"];
 
@@ -22,7 +19,7 @@ const newPlanetSchema = v.omit(
   ["id"],
 );
 
-export const listPlanets = publicProcedure
+const listPlanets = oc
   .meta(
     openapi({
       method: "GET",
@@ -31,26 +28,15 @@ export const listPlanets = publicProcedure
       summary: "List planets, ordered from the Sun",
     }),
   )
-  .output(v.array(planetSchema))
-  .handler(({ context }) => {
-    return context.db.select().from(planets).orderBy(planets.distanceFromSunAu);
-  });
+  .output(v.array(planetSchema));
 
-export const findPlanet = publicProcedure
+const findPlanet = oc
   .meta(openapi({ method: "GET", path: "/planets/{id}", tags, summary: "Find a planet by id" }))
+  .errors({ NOT_FOUND: {} })
   .input(v.object({ id: v.pipe(v.number(), v.integer()) }))
-  .output(planetSchema)
-  .handler(async ({ context, input }) => {
-    const [planet] = await context.db.select().from(planets).where(eq(planets.id, input.id));
+  .output(planetSchema);
 
-    if (!planet) {
-      throw new ORPCError("NOT_FOUND", { message: `Planet ${input.id} not found` });
-    }
-
-    return planet;
-  });
-
-export const createPlanet = publicProcedure
+const createPlanet = oc
   .meta(
     openapi({
       method: "POST",
@@ -61,12 +47,9 @@ export const createPlanet = publicProcedure
     }),
   )
   .input(newPlanetSchema)
-  .output(planetSchema)
-  .handler(({ context, input }) => {
-    return context.db.insert(planets).values(input).returning().get();
-  });
+  .output(planetSchema);
 
-export const planetRouter = {
+export const planetContract = {
   list: listPlanets,
   find: findPlanet,
   create: createPlanet,

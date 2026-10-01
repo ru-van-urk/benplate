@@ -14,9 +14,6 @@
   "dependencies": {
     "@maribor/api": "workspace:*",
     "@maribor/ui": "workspace:*",
-    "@orpc/client": "catalog:",
-    "@orpc/server": "catalog:",
-    "@orpc/tanstack-query": "catalog:",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-query": "^5.102.8",
     "@tanstack/react-router": "^1.170.32",

@@ -20,6 +20,7 @@ catalog:
   react-dom: ^19.2.8
   sonner: ^2.0.8
   "@orpc/client": 2.0.0-beta.40
+  "@orpc/contract": 2.0.0-beta.40
   "@orpc/tanstack-query": 2.0.0-beta.40
   "@types/react": ^19.2.18
   "@types/react-dom": ^19.2.7

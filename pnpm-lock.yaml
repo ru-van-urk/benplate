@@ -167,6 +167,9 @@ catalogs:
     '@orpc/client':
       specifier: 2.0.0-beta.40
       version: 2.0.0-beta.40
+    '@orpc/contract':
+      specifier: 2.0.0-beta.40
+      version: 2.0.0-beta.40
     '@orpc/json-schema':
       specifier: 2.0.0-beta.40
       version: 2.0.0-beta.40
@@ -277,18 +280,6 @@ importers:
       '@maribor/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@orpc/json-schema':
-        specifier: 'catalog:'
-        version: 2.0.0-beta.40
-      '@orpc/openapi':
-        specifier: 'catalog:'
-        version: 2.0.0-beta.40
-      '@orpc/server':
-        specifier: 'catalog:'
-        version: 2.0.0-beta.40
-      '@orpc/valibot':
-        specifier: 'catalog:'
-        version: 2.0.0-beta.40(valibot@1.5.0(typescript@6.0.3))
       hono:
         specifier: ^4.13.7
         version: 4.13.11
@@ -329,15 +320,6 @@ importers:
       '@maribor/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      '@orpc/client':
-        specifier: 'catalog:'
-        version: 2.0.0-beta.40
-      '@orpc/server':
-        specifier: 'catalog:'
-        version: 2.0.0-beta.40
-      '@orpc/tanstack-query':
-        specifier: 'catalog:'
-        version: 2.0.0-beta.40(@tanstack/query-core@5.104.0)
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
@@ -411,12 +393,24 @@ importers:
       '@orpc/client':
         specifier: 'catalog:'
         version: 2.0.0-beta.40
+      '@orpc/contract':
+        specifier: 'catalog:'
+        version: 2.0.0-beta.40
+      '@orpc/json-schema':
+        specifier: 'catalog:'
+        version: 2.0.0-beta.40
       '@orpc/openapi':
         specifier: 'catalog:'
         version: 2.0.0-beta.40
       '@orpc/server':
         specifier: 'catalog:'
         version: 2.0.0-beta.40
+      '@orpc/tanstack-query':
+        specifier: 'catalog:'
+        version: 2.0.0-beta.40(@tanstack/query-core@5.104.0)
+      '@orpc/valibot':
+        specifier: 'catalog:'
+        version: 2.0.0-beta.40(valibot@1.5.0(typescript@6.0.3))
       drizzle-orm:
         specifier: 'catalog:'
         version: 1.0.0-rc.4(@libsql/client@0.18.0)(valibot@1.5.0(typescript@6.0.3))(zod@4.6.5)
@@ -430,6 +424,9 @@ importers:
       '@maribor/typescript-config':
         specifier: workspace:*
         version: link:../../tooling/typescript
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.3
       oxlint:
         specifier: 'catalog:'
         version: 1.86.0(oxlint-tsgolint@7.0.2003)
