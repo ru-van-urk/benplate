@@ -24,11 +24,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
 
-  # One-off: syncs the schema with `drizzle-kit push`, then exits; the server waits for it to succeed
-  drizzle:
+  # One-off: applies pending migrations from the server image, then exits; the server waits for it to succeed
+  migrate:
     build:
       context: .
-      dockerfile: packages/db/Dockerfile
+      dockerfile: apps/server/Dockerfile
+
+    command:
+      - node
+      - dist/migrate.mjs
 
     depends_on:
       db:
@@ -45,7 +49,7 @@ services:
       dockerfile: apps/server/Dockerfile
 
     depends_on:
-      drizzle:
+      migrate:
         condition: service_completed_successfully
 
     environment:

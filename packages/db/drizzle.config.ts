@@ -11,6 +11,7 @@ if (existsSync(serverEnvFile)) {
 
 export default defineConfig({
   schema: "./src/schema/index.ts",
+  out: "./src/migrations",
   dialect: "postgresql",
   dbCredentials: {
     url: v.parse(v.pipe(v.string(), v.nonEmpty()), process.env.DATABASE_URL),

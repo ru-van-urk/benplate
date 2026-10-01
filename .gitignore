@@ -10,9 +10,7 @@ dist
 # Generated (TanStack's routeTree.gen.ts is committed: it is part of the app, not a build artifact)
 .tanstack
 
-# Local data (.data/ ignores its own contents) and environment
-local.db
-local.db-*
+# Environment
 .env*
 !.env.example
 *.pem
