@@ -8,7 +8,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "start": "vite",
-    "typecheck": "vite build && tsc -b",
+    "typecheck": "vite build && tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {

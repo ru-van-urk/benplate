@@ -127,7 +127,7 @@ maribor/
 │   ├── api/         # oRPC: contracts, server implementation, typed client
 │   └── db/          # Database schema & queries
 ├── tooling/
-│   ├── typescript/  # Shared tsconfig presets (base, internal-package, vite)
+│   ├── typescript/  # Shared tsconfig presets (base, vite)
 │   ├── oxlint/      # Oxlint presets (base, node, react)
 │   └── oxfmt/       # Oxfmt presets (base, react)
 ```

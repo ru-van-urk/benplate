@@ -8,8 +8,13 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", ".cache/tsbuildinfo*.json"]
     },
+    // No package defines `transit`: it only chains through internal dependencies, so a change in
+    // a source-only package (@maribor/api, @maribor/db) invalidates its dependents' cached typecheck
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
     "typecheck": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["transit"],
       "outputs": [".cache/tsbuildinfo*.json"]
     },
     "dev": {
