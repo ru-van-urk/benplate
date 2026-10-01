@@ -15,6 +15,8 @@ export const planets = pgTable("planets", (t) => ({
 
   distanceFromSunAu: t.real().notNull(),
   orbitalPeriodDays: t.real().notNull(),
+
+  isAwesome: t.boolean().default(false),
 }));
 
 export type Planet = typeof planets.$inferSelect;
