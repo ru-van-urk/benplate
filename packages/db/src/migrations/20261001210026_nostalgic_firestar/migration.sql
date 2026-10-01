@@ -1,0 +1,1 @@
+ALTER TABLE "planets" ADD COLUMN "isAwesome" boolean DEFAULT false;
