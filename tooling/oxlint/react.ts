@@ -9,7 +9,4 @@ export default defineConfig({
     "react-hooks/rules-of-hooks": "error",
     "react/only-export-components": ["warn", { allowConstantExport: true }],
   },
-  env: {
-    browser: true,
-  },
 });

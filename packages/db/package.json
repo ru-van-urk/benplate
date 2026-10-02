@@ -4,10 +4,11 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./*": "./src/*.ts"
+    "./schema": "./src/schema/index.ts",
+    "./migrate": "./src/migrate.ts"
   },
   "scripts": {
-    "typecheck": "tsc -b",
+    "typecheck": "tsc --noEmit",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -16,6 +17,7 @@
   },
   "dependencies": {
     "drizzle-orm": "catalog:",
+    "kysely": "^0.29.6",
     "pg": "^8.23.1",
     "valibot": "catalog:"
   },

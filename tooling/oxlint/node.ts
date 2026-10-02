@@ -5,7 +5,8 @@ import base from "@maribor/oxlint-config/base";
 export default defineConfig({
   extends: [base],
   plugins: ["node"],
-  env: {
-    node: true,
+  rules: {
+    // Read env through one validated module per package instead (apps/server/src/env.ts)
+    "node/no-process-env": "error",
   },
 });

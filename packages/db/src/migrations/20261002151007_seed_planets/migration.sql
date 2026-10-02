@@ -1,5 +1,5 @@
 -- Earth and Mars come first so they get ids 1 and 2 from the oRPC getting started example
-INSERT INTO "planets" ("name", "description", "type", "moons", "diameterKm", "distanceFromSunAu", "orbitalPeriodDays") VALUES
+INSERT INTO "planets" ("name", "description", "type", "moons", "diameter_km", "distance_from_sun_au", "orbital_period_days") VALUES
 	('Earth', 'The only known planet with liquid surface water and life.', 'terrestrial', 1, 12742, 1.0, 365.25),
 	('Mars', 'A cold desert world with the tallest volcano in the solar system, Olympus Mons.', 'terrestrial', 2, 6779, 1.52, 687),
 	('Mercury', 'The smallest planet and closest to the Sun, with almost no atmosphere.', 'terrestrial', 0, 4879, 0.39, 88),

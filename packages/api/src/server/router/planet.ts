@@ -1,14 +1,17 @@
-import { planets } from "@maribor/db/schema/index";
-import { eq } from "drizzle-orm";
+import { isUniqueViolation } from "@maribor/db";
 
 import { os } from "../orpc";
 
 const listPlanets = os.planet.list.handler(({ context }) => {
-  return context.db.select().from(planets).orderBy(planets.distanceFromSunAu);
+  return context.db.selectFrom("planets").selectAll().orderBy("distanceFromSunAu").execute();
 });
 
 const findPlanet = os.planet.find.handler(async ({ context, input, errors }) => {
-  const [planet] = await context.db.select().from(planets).where(eq(planets.id, input.id));
+  const planet = await context.db
+    .selectFrom("planets")
+    .selectAll()
+    .where("id", "=", input.id)
+    .executeTakeFirst();
 
   if (!planet) {
     throw errors.NOT_FOUND({ message: `Planet ${input.id} not found` });
@@ -17,15 +20,20 @@ const findPlanet = os.planet.find.handler(async ({ context, input, errors }) => 
   return planet;
 });
 
-const createPlanet = os.planet.create.handler(async ({ context, input }) => {
-  const [planet] = await context.db.insert(planets).values(input).returning();
+const createPlanet = os.planet.create.handler(async ({ context, input, errors }) => {
+  try {
+    return await context.db
+      .insertInto("planets")
+      .values(input)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      throw errors.CONFLICT({ message: `Planet ${input.name} already exists`, cause: error });
+    }
 
-  // Unreachable: a single-row insert either throws or returns that row
-  if (!planet) {
-    throw new Error("Insert returned no planet");
+    throw error;
   }
-
-  return planet;
 });
 
 export const planetRouter = os.planet.router({

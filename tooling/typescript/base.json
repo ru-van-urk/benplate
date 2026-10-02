@@ -6,7 +6,6 @@
     "skipLibCheck": true,
     "target": "ESNext",
     "lib": ["ESNext"],
-    "allowJs": true,
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
@@ -14,7 +13,6 @@
 
     /** Keep TSC performant in monorepos */
     "incremental": true,
-    "disableSourceOfProjectReferenceRedirect": true,
     "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo.json",
 
     /** Strictness */
@@ -23,7 +21,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "checkJs": true,
+    "noImplicitOverride": true,
+    "erasableSyntaxOnly": true,
 
     /** Transpile using Bundler (not tsc) */
     "module": "ESNext",

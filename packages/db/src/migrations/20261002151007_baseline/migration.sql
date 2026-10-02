@@ -4,7 +4,7 @@ CREATE TABLE "planets" (
 	"description" text,
 	"type" text NOT NULL,
 	"moons" integer DEFAULT 0 NOT NULL,
-	"diameterKm" integer NOT NULL,
-	"distanceFromSunAu" real NOT NULL,
-	"orbitalPeriodDays" real NOT NULL
+	"diameter_km" integer NOT NULL,
+	"distance_from_sun_au" real NOT NULL,
+	"orbital_period_days" real NOT NULL
 );

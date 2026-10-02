@@ -1,8 +1,0 @@
-{
-  "extends": "@maribor/typescript-config/base.json",
-  "include": ["drizzle.config.ts"],
-  "compilerOptions": {
-    "types": ["node"],
-    "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo.drizzlekit.json"
-  }
-}

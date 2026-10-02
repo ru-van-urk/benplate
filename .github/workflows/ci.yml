@@ -15,6 +15,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
 
@@ -23,8 +24,8 @@ jobs:
 
       - uses: actions/setup-node@v7
         with:
-          # Version from `engines.node`
-          node-version-file: package.json
+          # Same major as the Docker images (node:24-slim)
+          node-version-file: .node-version
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
@@ -37,11 +38,14 @@ jobs:
         run: |
           pnpm --filter @maribor/db exec drizzle-kit generate
           if [ -n "$(git status --porcelain packages/db/src/migrations)" ]; then
-            echo "::error::The schema changed without a migration: run pnpm run db:generate and commit the result"
+            echo "::error::The schema changed without a migration: run pnpm run db:generate --name <change> and commit the result"
             exit 1
           fi
 
       - run: pnpm typecheck
+
+      # Vite build, and the tsdown bundle with its migrations copy
+      - run: pnpm build
 
       # Non-fixing variants, so CI fails instead of rewriting files
       - run: pnpm lint:check

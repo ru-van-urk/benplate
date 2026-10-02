@@ -1,5 +1,3 @@
-" ";
-
 import { Button } from "@maribor/ui/components/button";
 import { Input } from "@maribor/ui/components/input";
 import { Textarea } from "@maribor/ui/components/textarea";

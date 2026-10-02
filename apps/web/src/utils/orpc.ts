@@ -3,21 +3,23 @@ import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 function createQueryClient() {
-  return new QueryClient({
+  const client: QueryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
     queryCache: new QueryCache({
       onError: (error, query) => {
         toast.error(`Error: ${error.message}`, {
           action: {
-            label: "retry",
+            label: "Retry",
             onClick: () => {
-              query.invalidate();
+              void client.refetchQueries({ queryKey: query.queryKey });
             },
           },
         });
       },
     }),
   });
+
+  return client;
 }
 
 export const queryClient = createQueryClient();

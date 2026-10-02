@@ -25,7 +25,6 @@
   "devDependencies": {
     "@maribor/oxlint-config": "workspace:*",
     "@maribor/typescript-config": "workspace:*",
-    "@types/node": "catalog:",
     "oxlint": "catalog:",
     "typescript": "catalog:"
   }

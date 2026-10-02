@@ -1,7 +1,0 @@
-{
-  "extends": "@maribor/typescript-config/base.json",
-  "include": ["src"],
-  "compilerOptions": {
-    "types": ["node"]
-  }
-}

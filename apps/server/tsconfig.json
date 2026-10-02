@@ -1,9 +1,6 @@
 {
   "extends": "@maribor/typescript-config/base.json",
   "compilerOptions": {
-    "types": ["node"],
-    "paths": {
-      "~/*": ["./src/*"]
-    }
+    "types": ["node"]
   }
 }

@@ -1,4 +1,4 @@
-import { planets } from "@maribor/db/schema/index";
+import { planets } from "@maribor/db/schema";
 import { oc } from "@orpc/contract";
 import { openapi } from "@orpc/openapi";
 import { createInsertSchema, createSelectSchema } from "drizzle-orm/valibot";
@@ -43,6 +43,7 @@ const createPlanet = oc
       summary: "Create a planet",
     }),
   )
+  .errors({ CONFLICT: {} })
   .input(newPlanetSchema)
   .output(planetSchema);
 
