@@ -5,9 +5,17 @@ import { Pool } from "pg";
 import type { DatabaseConfig } from "./config";
 import type * as schema from "./schema";
 
+export { isUniqueViolation } from "./errors";
+
 // Drizzle stays the source of truth for the schema and migrations, Kysely is the query builder.
 // v1 dropped `drizzle-orm/kysely`, so this is its `Kyselify` ported to TS keys: `CamelCasePlugin` maps them onto the
-// `snakeCase.table` columns. Keep column names free of digits and acronym runs so both libraries convert them alike
+// `snakeCase.table` columns. Keep column names free of digits and acronym runs so both libraries convert them alike.
+//
+// The types come from Drizzle, but Kysely returns values parsed by pg's defaults and Drizzle's own parsers and
+// `$defaultFn` hooks never run. Only use column modes where both agree:
+// - `date({ mode: "date" })`, `bigint({ mode: "string" })`, default-mode `numeric` and
+//   `timestamp({ withTimezone: true })`; `date()` returns a `Date` and number-mode `bigint`/`numeric` a string
+// - SQL defaults only (`.default()`, `.defaultNow()`, `.defaultRandom()`), never `$defaultFn` or `$onUpdate`
 type Kyselify<T> = T extends Table
   ? {
       [K in keyof InferSelectModel<T>]: ColumnType<
@@ -18,11 +26,13 @@ type Kyselify<T> = T extends Table
     }
   : never;
 
-// Keyed by the schema export name, which `CamelCasePlugin` turns into the table name (`planets` -> "planets")
+// Keyed by the SQL table name Drizzle carries in its type, so the export name does not matter
 type DB = {
-  [K in keyof typeof schema as (typeof schema)[K] extends Table ? K : never]: Kyselify<
-    (typeof schema)[K]
-  >;
+  [
+    K in keyof typeof schema as (typeof schema)[K] extends Table
+      ? (typeof schema)[K]["_"]["name"]
+      : never
+  ]: Kyselify<(typeof schema)[K]>;
 };
 
 export function createDb(env: DatabaseConfig) {
@@ -36,7 +46,7 @@ export function createDb(env: DatabaseConfig) {
 
   return new Kysely<DB>({
     dialect: new PostgresDialect({ pool }),
-    plugins: [new CamelCasePlugin()],
+    plugins: [new CamelCasePlugin({ maintainNestedObjectKeys: true })],
   });
 }
 

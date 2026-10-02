@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "8ec38a8a-e59a-41ea-90cb-9e2158b86334",
+  "id": "cc7f634e-f741-48d3-8569-a32807e6564f",
   "prevIds": [
-    "2d1e2d6a-d0fe-46d4-9ff8-20c4a6bace5c"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
     {
@@ -126,19 +126,6 @@
       "table": "planets"
     },
     {
-      "type": "boolean",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": "false",
-      "generated": null,
-      "identity": null,
-      "name": "is_awesome",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "planets"
-    },
-    {
       "columns": [
         "id"
       ],
@@ -160,10 +147,5 @@
       "entityType": "uniques"
     }
   ],
-  "renames": [
-    "public.planets.diameterKm->public.planets.diameter_km",
-    "public.planets.distanceFromSunAu->public.planets.distance_from_sun_au",
-    "public.planets.orbitalPeriodDays->public.planets.orbital_period_days",
-    "public.planets.isAwesome->public.planets.is_awesome"
-  ]
+  "renames": []
 }

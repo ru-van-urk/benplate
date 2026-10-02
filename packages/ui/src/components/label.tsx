@@ -1,5 +1,3 @@
-" ";
-
 import { cn } from "@maribor/ui/lib/utils";
 import * as React from "react";
 

@@ -1,12 +1,13 @@
 import { serve } from "@hono/node-server";
 import { createApi } from "@maribor/api/server";
 import { Hono } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import { logger } from "hono/logger";
 
 import { ENV } from "./env";
 import { db } from "./services";
 
-const api = createApi({ db, apiPath: "/api" });
+const api = createApi({ db, apiPath: "/api", docs: ENV.NODE_ENV !== "production" });
 
 const app = new Hono();
 
@@ -19,6 +20,9 @@ app.get("/api/health", (c) => {
 
 app.use(logger());
 
+// nginx caps bodies at 1 MB too, but a direct `api.<domain>` route skips nginx
+app.use("/api/*", bodyLimit({ maxSize: 1024 * 1024 }));
+
 app.use("/*", async (c, next) => {
   const result = await api.handler(c.req.raw);
 
@@ -29,12 +33,16 @@ app.use("/*", async (c, next) => {
   await next();
 });
 
-serve(
-  {
-    fetch: app.fetch,
-    port: ENV.PORT,
-  },
-  (info) => {
-    console.log(`Server is running on http://localhost:${info.port}`);
-  },
-);
+const server = serve({ fetch: app.fetch, port: ENV.PORT }, (info) => {
+  console.log(`Server is running on http://localhost:${info.port}`);
+});
+
+// Docker sends SIGTERM on redeploy: stop accepting connections, let in-flight requests finish, then close the pool
+const shutdown = () => {
+  server.close(() => {
+    void db.destroy();
+  });
+};
+
+process.once("SIGTERM", shutdown);
+process.once("SIGINT", shutdown);

@@ -12,12 +12,12 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.1.1",
-    "@maribor/api": "workspace:*",
-    "@maribor/db": "workspace:*",
     "hono": "^4.13.7",
     "valibot": "catalog:"
   },
   "devDependencies": {
+    "@maribor/api": "workspace:*",
+    "@maribor/db": "workspace:*",
     "@maribor/oxlint-config": "workspace:*",
     "@maribor/typescript-config": "workspace:*",
     "@types/node": "catalog:",

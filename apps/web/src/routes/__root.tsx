@@ -4,7 +4,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 
-import { type orpc } from "~/utils/orpc";
+import type { orpc } from "~/utils/orpc";
 
 import "../index.css";
 
@@ -28,7 +28,8 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
     links: [
       {
         rel: "icon",
-        href: "/favicon.ico",
+        type: "image/svg+xml",
+        href: "/favicon.svg",
       },
     ],
   }),
@@ -39,9 +40,9 @@ function RootComponent() {
     <>
       <HeadContent />
 
-      <div className="grid h-svh grid-rows-[auto_1fr]">
+      <main className="min-h-svh">
         <Outlet />
-      </div>
+      </main>
 
       <Toaster richColors />
 

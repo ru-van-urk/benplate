@@ -2,32 +2,38 @@ packages:
   - apps/*
   - packages/*
   - tooling/*
+# `pnpm add` writes `catalog:` for any dependency already listed below
+catalogMode: prefer
 allowBuilds:
   esbuild: true
 catalog:
-  valibot: ^1.5.0
-  typescript: ^6.0.3
-  "@types/node": ^26.4.1
-  drizzle-orm: 1.0.0-rc.4
-  drizzle-kit: 1.0.0-rc.4
-  "@orpc/server": 2.0.0-beta.40
-  "@orpc/openapi": 2.0.0-beta.40
+  "@orpc/client": 2.0.0-beta.40
+  "@orpc/contract": 2.0.0-beta.40
   "@orpc/json-schema": 2.0.0-beta.40
+  "@orpc/openapi": 2.0.0-beta.40
+  "@orpc/server": 2.0.0-beta.40
+  "@orpc/tanstack-query": 2.0.0-beta.40
   "@orpc/valibot": 2.0.0-beta.40
+  "@tailwindcss/vite": ^4.3.3
+  "@tanstack/react-query": ^5.102.8
+  "@tanstack/react-query-devtools": ^5.102.8
+  "@tanstack/react-router": ^1.170.32
+  "@tanstack/router-plugin": ^1.168.35
+  "@types/node": ^24
+  "@types/react": ^19.2.18
+  "@types/react-dom": ^19.2.7
+  drizzle-kit: 1.0.0-rc.4
+  drizzle-orm: 1.0.0-rc.4
+  knip: ^6.38.0
   lucide-react: ^1.41.0
+  oxfmt: ^0.66.0
+  oxlint: ^1.81.0
+  oxlint-tsgolint: ^7.0.2003
   react: ^19.2.8
   react-dom: ^19.2.8
   sonner: ^2.0.8
-  "@orpc/client": 2.0.0-beta.40
-  "@orpc/contract": 2.0.0-beta.40
-  "@orpc/tanstack-query": 2.0.0-beta.40
-  "@types/react": ^19.2.18
-  "@types/react-dom": ^19.2.7
   tailwindcss: ^4.3.3
-  "@tailwindcss/vite": ^4.3.3
-  oxlint: ^1.81.0
-  oxfmt: ^0.66.0
-  oxlint-tsgolint: ^7.0.2003
-  knip: ^6.38.0
   taze: ^21.2.0
   turbo: ^2.10.12
+  typescript: ^7.0.2
+  valibot: ^1.5.0

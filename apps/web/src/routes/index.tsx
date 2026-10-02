@@ -1,11 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { orpc } from "~/utils/orpc";
-
 export const Route = createFileRoute("/")({
-  context: () => ({
-    planetQueryOptions: orpc.planet.list.queryOptions(),
+  context: ({ context }) => ({
+    planetQueryOptions: context.orpc.planet.list.queryOptions(),
   }),
   loader: async ({ context }) => {
     await context.queryClient.query({ ...context.planetQueryOptions, staleTime: "static" });
@@ -22,7 +20,7 @@ function HomeComponent() {
     <div className="container mx-auto max-w-3xl px-4 py-2">
       <div className="grid gap-6">
         <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">Planets</h2>
+          <h1 className="mb-2 font-medium">Planets</h1>
           {planets.data?.length ? (
             <ul className="divide-y">
               {planets.data.map((planet) => (

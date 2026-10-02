@@ -1,4 +1,7 @@
 {
-  "files": [],
-  "references": [{ "path": "./tsconfig.package.json" }, { "path": "./tsconfig.drizzlekit.json" }]
+  "extends": "@maribor/typescript-config/base.json",
+  "include": ["src", "*.ts"],
+  "compilerOptions": {
+    "types": ["node"]
+  }
 }

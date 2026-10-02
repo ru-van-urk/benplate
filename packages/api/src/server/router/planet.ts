@@ -1,3 +1,5 @@
+import { isUniqueViolation } from "@maribor/db";
+
 import { os } from "../orpc";
 
 const listPlanets = os.planet.list.handler(({ context }) => {
@@ -18,8 +20,20 @@ const findPlanet = os.planet.find.handler(async ({ context, input, errors }) => 
   return planet;
 });
 
-const createPlanet = os.planet.create.handler(({ context, input }) => {
-  return context.db.insertInto("planets").values(input).returningAll().executeTakeFirstOrThrow();
+const createPlanet = os.planet.create.handler(async ({ context, input, errors }) => {
+  try {
+    return await context.db
+      .insertInto("planets")
+      .values(input)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      throw errors.CONFLICT({ message: `Planet ${input.name} already exists`, cause: error });
+    }
+
+    throw error;
+  }
 });
 
 export const planetRouter = os.planet.router({

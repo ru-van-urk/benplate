@@ -17,6 +17,7 @@ export default defineConfig({
       { prefer: "type-imports", fixStyle: "inline-type-imports" },
     ],
     "typescript/no-misused-promises": ["error", { checksVoidReturn: { attributes: false } }],
+    "typescript/no-import-type-side-effects": "error",
   },
   env: {
     builtin: true,
