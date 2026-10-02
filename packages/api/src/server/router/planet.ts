@@ -1,14 +1,15 @@
-import { planets } from "@maribor/db/schema/index";
-import { eq } from "drizzle-orm";
-
 import { os } from "../orpc";
 
 const listPlanets = os.planet.list.handler(({ context }) => {
-  return context.db.select().from(planets).orderBy(planets.distanceFromSunAu);
+  return context.db.selectFrom("planets").selectAll().orderBy("distanceFromSunAu").execute();
 });
 
 const findPlanet = os.planet.find.handler(async ({ context, input, errors }) => {
-  const [planet] = await context.db.select().from(planets).where(eq(planets.id, input.id));
+  const planet = await context.db
+    .selectFrom("planets")
+    .selectAll()
+    .where("id", "=", input.id)
+    .executeTakeFirst();
 
   if (!planet) {
     throw errors.NOT_FOUND({ message: `Planet ${input.id} not found` });
@@ -17,15 +18,8 @@ const findPlanet = os.planet.find.handler(async ({ context, input, errors }) => 
   return planet;
 });
 
-const createPlanet = os.planet.create.handler(async ({ context, input }) => {
-  const [planet] = await context.db.insert(planets).values(input).returning();
-
-  // Unreachable: a single-row insert either throws or returns that row
-  if (!planet) {
-    throw new Error("Insert returned no planet");
-  }
-
-  return planet;
+const createPlanet = os.planet.create.handler(({ context, input }) => {
+  return context.db.insertInto("planets").values(input).returningAll().executeTakeFirstOrThrow();
 });
 
 export const planetRouter = os.planet.router({

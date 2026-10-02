@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "drizzle-orm": "catalog:",
+    "kysely": "^0.29.6",
     "pg": "^8.23.1",
     "valibot": "catalog:"
   },

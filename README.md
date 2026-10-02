@@ -11,7 +11,8 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **Hono** - Lightweight, performant server framework
 - **oRPC** - End-to-end type-safe APIs with OpenAPI integration
 - **Node.js** - Runtime environment
-- **Drizzle** - TypeScript-first ORM
+- **Drizzle** - Schema and migrations
+- **Kysely** - Type-safe SQL query builder, typed from the Drizzle schema
 - **Postgresql** - Database engine
 - **Oxlint** - Oxlint + Oxfmt (linting & formatting)
 - **Turborepo** - Optimized monorepo build system
@@ -26,7 +27,7 @@ pnpm install
 
 ## Database Setup
 
-This project uses Postgresql with Drizzle ORM.
+This project uses Postgresql. Drizzle owns the schema and migrations, Kysely runs the queries (`packages/db/src/index.ts`).
 
 1. Run a local Postgresql (Postgres.app, Homebrew or your own container) and create a database for the project.
 
