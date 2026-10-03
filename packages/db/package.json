@@ -18,6 +18,7 @@
   "dependencies": {
     "drizzle-orm": "catalog:",
     "kysely": "^0.29.6",
+    "nanoid": "catalog:",
     "pg": "^8.23.1",
     "valibot": "catalog:"
   },

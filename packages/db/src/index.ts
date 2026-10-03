@@ -6,6 +6,7 @@ import type { DatabaseConfig } from "./config";
 import type * as schema from "./schema";
 
 export { isUniqueViolation } from "./errors";
+export { newId } from "./ids";
 
 // Drizzle stays the source of truth for the schema and migrations, Kysely is the query builder.
 // v1 dropped `drizzle-orm/kysely`, so this is its `Kyselify` ported to TS keys: `CamelCasePlugin` maps them onto the
@@ -35,14 +36,16 @@ type DB = {
   ]: Kyselify<(typeof schema)[K]>;
 };
 
-export function createDb(env: DatabaseConfig) {
-  const pool = new Pool({ connectionString: env.DATABASE_URL });
-
+export type CreateDbOptions = {
   // An idle client losing its connection (Postgres restart, failover) emits on the pool, and an unhandled
   // `error` event crashes the process; the pool drops that client and opens a new one on the next query
-  pool.on("error", (error) => {
-    console.error("Idle Postgres client error", error);
-  });
+  onError: (error: Error) => void;
+};
+
+export function createDb(env: DatabaseConfig, { onError }: CreateDbOptions) {
+  const pool = new Pool({ connectionString: env.DATABASE_URL });
+
+  pool.on("error", onError);
 
   return new Kysely<DB>({
     dialect: new PostgresDialect({ pool }),

@@ -1,4 +1,4 @@
-import { isUniqueViolation } from "@benplate/db";
+import { isUniqueViolation, newId } from "@benplate/db";
 
 import { os } from "../orpc";
 
@@ -24,11 +24,11 @@ const createPlanet = os.planet.create.handler(async ({ context, input, errors })
   try {
     return await context.db
       .insertInto("planets")
-      .values(input)
+      .values({ ...input, id: newId() })
       .returningAll()
       .executeTakeFirstOrThrow();
   } catch (error) {
-    if (isUniqueViolation(error)) {
+    if (isUniqueViolation(error, "planets_name_unique")) {
       throw errors.CONFLICT({ message: `Planet ${input.name} already exists`, cause: error });
     }
 

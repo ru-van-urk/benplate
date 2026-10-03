@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "cc7f634e-f741-48d3-8569-a32807e6564f",
+  "id": "6d24d710-af09-4230-b2d1-36ade1a1e50d",
   "prevIds": [
-    "00000000-0000-0000-0000-000000000000"
+    "3b75e823-97d3-4fbe-874e-1a42b4748189"
   ],
   "ddl": [
     {
@@ -13,22 +13,13 @@
       "schema": "public"
     },
     {
-      "type": "integer",
+      "type": "text",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
       "default": null,
       "generated": null,
-      "identity": {
-        "type": "always",
-        "name": "planets_id_seq",
-        "increment": "1",
-        "startWith": "1",
-        "minValue": "1",
-        "maxValue": "2147483647",
-        "cache": 1,
-        "cycle": false
-      },
+      "identity": null,
       "name": "id",
       "entityType": "columns",
       "schema": "public",
@@ -126,6 +117,32 @@
       "table": "planets"
     },
     {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "planets"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "planets"
+    },
+    {
       "columns": [
         "id"
       ],
@@ -136,12 +153,12 @@
       "entityType": "pks"
     },
     {
-      "nameExplicit": false,
+      "nameExplicit": true,
       "columns": [
         "name"
       ],
       "nullsNotDistinct": false,
-      "name": "planets_name_key",
+      "name": "planets_name_unique",
       "schema": "public",
       "table": "planets",
       "entityType": "uniques"

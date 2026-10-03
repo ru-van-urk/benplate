@@ -24,8 +24,10 @@ catalog:
   "@types/react-dom": ^19.2.7
   drizzle-kit: 1.0.0-rc.4
   drizzle-orm: 1.0.0-rc.4
+  evlog: 2.29.0
   knip: ^6.38.0
   lucide-react: ^1.41.0
+  nanoid: ^6.0.1
   oxfmt: ^0.66.0
   oxlint: ^1.81.0
   oxlint-tsgolint: ^7.0.2003

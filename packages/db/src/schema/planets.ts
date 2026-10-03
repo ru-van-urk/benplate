@@ -1,11 +1,13 @@
 import { snakeCase } from "drizzle-orm/pg-core";
 
+import { timestamps } from "./columns";
+
 export const planetTypes = ["terrestrial", "gas giant", "ice giant"] as const;
 
 export const planets = snakeCase.table("planets", (t) => ({
-  id: t.integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: t.text().primaryKey(),
 
-  name: t.text().notNull().unique(),
+  name: t.text().notNull().unique("planets_name_unique"),
   description: t.text(),
 
   type: t.text({ enum: planetTypes }).notNull(),
@@ -15,6 +17,8 @@ export const planets = snakeCase.table("planets", (t) => ({
 
   distanceFromSunAu: t.real().notNull(),
   orbitalPeriodDays: t.real().notNull(),
+
+  ...timestamps,
 }));
 
 export type Planet = typeof planets.$inferSelect;

@@ -1,5 +1,7 @@
 import * as v from "valibot";
 
+import { log } from "./logger";
+
 const envSchema = v.object({
   NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
   DATABASE_URL: v.pipe(v.string(), v.nonEmpty()),
@@ -9,7 +11,7 @@ const envSchema = v.object({
 const result = v.safeParse(envSchema, process.env);
 
 if (!result.success) {
-  console.error(`Invalid environment variables:\n${v.summarize(result.issues)}`);
+  log.error("env", `Invalid environment variables:\n${v.summarize(result.issues)}`);
   process.exit(1);
 }
 

@@ -4,17 +4,23 @@ import { openapi } from "@orpc/openapi";
 import { createInsertSchema, createSelectSchema } from "drizzle-orm/valibot";
 import * as v from "valibot";
 
+import { idSchema } from "./common";
+
 const tags = ["Planets"];
 
 const planetSchema = createSelectSchema(planets);
 
-const newPlanetSchema = createInsertSchema(planets, {
-  name: (schema) => v.pipe(schema, v.nonEmpty()),
-  moons: (schema) => v.pipe(schema, v.minValue(0)),
-  diameterKm: (schema) => v.pipe(schema, v.minValue(1)),
-  distanceFromSunAu: (schema) => v.pipe(schema, v.minValue(0)),
-  orbitalPeriodDays: (schema) => v.pipe(schema, v.minValue(0)),
-});
+// The server sets the id and both timestamps, so clients can't send them
+const newPlanetSchema = v.omit(
+  createInsertSchema(planets, {
+    name: (schema) => v.pipe(schema, v.nonEmpty()),
+    moons: (schema) => v.pipe(schema, v.minValue(0)),
+    diameterKm: (schema) => v.pipe(schema, v.minValue(1)),
+    distanceFromSunAu: (schema) => v.pipe(schema, v.minValue(0)),
+    orbitalPeriodDays: (schema) => v.pipe(schema, v.minValue(0)),
+  }),
+  ["id", "createdAt", "updatedAt"],
+);
 
 const listPlanets = oc
   .meta(
@@ -30,7 +36,7 @@ const listPlanets = oc
 const findPlanet = oc
   .meta(openapi({ method: "GET", path: "/planets/{id}", tags, summary: "Find a planet by id" }))
   .errors({ NOT_FOUND: {} })
-  .input(v.object({ id: v.pipe(v.number(), v.integer()) }))
+  .input(v.object({ id: idSchema }))
   .output(planetSchema);
 
 const createPlanet = oc

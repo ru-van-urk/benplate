@@ -27,3 +27,6 @@ dist
 
 # Logs
 *.log
+
+# evlog file drain (development)
+.evlog
