@@ -10,6 +10,6 @@ export default defineConfig({
     alwaysBundle: [/.*/],
     onlyBundle: false,
   },
-  // @maribor/db is bundled, so its migrations must sit next to the output (see packages/db/src/migrate.ts)
+  // @benplate/db is bundled, so its migrations must sit next to the output (see packages/db/src/migrate.ts)
   copy: [{ from: "../../packages/db/src/migrations", to: "./dist" }],
 });

@@ -1,4 +1,4 @@
-import { createDb } from "@maribor/db";
+import { createDb } from "@benplate/db";
 
 import { ENV } from "./env";
 

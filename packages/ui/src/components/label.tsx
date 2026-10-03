@@ -1,4 +1,4 @@
-import { cn } from "@maribor/ui/lib/utils";
+import { cn } from "@benplate/ui/lib/utils";
 import * as React from "react";
 
 function Label({ className, ...props }: React.ComponentProps<"label">) {

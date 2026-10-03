@@ -1,6 +1,6 @@
 import { defineConfig } from "oxfmt";
 
-import base from "@maribor/oxfmt-config/base";
+import base from "@benplate/oxfmt-config/base";
 
 export default defineConfig({
   ...base,

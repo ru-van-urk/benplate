@@ -12,11 +12,11 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@maribor/ui/components",
-    "utils": "@maribor/ui/lib/utils",
-    "hooks": "@maribor/ui/hooks",
-    "lib": "@maribor/ui/lib",
-    "ui": "@maribor/ui/components"
+    "components": "@benplate/ui/components",
+    "utils": "@benplate/ui/lib/utils",
+    "hooks": "@benplate/ui/hooks",
+    "lib": "@benplate/ui/lib",
+    "ui": "@benplate/ui/components"
   },
   "menuColor": "default",
   "menuAccent": "subtle",

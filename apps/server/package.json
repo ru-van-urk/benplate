@@ -16,10 +16,10 @@
     "valibot": "catalog:"
   },
   "devDependencies": {
-    "@maribor/api": "workspace:*",
-    "@maribor/db": "workspace:*",
-    "@maribor/oxlint-config": "workspace:*",
-    "@maribor/typescript-config": "workspace:*",
+    "@benplate/api": "workspace:*",
+    "@benplate/db": "workspace:*",
+    "@benplate/oxlint-config": "workspace:*",
+    "@benplate/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "oxlint": "catalog:",
     "tsdown": "^0.23.0",

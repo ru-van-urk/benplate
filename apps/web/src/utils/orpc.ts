@@ -1,4 +1,4 @@
-import { createTanstackQueryAPIClient } from "@maribor/api/client";
+import { createTanstackQueryAPIClient } from "@benplate/api/client";
 import { QueryClient } from "@tanstack/react-query";
 
 export const queryClient = new QueryClient({

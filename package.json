@@ -1,5 +1,5 @@
 {
-  "name": "maribor",
+  "name": "benplate",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,10 +10,10 @@
     "dev": "turbo run dev",
     "dev:web": "turbo run dev -F web --",
     "dev:server": "turbo run dev -F server --",
-    "db:push": "turbo run db:push -F @maribor/db --",
-    "db:generate": "turbo run db:generate -F @maribor/db --",
-    "db:studio": "turbo run db:studio -F @maribor/db --",
-    "db:migrate": "turbo run db:migrate -F @maribor/db --",
+    "db:push": "turbo run db:push -F @benplate/db --",
+    "db:generate": "turbo run db:generate -F @benplate/db --",
+    "db:studio": "turbo run db:studio -F @benplate/db --",
+    "db:migrate": "turbo run db:migrate -F @benplate/db --",
     "docker:build": "docker compose build",
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down",
@@ -28,9 +28,9 @@
     "deps:update": "taze -w"
   },
   "devDependencies": {
-    "@maribor/oxfmt-config": "workspace:*",
-    "@maribor/oxlint-config": "workspace:*",
-    "@maribor/typescript-config": "workspace:*",
+    "@benplate/oxfmt-config": "workspace:*",
+    "@benplate/oxlint-config": "workspace:*",
+    "@benplate/typescript-config": "workspace:*",
     "knip": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",

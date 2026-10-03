@@ -1,5 +1,5 @@
 {
-  "name": "@maribor/api",
+  "name": "@benplate/api",
   "private": true,
   "type": "module",
   "exports": {
@@ -11,7 +11,7 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
-    "@maribor/db": "workspace:*",
+    "@benplate/db": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/contract": "catalog:",
     "@orpc/json-schema": "catalog:",
@@ -23,8 +23,8 @@
     "valibot": "catalog:"
   },
   "devDependencies": {
-    "@maribor/oxlint-config": "workspace:*",
-    "@maribor/typescript-config": "workspace:*",
+    "@benplate/oxlint-config": "workspace:*",
+    "@benplate/typescript-config": "workspace:*",
     "oxlint": "catalog:",
     "typescript": "catalog:"
   }

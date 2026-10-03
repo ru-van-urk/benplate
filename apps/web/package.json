@@ -11,8 +11,8 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
-    "@maribor/api": "workspace:*",
-    "@maribor/ui": "workspace:*",
+    "@benplate/api": "workspace:*",
+    "@benplate/ui": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
@@ -21,9 +21,9 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@maribor/oxfmt-config": "workspace:*",
-    "@maribor/oxlint-config": "workspace:*",
-    "@maribor/typescript-config": "workspace:*",
+    "@benplate/oxfmt-config": "workspace:*",
+    "@benplate/oxlint-config": "workspace:*",
+    "@benplate/typescript-config": "workspace:*",
     "@tanstack/react-query-devtools": "catalog:",
     "@tanstack/router-plugin": "catalog:",
     "@types/node": "catalog:",

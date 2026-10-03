@@ -1,5 +1,5 @@
 {
-  "name": "@maribor/oxlint-config",
+  "name": "@benplate/oxlint-config",
   "private": true,
   "type": "module",
   "exports": {
@@ -15,7 +15,7 @@
     "oxlint": "catalog:"
   },
   "devDependencies": {
-    "@maribor/typescript-config": "workspace:*",
+    "@benplate/typescript-config": "workspace:*",
     "typescript": "catalog:"
   }
 }

@@ -1,4 +1,4 @@
-import { isUniqueViolation } from "@maribor/db";
+import { isUniqueViolation } from "@benplate/db";
 
 import { os } from "../orpc";
 

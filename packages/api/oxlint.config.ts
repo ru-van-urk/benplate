@@ -1,4 +1,4 @@
-import node from "@maribor/oxlint-config/node";
+import node from "@benplate/oxlint-config/node";
 import { defineConfig } from "oxlint";
 
 export default defineConfig({

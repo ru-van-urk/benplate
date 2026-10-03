@@ -1,4 +1,4 @@
-import { cn } from "@maribor/ui/lib/utils";
+import { cn } from "@benplate/ui/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 
 function Empty({ className, ...props }: React.ComponentProps<"div">) {

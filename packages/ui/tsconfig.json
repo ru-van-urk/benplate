@@ -1,12 +1,12 @@
 {
-  "extends": "@maribor/typescript-config/base.json",
+  "extends": "@benplate/typescript-config/base.json",
   "include": ["src", "*.ts"],
   "compilerOptions": {
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "types": [],
     "jsx": "react-jsx",
     "paths": {
-      "@maribor/ui/*": ["./src/*"]
+      "@benplate/ui/*": ["./src/*"]
     }
   }
 }

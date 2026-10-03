@@ -1,5 +1,5 @@
 {
-  "name": "@maribor/typescript-config",
+  "name": "@benplate/typescript-config",
   "private": true,
   "files": [
     "*.json"

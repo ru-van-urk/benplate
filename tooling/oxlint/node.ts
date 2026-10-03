@@ -1,6 +1,6 @@
 import { defineConfig } from "oxlint";
 
-import base from "@maribor/oxlint-config/base";
+import base from "@benplate/oxlint-config/base";
 
 export default defineConfig({
   extends: [base],

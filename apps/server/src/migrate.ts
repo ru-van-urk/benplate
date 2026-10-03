@@ -1,4 +1,4 @@
-import { migrateDb } from "@maribor/db/migrate";
+import { migrateDb } from "@benplate/db/migrate";
 
 import { ENV } from "./env";
 

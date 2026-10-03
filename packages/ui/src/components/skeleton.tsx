@@ -1,4 +1,4 @@
-import { cn } from "@maribor/ui/lib/utils";
+import { cn } from "@benplate/ui/lib/utils";
 
 function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (

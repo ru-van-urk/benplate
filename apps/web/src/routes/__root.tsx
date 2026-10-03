@@ -1,4 +1,4 @@
-import { Toaster } from "@maribor/ui/components/sonner";
+import { Toaster } from "@benplate/ui/components/sonner";
 
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -18,11 +18,11 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
   head: () => ({
     meta: [
       {
-        title: "maribor",
+        title: "BenPlate",
       },
       {
         name: "description",
-        content: "maribor is a web application",
+        content: "BenPlate is a web application",
       },
     ],
     links: [

@@ -1,4 +1,4 @@
 {
-  "extends": "@maribor/typescript-config/base.json",
+  "extends": "@benplate/typescript-config/base.json",
   "include": ["*.ts"]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@maribor/db",
+  "name": "@benplate/db",
   "private": true,
   "type": "module",
   "exports": {
@@ -22,8 +22,8 @@
     "valibot": "catalog:"
   },
   "devDependencies": {
-    "@maribor/oxlint-config": "workspace:*",
-    "@maribor/typescript-config": "workspace:*",
+    "@benplate/oxlint-config": "workspace:*",
+    "@benplate/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "catalog:",
