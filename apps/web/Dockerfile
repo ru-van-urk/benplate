@@ -1,13 +1,17 @@
 FROM node:24-slim AS base
 ENV TURBO_TELEMETRY_DISABLED=1
-# Same version as `packageManager` in the root package.json; Node 25+ no longer ships corepack
-RUN npm install -g pnpm@12.6.0
 WORKDIR /app
+# pnpm as pinned by `packageManager` (minus any +sha suffix); Node 25+ no longer ships corepack
+COPY package.json ./
+RUN npm install -g "$(node -p "require('./package.json').packageManager.split('+')[0]")"
 
 # Reduce the monorepo to the web app and its workspace dependencies
 FROM base AS pruner
-# Same version as the repo's locked turbo, so `prune` understands turbo.json; bump together with the catalog
-RUN npm install -g turbo@2.11.5
+# The repo's locked turbo, so `prune` understands turbo.json; the lockfile alone keeps this layer cached
+COPY pnpm-lock.yaml ./
+RUN version="$(sed -n 's/^  turbo@\([0-9][^:(]*\):$/\1/p' pnpm-lock.yaml | head -n 1)"; \
+    if [ -z "$version" ]; then echo "turbo not found in pnpm-lock.yaml" >&2; exit 1; fi; \
+    npm install -g "turbo@$version"
 COPY . .
 RUN turbo prune web --docker
 

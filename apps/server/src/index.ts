@@ -1,5 +1,5 @@
 import { serve } from "@hono/node-server";
-import { createApi } from "@maribor/api/server";
+import { createApi } from "@benplate/api/server";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { logger } from "hono/logger";
@@ -20,7 +20,7 @@ app.get("/api/health", (c) => {
 
 app.use(logger());
 
-// nginx caps bodies at 1 MB too, but a direct `api.<domain>` route skips nginx
+// nginx caps bodies at 1 MB too; this keeps the cap when the server is reached without it (dev, other proxies)
 app.use("/api/*", bodyLimit({ maxSize: 1024 * 1024 }));
 
 app.use("/*", async (c, next) => {

@@ -1,5 +1,5 @@
 {
-  "name": "@maribor/oxfmt-config",
+  "name": "@benplate/oxfmt-config",
   "private": true,
   "type": "module",
   "exports": {
@@ -14,7 +14,7 @@
     "oxfmt": "catalog:"
   },
   "devDependencies": {
-    "@maribor/typescript-config": "workspace:*",
+    "@benplate/typescript-config": "workspace:*",
     "typescript": "catalog:"
   }
 }

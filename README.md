@@ -1,4 +1,4 @@
-# maribor
+# BenPlate
 
 A pnpm monorepo starter for full-stack TypeScript apps: a React and TanStack Router web app, a Hono server with a type-safe oRPC API, Drizzle for schema and migrations, and Kysely for queries. It deploys as one Docker Compose stack with Postgresql. A small `planets` example shows every layer end to end.
 
@@ -80,7 +80,7 @@ Two groups are pinned to exact pre-release versions in the catalog (`pnpm-worksp
 
 ## Starting a new project from this template
 
-1. Rename `maribor` and `@maribor/*`: `git grep -l maribor` lists every file that mentions it.
+1. Rename `benplate` and `@benplate/*`: `git grep -l benplate` lists every file that mentions it.
 2. Remove the example: the `planets` schema, contract and router (and their entries in each `index.ts`), the `seed_planets` migration, and the home route in `apps/web/src/routes/index.tsx`. Removing a migration is only safe before any database has applied it.
 3. Set the title and description in `apps/web/index.html` and `apps/web/src/routes/__root.tsx`, and replace `apps/web/public/favicon.svg`.
 
@@ -115,7 +115,7 @@ npx shadcn@latest add accordion dialog popover sheet table -c packages/ui
 Import shared components like this:
 
 ```tsx
-import { Button } from "@maribor/ui/components/button";
+import { Button } from "@benplate/ui/components/button";
 ```
 
 ### Add app-specific blocks
@@ -130,7 +130,7 @@ Copy `.env.example` to `.env` in `apps/server`. Env files are ignored by git; ke
 - **Web**: needs no configuration. The client calls the REST API under `/api` on its own origin, which the Vite dev server (`vite.config.ts`) and nginx in production (`apps/web/nginx.conf`) proxy to the server. There is no CORS, and the same web image works in every environment.
 - **Database tooling**: `drizzle.config.ts` reads `DATABASE_URL` from `apps/server/.env` when the variable is not already set.
 
-Shared packages (`@maribor/db`, `@maribor/api`) receive configuration or initialized clients from the application.
+Shared packages (`@benplate/db`, `@benplate/api`) receive configuration or initialized clients from the application.
 
 ## Deployment
 
@@ -145,7 +145,7 @@ Shared packages (`@maribor/db`, `@maribor/api`) receive configuration or initial
 - Logs: pnpm run docker:logs
 - Stop: pnpm run docker:down
 
-Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST and `/api/health`) to `server:3000` over the internal Compose network. On Dokploy, enable Isolated Deployments for the stack, so two stacks on one host don't share the `server` hostname. Then add the domain to the `web` service in the Domains tab. For a public API subdomain, add `api.<domain>` to the `server` service (container port `3000`, path `/`, internal path `/api`) so `api.<domain>/planets` reaches `/api/planets`. `POSTGRES_PASSWORD` is required: Compose refuses to start without it, and builds the `DATABASE_URL` for the `db` service from it. Only set `DATABASE_URL` to use an external Postgresql instead.
+Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST and `/api/health`) to `server:3000` over the internal Compose network. On Dokploy, enable Isolated Deployments for the stack, so two stacks on one host don't share the `server` hostname. Then add the domain to the `web` service in the Domains tab. `POSTGRES_PASSWORD` is required: Compose refuses to start without it, and builds the `DATABASE_URL` for the `db` service from it. Only set `DATABASE_URL` to use an external Postgresql instead.
 
 Postgresql stores its data in the `postgres_data` volume. On every start, the `migrate` service runs `node dist/migrate.mjs` from the server image: it applies the pending migrations in one transaction and exits, and the server starts only after it succeeds. A failing migration changes nothing, but the API stays down until a fixed migration is deployed. `web` does not wait for the server, so the app itself stays up and `/api` returns 502 meanwhile. Check `docker compose logs migrate`, then fix it with a new migration and redeploy. The migrator takes no lock, so keep it in this single service rather than running it per server replica. The example planets are a migration too (`seed_planets`), so a new database starts with them.
 
@@ -154,12 +154,13 @@ Postgresql stores its data in the `postgres_data` volume. On every start, the `m
 Oxlint and Oxfmt run once from the root. Each package's `oxlint.config.ts` / `oxfmt.config.ts` picks the preset from `tooling/` (`node` or `react`); anything without its own config falls back to the root `base`.
 
 - Fix and verify everything: `pnpm run check` (lint with fixes, format, typecheck, then knip; stops at the first failure)
-- CI (`.github/workflows/ci.yml`) runs the non-fixing variants on pushes to `main` and on pull requests: `typecheck`, `build`, `lint:check`, `format:check` and `knip`, plus a check that `packages/db/src/migrations` matches the schema
+- CI (`.github/workflows/ci.yml`) runs the non-fixing variants on pull requests: `typecheck`, `build`, `lint:check`, `format:check` and `knip`, plus a check that `packages/db/src/migrations` matches the schema
+- `main` only takes pull requests (the "protect main" ruleset), and the `check` job is a required status check. CI doesn't run on pushes to `main`, because every change already passed it in its pull request. Renaming the `check` job blocks merges until the ruleset names the new one
 
 ## Project Structure
 
 ```
-maribor/
+benplate/
 ├── apps/
 │   ├── web/         # Frontend application (React + TanStack Router)
 │   └── server/      # Hono server: health check, mounts the API

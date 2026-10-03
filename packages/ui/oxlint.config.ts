@@ -1,4 +1,4 @@
-import react from "@maribor/oxlint-config/react";
+import react from "@benplate/oxlint-config/react";
 import { defineConfig } from "oxlint";
 
 export default defineConfig({

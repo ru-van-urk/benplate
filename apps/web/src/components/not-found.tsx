@@ -1,11 +1,11 @@
-import { buttonVariants } from "@maribor/ui/components/button";
+import { buttonVariants } from "@benplate/ui/components/button";
 import {
   Empty,
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyTitle,
-} from "@maribor/ui/components/empty";
+} from "@benplate/ui/components/empty";
 
 import { Link } from "@tanstack/react-router";
 

@@ -1,4 +1,4 @@
-import type { Database } from "@maribor/db";
+import type { Database } from "@benplate/db";
 import { SmartCoercionHandlerPlugin } from "@orpc/json-schema";
 import { OpenAPIGenerator } from "@orpc/openapi";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
@@ -40,7 +40,7 @@ export function createApi({ db, apiPath, docs }: CreateApiOptions) {
     spec: () =>
       (spec ??= openAPIGenerator.generate(appRouter, {
         base: {
-          info: { title: "maribor", version: "1.0.0" },
+          info: { title: "BenPlate", version: "1.0.0" },
           // Relative, so "try it" works through both the nginx and Vite proxies
           servers: [{ url: apiPath }],
         },

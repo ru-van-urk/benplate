@@ -1,4 +1,4 @@
-import type { Database } from "@maribor/db";
+import type { Database } from "@benplate/db";
 import { implement } from "@orpc/server";
 
 import { appContract } from "../contracts";

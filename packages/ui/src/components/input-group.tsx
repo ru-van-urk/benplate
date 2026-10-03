@@ -1,7 +1,7 @@
-import { Button } from "@maribor/ui/components/button";
-import { Input } from "@maribor/ui/components/input";
-import { Textarea } from "@maribor/ui/components/textarea";
-import { cn } from "@maribor/ui/lib/utils";
+import { Button } from "@benplate/ui/components/button";
+import { Input } from "@benplate/ui/components/input";
+import { Textarea } from "@benplate/ui/components/textarea";
+import { cn } from "@benplate/ui/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 

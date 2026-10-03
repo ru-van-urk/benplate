@@ -1,4 +1,4 @@
-import { planets } from "@maribor/db/schema";
+import { planets } from "@benplate/db/schema";
 import { oc } from "@orpc/contract";
 import { openapi } from "@orpc/openapi";
 import { createInsertSchema, createSelectSchema } from "drizzle-orm/valibot";

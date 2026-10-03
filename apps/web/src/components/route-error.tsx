@@ -1,11 +1,11 @@
-import { Button } from "@maribor/ui/components/button";
+import { Button } from "@benplate/ui/components/button";
 import {
   Empty,
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyTitle,
-} from "@maribor/ui/components/empty";
+} from "@benplate/ui/components/empty";
 
 import { type ErrorComponentProps, useRouter } from "@tanstack/react-router";
 

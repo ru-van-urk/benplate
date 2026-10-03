@@ -1,10 +1,10 @@
 {
-  "extends": "@maribor/typescript-config/vite.json",
+  "extends": "@benplate/typescript-config/vite.json",
   "include": ["src"],
   "compilerOptions": {
     "paths": {
       "~/*": ["./src/*"],
-      "@maribor/ui/*": ["../../packages/ui/src/*"]
+      "@benplate/ui/*": ["../../packages/ui/src/*"]
     }
   }
 }

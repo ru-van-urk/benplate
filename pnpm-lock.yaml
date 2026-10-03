@@ -259,13 +259,13 @@ importers:
 
   .:
     devDependencies:
-      '@maribor/oxfmt-config':
+      '@benplate/oxfmt-config':
         specifier: workspace:*
         version: link:tooling/oxfmt
-      '@maribor/oxlint-config':
+      '@benplate/oxlint-config':
         specifier: workspace:*
         version: link:tooling/oxlint
-      '@maribor/typescript-config':
+      '@benplate/typescript-config':
         specifier: workspace:*
         version: link:tooling/typescript
       knip:
@@ -302,16 +302,16 @@ importers:
         specifier: 'catalog:'
         version: 1.5.0(typescript@7.0.2)
     devDependencies:
-      '@maribor/api':
+      '@benplate/api':
         specifier: workspace:*
         version: link:../../packages/api
-      '@maribor/db':
+      '@benplate/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@maribor/oxlint-config':
+      '@benplate/oxlint-config':
         specifier: workspace:*
         version: link:../../tooling/oxlint
-      '@maribor/typescript-config':
+      '@benplate/typescript-config':
         specifier: workspace:*
         version: link:../../tooling/typescript
       '@types/node':
@@ -332,10 +332,10 @@ importers:
 
   apps/web:
     dependencies:
-      '@maribor/api':
+      '@benplate/api':
         specifier: workspace:*
         version: link:../../packages/api
-      '@maribor/ui':
+      '@benplate/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tailwindcss/vite':
@@ -357,13 +357,13 @@ importers:
         specifier: 'catalog:'
         version: 19.3.0(react@19.3.0)
     devDependencies:
-      '@maribor/oxfmt-config':
+      '@benplate/oxfmt-config':
         specifier: workspace:*
         version: link:../../tooling/oxfmt
-      '@maribor/oxlint-config':
+      '@benplate/oxlint-config':
         specifier: workspace:*
         version: link:../../tooling/oxlint
-      '@maribor/typescript-config':
+      '@benplate/typescript-config':
         specifier: workspace:*
         version: link:../../tooling/typescript
       '@tanstack/react-query-devtools':
@@ -399,7 +399,7 @@ importers:
 
   packages/api:
     dependencies:
-      '@maribor/db':
+      '@benplate/db':
         specifier: workspace:*
         version: link:../db
       '@orpc/client':
@@ -430,10 +430,10 @@ importers:
         specifier: 'catalog:'
         version: 1.5.0(typescript@7.0.2)
     devDependencies:
-      '@maribor/oxlint-config':
+      '@benplate/oxlint-config':
         specifier: workspace:*
         version: link:../../tooling/oxlint
-      '@maribor/typescript-config':
+      '@benplate/typescript-config':
         specifier: workspace:*
         version: link:../../tooling/typescript
       oxlint:
@@ -458,10 +458,10 @@ importers:
         specifier: 'catalog:'
         version: 1.5.0(typescript@7.0.2)
     devDependencies:
-      '@maribor/oxlint-config':
+      '@benplate/oxlint-config':
         specifier: workspace:*
         version: link:../../tooling/oxlint
-      '@maribor/typescript-config':
+      '@benplate/typescript-config':
         specifier: workspace:*
         version: link:../../tooling/typescript
       '@types/node':
@@ -510,13 +510,13 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
     devDependencies:
-      '@maribor/oxfmt-config':
+      '@benplate/oxfmt-config':
         specifier: workspace:*
         version: link:../../tooling/oxfmt
-      '@maribor/oxlint-config':
+      '@benplate/oxlint-config':
         specifier: workspace:*
         version: link:../../tooling/oxlint
-      '@maribor/typescript-config':
+      '@benplate/typescript-config':
         specifier: workspace:*
         version: link:../../tooling/typescript
       '@types/react':
@@ -544,7 +544,7 @@ importers:
         specifier: 'catalog:'
         version: 0.66.0
     devDependencies:
-      '@maribor/typescript-config':
+      '@benplate/typescript-config':
         specifier: workspace:*
         version: link:../typescript
       typescript:
@@ -557,7 +557,7 @@ importers:
         specifier: 'catalog:'
         version: 1.86.0(oxlint-tsgolint@7.0.2003)
     devDependencies:
-      '@maribor/typescript-config':
+      '@benplate/typescript-config':
         specifier: workspace:*
         version: link:../typescript
       typescript:

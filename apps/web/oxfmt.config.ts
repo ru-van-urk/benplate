@@ -1,4 +1,4 @@
-import react from "@maribor/oxfmt-config/react";
+import react from "@benplate/oxfmt-config/react";
 import { defineConfig } from "oxfmt";
 
 export default defineConfig({

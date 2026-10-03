@@ -34,7 +34,7 @@ jobs:
         env:
           DATABASE_URL: postgres://unused
         run: |
-          pnpm --filter @maribor/db exec drizzle-kit generate
+          pnpm --filter @benplate/db exec drizzle-kit generate
           if [ -n "$(git status --porcelain packages/db/src/migrations)" ]; then
             echo "::error::The schema changed without a migration: run pnpm run db:generate --name <change> and commit the result"
             exit 1
