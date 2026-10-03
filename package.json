@@ -25,12 +25,14 @@
     "format:check": "oxfmt --check",
     "knip": "knip",
     "deps:check": "taze",
-    "deps:update": "taze -w"
+    "deps:update": "taze -w",
+    "template:init": "node scripts/template-init.ts"
   },
   "devDependencies": {
     "@benplate/oxfmt-config": "workspace:*",
     "@benplate/oxlint-config": "workspace:*",
     "@benplate/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
     "knip": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",

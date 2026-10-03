@@ -12,11 +12,13 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.1.1",
+    "evlog": "catalog:",
     "hono": "^4.13.7",
     "valibot": "catalog:"
   },
   "devDependencies": {
     "@benplate/api": "workspace:*",
+    "@benplate/auth": "workspace:*",
     "@benplate/db": "workspace:*",
     "@benplate/oxlint-config": "workspace:*",
     "@benplate/typescript-config": "workspace:*",

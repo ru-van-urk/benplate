@@ -1,5 +1,8 @@
 {
   "extends": "@benplate/typescript-config/base.json",
-  // Only the root's own config files; every package has its own tsconfig
-  "include": ["*.ts"]
+  // Only the root's own config files and scripts; every package has its own tsconfig
+  "include": ["*.ts", "scripts"],
+  "compilerOptions": {
+    "types": ["node"]
+  }
 }

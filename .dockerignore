@@ -10,6 +10,7 @@
 .turbo
 **/.cache
 *.log
+**/.evlog
 
 Dockerfile
 **/Dockerfile

@@ -1,32 +1,35 @@
+import type { Auth } from "@benplate/auth";
 import type { Database } from "@benplate/db";
 import { SmartCoercionHandlerPlugin } from "@orpc/json-schema";
 import { OpenAPIGenerator } from "@orpc/openapi";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
 import { OpenAPIReferenceHandlerPlugin } from "@orpc/openapi/plugins";
 import { COMMON_ERROR_STATUS_MAP, ORPCError, onError } from "@orpc/server";
+import type { RequestLogger } from "evlog";
 
 import { converters } from "../converters";
-import { createORPCContext } from "./orpc";
+import { type Context, createORPCContext } from "./orpc";
 import { appRouter } from "./router";
 
 export type CreateApiOptions = {
   db: Database;
+  auth: Auth;
   apiPath: `/${string}`;
   // Serves the Scalar reference at {apiPath}/docs; it loads its script from a CDN, so keep it out of production
   docs: boolean;
 };
 
-export function createApi({ db, apiPath, docs }: CreateApiOptions) {
+export function createApi({ db, auth, apiPath, docs }: CreateApiOptions) {
   const openAPIGenerator = new OpenAPIGenerator({ converters });
 
-  // Expected 4xx errors (not found, validation, conflicts) are part of the API; only log real failures.
-  // v2 errors carry no status: the handler maps the code through this map, and unknown codes become 500
+  // Expected 4xx errors (not found, validation, conflicts) are part of the API; only real failures mark the
+  // request's wide event as an error. v2 errors carry no status: the handler maps the code through this map, and unknown codes become 500
   const errorStatus = (error: ORPCError<string, unknown>) =>
     (COMMON_ERROR_STATUS_MAP as Record<string, number>)[error.code] ?? 500;
 
-  const logError = (error: unknown) => {
+  const logError = (error: unknown, { context }: { context: Context }) => {
     if (!(error instanceof ORPCError) || errorStatus(error) >= 500) {
-      console.error(error);
+      context.log.error(error instanceof Error ? error : String(error));
     }
   };
 
@@ -48,17 +51,24 @@ export function createApi({ db, apiPath, docs }: CreateApiOptions) {
   });
 
   // REST for the typed client (see ../client) and everyone else; coercion turns path and query
-  // strings (`/planets/2`) into schema types
+  // strings into schema types (numbers, booleans, dates)
   const openAPIHandler = new OpenAPIHandler(appRouter, {
     plugins: [new SmartCoercionHandlerPlugin({ converters }), ...(docs ? [docsPlugin] : [])],
-    interceptors: [onError(logError)],
+    interceptors: [
+      // Names the procedure on the request's wide event
+      (options) => {
+        options.context.log.set({ operation: options.path.join(".") });
+        return options.next();
+      },
+      onError(logError),
+    ],
   });
 
   return {
-    handler: async (request: Request) => {
+    handler: async (request: Request, { log }: { log: RequestLogger }) => {
       return openAPIHandler.handle(request, {
         prefix: apiPath,
-        context: await createORPCContext({ db }),
+        context: await createORPCContext({ db, auth, headers: request.headers, log }),
       });
     },
   };

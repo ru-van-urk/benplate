@@ -22,7 +22,8 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
     proxy: {
-      "/api": serverUrl,
+      // xfwd sends X-Forwarded-For, the client IP Better Auth rate-limits by
+      "/api": { target: serverUrl, xfwd: true },
     },
   },
 });

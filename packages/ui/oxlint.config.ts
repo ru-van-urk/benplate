@@ -13,6 +13,11 @@ export default defineConfig({
       rules: { "jsx-a11y/label-has-associated-control": "off" },
     },
     {
+      // `role="group"` on a div matches upstream; FieldSet is the fieldset variant
+      files: ["src/components/field.tsx"],
+      rules: { "jsx-a11y/prefer-tag-over-role": "off" },
+    },
+    {
       // `role="group"` on a div matches upstream (a fieldset brings UA styling), and the addon's click
       // only forwards focus to the input, which is keyboard-reachable on its own.
       files: ["src/components/input-group.tsx"],

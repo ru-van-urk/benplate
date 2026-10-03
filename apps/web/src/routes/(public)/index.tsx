@@ -1,7 +1,9 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { buttonVariants } from "@benplate/ui/components/button";
 
-export const Route = createFileRoute("/")({
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/(public)/")({
   context: ({ context }) => ({
     planetQueryOptions: context.orpc.planet.list.queryOptions(),
   }),
@@ -20,13 +22,25 @@ function HomeComponent() {
     <div className="container mx-auto max-w-3xl px-4 py-2">
       <div className="grid gap-6">
         <section className="rounded-lg border p-4">
-          <h1 className="mb-2 font-medium">Planets</h1>
+          <div className="mb-2 flex items-center justify-between gap-4">
+            <h1 className="font-medium">Planets</h1>
+            {/* Signed out, the `_app` guard sends this to /login first */}
+            <Link to="/planets/new" className={buttonVariants({ size: "sm" })}>
+              New planet
+            </Link>
+          </div>
           {planets.data?.length ? (
             <ul className="divide-y">
               {planets.data.map((planet) => (
                 <li key={planet.id} className="grid gap-0.5 py-2">
                   <div className="flex items-baseline justify-between gap-4">
-                    <span className="font-medium">{planet.name}</span>
+                    <Link
+                      to="/planets/$id"
+                      params={{ id: planet.id }}
+                      className="font-medium hover:underline"
+                    >
+                      {planet.name}
+                    </Link>
                     <span className="text-xs text-muted-foreground">
                       {planet.type} · {planet.distanceFromSunAu} AU ·{" "}
                       {planet.moons === 1 ? "1 moon" : `${planet.moons} moons`}

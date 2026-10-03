@@ -1,4 +1,4 @@
-import { createORPCClient } from "@orpc/client";
+import { ORPCError, createORPCClient } from "@orpc/client";
 import type { ContractRouterClient } from "@orpc/contract";
 import { ResponseValidationPlugin } from "@orpc/contract/plugins";
 import { SmartCoercionLinkPlugin } from "@orpc/json-schema";
@@ -34,4 +34,9 @@ export function createAPIClient({ origin, apiPath }: APIClientOptions): APIClien
 
 export function createTanstackQueryAPIClient(options: APIClientOptions): RouterUtils<APIClient> {
   return createTanstackQueryUtils(createAPIClient(options));
+}
+
+// Whether a caught error is one the route declares (`.errors({ CONFLICT: {} })`) with this code
+export function isApiError(error: unknown, code: string): error is ORPCError<string, unknown> {
+  return error instanceof ORPCError && error.defined && error.code === code;
 }

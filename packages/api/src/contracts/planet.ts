@@ -4,17 +4,25 @@ import { openapi } from "@orpc/openapi";
 import { createInsertSchema, createSelectSchema } from "drizzle-orm/valibot";
 import * as v from "valibot";
 
+import { authedContract, idSchema } from "./common";
+
+export { planetTypes } from "@benplate/db/schema";
+
 const tags = ["Planets"];
 
 const planetSchema = createSelectSchema(planets);
 
-const newPlanetSchema = createInsertSchema(planets, {
-  name: (schema) => v.pipe(schema, v.nonEmpty()),
-  moons: (schema) => v.pipe(schema, v.minValue(0)),
-  diameterKm: (schema) => v.pipe(schema, v.minValue(1)),
-  distanceFromSunAu: (schema) => v.pipe(schema, v.minValue(0)),
-  orbitalPeriodDays: (schema) => v.pipe(schema, v.minValue(0)),
-});
+// The server sets the id and both timestamps, so clients can't send them. Also the schema of the web forms
+export const newPlanetSchema = v.omit(
+  createInsertSchema(planets, {
+    name: (schema) => v.pipe(schema, v.nonEmpty("Enter a name")),
+    moons: (schema) => v.pipe(schema, v.minValue(0)),
+    diameterKm: (schema) => v.pipe(schema, v.minValue(1)),
+    distanceFromSunAu: (schema) => v.pipe(schema, v.minValue(0)),
+    orbitalPeriodDays: (schema) => v.pipe(schema, v.minValue(0)),
+  }),
+  ["id", "createdAt", "updatedAt"],
+);
 
 const listPlanets = oc
   .meta(
@@ -30,10 +38,10 @@ const listPlanets = oc
 const findPlanet = oc
   .meta(openapi({ method: "GET", path: "/planets/{id}", tags, summary: "Find a planet by id" }))
   .errors({ NOT_FOUND: {} })
-  .input(v.object({ id: v.pipe(v.number(), v.integer()) }))
+  .input(v.object({ id: idSchema }))
   .output(planetSchema);
 
-const createPlanet = oc
+const createPlanet = authedContract
   .meta(
     openapi({
       method: "POST",
@@ -47,8 +55,29 @@ const createPlanet = oc
   .input(newPlanetSchema)
   .output(planetSchema);
 
+const updatePlanet = authedContract
+  .meta(openapi({ method: "PATCH", path: "/planets/{id}", tags, summary: "Update a planet" }))
+  .errors({ NOT_FOUND: {}, CONFLICT: {} })
+  .input(v.object({ id: idSchema, ...v.partial(newPlanetSchema).entries }))
+  .output(planetSchema);
+
+const deletePlanet = authedContract
+  .meta(
+    openapi({
+      method: "DELETE",
+      path: "/planets/{id}",
+      successStatus: 204,
+      tags,
+      summary: "Delete a planet",
+    }),
+  )
+  .errors({ NOT_FOUND: {} })
+  .input(v.object({ id: idSchema }));
+
 export const planetContract = {
   list: listPlanets,
   find: findPlanet,
   create: createPlanet,
+  update: updatePlanet,
+  delete: deletePlanet,
 };

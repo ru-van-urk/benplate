@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     "./client": "./src/client/index.ts",
+    "./contracts": "./src/contracts/index.ts",
     "./server": "./src/server/index.ts"
   },
   "scripts": {
@@ -11,6 +12,7 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
+    "@benplate/auth": "workspace:*",
     "@benplate/db": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/contract": "catalog:",
@@ -20,6 +22,7 @@
     "@orpc/tanstack-query": "catalog:",
     "@orpc/valibot": "catalog:",
     "drizzle-orm": "catalog:",
+    "evlog": "catalog:",
     "valibot": "catalog:"
   },
   "devDependencies": {

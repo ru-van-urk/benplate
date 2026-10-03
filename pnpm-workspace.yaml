@@ -7,6 +7,7 @@ catalogMode: prefer
 allowBuilds:
   esbuild: true
 catalog:
+  "@formisch/react": ^1.1.0
   "@orpc/client": 2.0.0-beta.40
   "@orpc/contract": 2.0.0-beta.40
   "@orpc/json-schema": 2.0.0-beta.40
@@ -22,10 +23,13 @@ catalog:
   "@types/node": ^24
   "@types/react": ^19.2.18
   "@types/react-dom": ^19.2.7
+  better-auth: ^1.7.7
   drizzle-kit: 1.0.0-rc.4
   drizzle-orm: 1.0.0-rc.4
+  evlog: ^2.29.0
   knip: ^6.38.0
   lucide-react: ^1.41.0
+  nanoid: ^6.0.1
   oxfmt: ^0.66.0
   oxlint: ^1.81.0
   oxlint-tsgolint: ^7.0.2003

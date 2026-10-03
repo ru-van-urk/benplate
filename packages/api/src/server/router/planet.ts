@@ -1,6 +1,6 @@
-import { isUniqueViolation } from "@benplate/db";
+import { isUniqueViolation, newId } from "@benplate/db";
 
-import { os } from "../orpc";
+import { os, protectedProcedure } from "../orpc";
 
 const listPlanets = os.planet.list.handler(({ context }) => {
   return context.db.selectFrom("planets").selectAll().orderBy("distanceFromSunAu").execute();
@@ -20,24 +20,69 @@ const findPlanet = os.planet.find.handler(async ({ context, input, errors }) => 
   return planet;
 });
 
-const createPlanet = os.planet.create.handler(async ({ context, input, errors }) => {
-  try {
-    return await context.db
-      .insertInto("planets")
-      .values(input)
-      .returningAll()
-      .executeTakeFirstOrThrow();
-  } catch (error) {
-    if (isUniqueViolation(error)) {
-      throw errors.CONFLICT({ message: `Planet ${input.name} already exists`, cause: error });
-    }
+const createPlanet = protectedProcedure.planet.create.handler(
+  async ({ context, input, errors }) => {
+    try {
+      return await context.db
+        .insertInto("planets")
+        .values({ ...input, id: newId() })
+        .returningAll()
+        .executeTakeFirstOrThrow();
+    } catch (error) {
+      if (isUniqueViolation(error, "planets_name_unique")) {
+        throw errors.CONFLICT({ message: `Planet ${input.name} already exists`, cause: error });
+      }
 
-    throw error;
-  }
-});
+      throw error;
+    }
+  },
+);
+
+const updatePlanet = protectedProcedure.planet.update.handler(
+  async ({ context, input, errors }) => {
+    const { id, ...changes } = input;
+
+    try {
+      const planet = await context.db
+        .updateTable("planets")
+        // An empty patch still needs a SET clause; the updated_at trigger overwrites it anyway
+        .set({ ...changes, updatedAt: new Date() })
+        .where("id", "=", id)
+        .returningAll()
+        .executeTakeFirst();
+
+      if (!planet) {
+        throw errors.NOT_FOUND({ message: `Planet ${id} not found` });
+      }
+
+      return planet;
+    } catch (error) {
+      if (isUniqueViolation(error, "planets_name_unique")) {
+        throw errors.CONFLICT({ message: `Planet ${changes.name} already exists`, cause: error });
+      }
+
+      throw error;
+    }
+  },
+);
+
+const deletePlanet = protectedProcedure.planet.delete.handler(
+  async ({ context, input, errors }) => {
+    const result = await context.db
+      .deleteFrom("planets")
+      .where("id", "=", input.id)
+      .executeTakeFirst();
+
+    if (result.numDeletedRows === 0n) {
+      throw errors.NOT_FOUND({ message: `Planet ${input.id} not found` });
+    }
+  },
+);
 
 export const planetRouter = os.planet.router({
   list: listPlanets,
   find: findPlanet,
   create: createPlanet,
+  update: updatePlanet,
+  delete: deletePlanet,
 });
