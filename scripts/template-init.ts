@@ -52,5 +52,5 @@ console.log(`
 Remaining steps:
   1. Describe the app: the description in apps/web/src/routes/__root.tsx, and apps/web/public/favicon.svg
   2. Remove the planets example once you no longer need it (see "Starting a new project" in the README)
-  3. Run pnpm check, then commit
+  3. Run pnpm fix and pnpm check, then commit
 `);

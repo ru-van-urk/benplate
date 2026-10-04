@@ -9,7 +9,6 @@
     "./components/*": "./src/components/*.tsx"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
@@ -31,7 +30,6 @@
     "@types/react-dom": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
-    "tailwindcss": "catalog:",
-    "typescript": "catalog:"
+    "tailwindcss": "catalog:"
   }
 }

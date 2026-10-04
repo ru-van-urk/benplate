@@ -40,12 +40,9 @@ jobs:
             exit 1
           fi
 
-      - run: pnpm typecheck
+      # sherif, oxlint, oxfmt and tsc through uncheck, then knip. It never fixes, so CI fails instead of
+      # rewriting files
+      - run: pnpm check
 
       # Vite build, and the tsdown bundle with its migrations copy
       - run: pnpm build
-
-      # Non-fixing variants, so CI fails instead of rewriting files
-      - run: pnpm lint:check
-      - run: pnpm format:check
-      - run: pnpm knip

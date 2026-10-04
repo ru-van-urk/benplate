@@ -35,9 +35,13 @@ catalog:
   oxlint-tsgolint: ^7.0.2003
   react: ^19.2.8
   react-dom: ^19.2.8
+  sherif: ^1.13.0
   sonner: ^2.0.8
   tailwindcss: ^4.3.3
   taze: ^21.2.0
   turbo: ^2.10.12
   typescript: ^7.0.2
+  uncheck: ^0.1.1
   valibot: ^1.5.0
+minimumReleaseAgeExclude:
+  - uncheck@0.1.1

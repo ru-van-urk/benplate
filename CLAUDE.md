@@ -29,4 +29,4 @@ A full-stack template: React + TanStack Router (`apps/web`), Hono + oRPC (`apps/
 
 ## Before you finish
 
-Run `pnpm check` (lint, format, typecheck, knip). It must pass.
+Run `pnpm fix`, then `pnpm check` (sherif, oxlint, oxfmt and tsc through uncheck, then knip). It must pass.

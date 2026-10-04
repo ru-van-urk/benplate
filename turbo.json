@@ -8,15 +8,6 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**"]
     },
-    // No package defines `transit`: it only chains through internal dependencies, so a change in
-    // a source-only package (@benplate/api, @benplate/db) invalidates its dependents' cached typecheck
-    "transit": {
-      "dependsOn": ["^transit"]
-    },
-    "typecheck": {
-      "dependsOn": ["transit"],
-      "outputs": [".cache/tsbuildinfo*.json"]
-    },
     "dev": {
       "cache": false,
       "persistent": true,

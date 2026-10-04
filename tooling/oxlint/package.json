@@ -8,14 +8,12 @@
     "./node": "./node.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "oxlint": "catalog:"
   },
   "devDependencies": {
-    "@benplate/typescript-config": "workspace:*",
-    "typescript": "catalog:"
+    "@benplate/typescript-config": "workspace:*"
   }
 }

@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "pnpm lint && pnpm format && pnpm typecheck && pnpm knip",
+    "check": "uncheck && knip",
+    "fix": "uncheck --fix",
     "build": "turbo run build",
     "clean": "turbo run clean",
     "postclean": "git clean -xdf .cache .turbo node_modules",
@@ -18,15 +19,10 @@
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
-    "typecheck": "turbo run typecheck && tsc",
-    "lint": "oxlint --fix",
-    "lint:check": "oxlint",
-    "format": "oxfmt",
-    "format:check": "oxfmt --check",
-    "knip": "knip",
     "deps:check": "taze",
     "deps:update": "taze -w",
-    "template:init": "node scripts/template-init.ts"
+    "template:init": "node scripts/template-init.ts",
+    "prepare": "uncheck prepare --pre-commit --only=oxlint --only=oxfmt"
   },
   "devDependencies": {
     "@benplate/oxfmt-config": "workspace:*",
@@ -37,9 +33,11 @@
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
     "oxlint-tsgolint": "catalog:",
+    "sherif": "catalog:",
     "taze": "catalog:",
     "turbo": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "uncheck": "catalog:"
   },
   "engines": {
     "node": "^24.14.0"

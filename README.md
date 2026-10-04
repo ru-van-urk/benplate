@@ -18,6 +18,7 @@ A pnpm monorepo starter for full-stack TypeScript apps: a React and TanStack Rou
 - **Kysely** - Type-safe SQL query builder, typed from the Drizzle schema
 - **Postgresql** - Database engine
 - **Oxlint** - Oxlint + Oxfmt (linting & formatting)
+- **uncheck** - One command for Oxlint, Oxfmt, tsc and sherif, and the pre-commit hook
 - **Turborepo** - Optimized monorepo build system
 
 ## Prerequisites
@@ -234,10 +235,12 @@ Postgresql stores its data in the `postgres_data` volume. On every start, the `m
 
 ## Linting, Formatting and CI
 
-Oxlint and Oxfmt run once from the root. Each package's `oxlint.config.ts` / `oxfmt.config.ts` picks the preset from `tooling/` (`node` or `react`); anything without its own config falls back to the root `base`.
+[uncheck](https://github.com/middleapi/uncheck) runs sherif, Oxlint, Oxfmt and tsc once from the root, and every check runs even after one fails. Each package's `oxlint.config.ts` / `oxfmt.config.ts` picks the preset from `tooling/` (`node` or `react`); anything without its own config falls back to the root `base`. tsc checks every `tsconfig.json`, and `apps/web`'s project references with `tsc -b`.
 
-- Fix and verify everything: `pnpm run check` (lint with fixes, format, typecheck, then knip; stops at the first failure)
-- CI (`.github/workflows/ci.yml`) runs the non-fixing variants on pull requests: `typecheck`, `build`, `lint:check`, `format:check` and `knip`, plus a check that `packages/db/src/migrations` matches the schema
+- Fix what can be fixed: `pnpm run fix` (Oxlint and Oxfmt fixes, sherif fixes; type errors are reported)
+- Verify everything: `pnpm run check` (uncheck without fixes, then knip)
+- Every commit runs Oxlint and Oxfmt on the staged files, fixes them and stages the fixes. `pnpm install` writes the hook through the `prepare` script; tsc is left to `check` to keep commits fast. Skip it with `git commit --no-verify`. uncheck can't write the hook when a global `core.hooksPath` is set
+- CI (`.github/workflows/ci.yml`) runs `check` and `build` on pull requests, plus a check that `packages/db/src/migrations` matches the schema
 - `main` only takes pull requests (the "protect main" ruleset), and the `check` job is a required status check. CI doesn't run on pushes to `main`, because every change already passed it in its pull request. Renaming the `check` job blocks merges until the ruleset names the new one
 
 ## Project Structure
@@ -266,15 +269,12 @@ benplate/
 - `pnpm run build`: Build all applications
 - `pnpm run dev:web`: Start only the web application
 - `pnpm run dev:server`: Start only the server
-- `pnpm run typecheck`: Check TypeScript types across all packages
 - `pnpm run db:push`: Push the schema straight to the local database (development only)
 - `pnpm run db:generate --name <change>`: Generate a migration from schema changes
 - `pnpm run db:migrate`: Apply pending migrations to the local database (deployments do this in the `migrate` service)
 - `pnpm run db:studio`: Open database studio UI
-- `pnpm run lint` / `lint:check`: Run Oxlint with / without fixes
-- `pnpm run format` / `format:check`: Write / check Oxfmt formatting
-- `pnpm run check`: Run `lint`, `format`, `typecheck` and `knip`, stopping at the first failure
-- `pnpm run knip`: Find unused files, dependencies and exports
+- `pnpm run check`: Run sherif, Oxlint, Oxfmt and tsc through uncheck, then knip (unused files, dependencies and exports)
+- `pnpm run fix`: Apply Oxlint, Oxfmt and sherif fixes, and report what's left
 - `pnpm run deps:check` / `deps:update`: Report / write dependency updates with Taze
 - `pnpm run clean`: Remove build output, caches and `node_modules`
 - `pnpm run template:init <name> [Display Name]`: Rename a project created from this template

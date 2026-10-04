@@ -7,7 +7,6 @@
     "./client": "./src/client.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
@@ -17,7 +16,6 @@
   "devDependencies": {
     "@benplate/oxlint-config": "workspace:*",
     "@benplate/typescript-config": "workspace:*",
-    "oxlint": "catalog:",
-    "typescript": "catalog:"
+    "oxlint": "catalog:"
   }
 }
