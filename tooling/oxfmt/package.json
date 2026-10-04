@@ -1,0 +1,18 @@
+{
+  "name": "@benplate/oxfmt-config",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./base": "./base.ts",
+    "./react": "./react.ts"
+  },
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
+  },
+  "dependencies": {
+    "oxfmt": "catalog:"
+  },
+  "devDependencies": {
+    "@benplate/typescript-config": "workspace:*"
+  }
+}

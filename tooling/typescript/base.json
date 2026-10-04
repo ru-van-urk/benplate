@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    /** Base Options */
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    /** Keep TSC performant in monorepos */
+    "incremental": true,
+    "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo.json",
+
+    /** Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "erasableSyntaxOnly": true,
+
+    /** Transpile using Bundler (not tsc) */
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true
+  },
+  "exclude": ["${configDir}/node_modules", "${configDir}/dist"]
+}

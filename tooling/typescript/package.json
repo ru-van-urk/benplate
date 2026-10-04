@@ -1,0 +1,8 @@
+{
+  "name": "@benplate/typescript-config",
+  "private": true,
+  "files": [
+    "*.json"
+  ],
+  "type": "module"
+}

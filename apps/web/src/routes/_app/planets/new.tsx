@@ -1,0 +1,33 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+
+import { PlanetForm } from "~/components/planet-form";
+
+export const Route = createFileRoute("/_app/planets/new")({
+  component: NewPlanetComponent,
+});
+
+function NewPlanetComponent() {
+  const { orpc } = Route.useRouteContext();
+  const navigate = Route.useNavigate();
+  const queryClient = useQueryClient();
+
+  const createPlanet = useMutation(
+    orpc.planet.create.mutationOptions({
+      onSuccess: async (planet) => {
+        await queryClient.invalidateQueries({ queryKey: orpc.planet.key() });
+        await navigate({ to: "/planets/$id", params: { id: planet.id } });
+      },
+    }),
+  );
+
+  return (
+    <div className="container mx-auto grid max-w-md gap-4 px-4 py-2">
+      <h1 className="font-medium">New planet</h1>
+      <PlanetForm
+        submitLabel="Create planet"
+        onSubmit={(planet) => createPlanet.mutateAsync(planet)}
+      />
+    </div>
+  );
+}

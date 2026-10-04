@@ -1,0 +1,32 @@
+# Dependencies
+node_modules
+
+# Build outputs and caches
+dist
+.cache
+.turbo
+*.tsbuildinfo
+
+# Generated (TanStack's routeTree.gen.ts is committed: it is part of the app, not a build artifact)
+.tanstack
+
+# Environment
+.env*
+!.env.example
+*.pem
+
+# Editors and OS
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea
+*.swp
+.DS_Store
+
+# Logs
+*.log
+
+# evlog file drain (development)
+.evlog

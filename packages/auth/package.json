@@ -1,0 +1,21 @@
+{
+  "name": "@benplate/auth",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts"
+  },
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
+  },
+  "dependencies": {
+    "@benplate/db": "workspace:*",
+    "better-auth": "catalog:"
+  },
+  "devDependencies": {
+    "@benplate/oxlint-config": "workspace:*",
+    "@benplate/typescript-config": "workspace:*",
+    "oxlint": "catalog:"
+  }
+}

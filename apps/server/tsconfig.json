@@ -1,0 +1,6 @@
+{
+  "extends": "@benplate/typescript-config/base.json",
+  "compilerOptions": {
+    "types": ["node"]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
+    "start": "node --env-file-if-exists=.env dist/index.mjs",
+    "clean": "git clean -xdf .cache .turbo dist node_modules"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.1",
+    "evlog": "catalog:",
+    "hono": "^4.13.7",
+    "valibot": "catalog:"
+  },
+  "devDependencies": {
+    "@benplate/api": "workspace:*",
+    "@benplate/auth": "workspace:*",
+    "@benplate/db": "workspace:*",
+    "@benplate/oxlint-config": "workspace:*",
+    "@benplate/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "oxlint": "catalog:",
+    "tsdown": "^0.23.0",
+    "tsx": "^4.23.13"
+  }
+}

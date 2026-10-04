@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      # Version from `packageManager` in package.json
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          # Same major as the Docker images (node:24-slim)
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Fails when the schema changed without a committed migration. generate only diffs against the
+      # snapshots in packages/db/src/migrations and never connects, but drizzle.config.ts requires a URL
+      - name: Check migrations match the schema
+        env:
+          DATABASE_URL: postgres://unused
+        run: |
+          pnpm --filter @benplate/db exec drizzle-kit generate
+          if [ -n "$(git status --porcelain packages/db/src/migrations)" ]; then
+            echo "::error::The schema changed without a migration: run pnpm run db:generate --name <change> and commit the result"
+            exit 1
+          fi
+
+      # sherif, oxlint, oxfmt and tsc through uncheck, then knip. It never fixes, so CI fails instead of
+      # rewriting files
+      - run: pnpm check
+
+      # Vite build, and the tsdown bundle with its migrations copy
+      - run: pnpm build
