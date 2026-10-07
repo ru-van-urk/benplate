@@ -4,7 +4,6 @@
   "type": "module",
   "exports": {
     "./client": "./src/client/index.ts",
-    "./contracts": "./src/contracts/index.ts",
     "./server": "./src/server/index.ts"
   },
   "scripts": {
@@ -12,6 +11,7 @@
   },
   "dependencies": {
     "@benplate/auth": "workspace:*",
+    "@benplate/contract": "workspace:*",
     "@benplate/db": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/contract": "catalog:",
@@ -20,9 +20,7 @@
     "@orpc/server": "catalog:",
     "@orpc/tanstack-query": "catalog:",
     "@orpc/valibot": "catalog:",
-    "drizzle-orm": "catalog:",
-    "evlog": "catalog:",
-    "valibot": "catalog:"
+    "evlog": "catalog:"
   },
   "devDependencies": {
     "@benplate/oxlint-config": "workspace:*",

@@ -1,5 +1,5 @@
 import { isApiError } from "@benplate/api/client";
-import { newPlanetSchema, planetTypes } from "@benplate/api/contracts";
+import { newPlanetSchema, planetTypes } from "@benplate/contract";
 import { Button } from "@benplate/ui/components/button";
 import { FieldError, FieldGroup } from "@benplate/ui/components/field";
 

@@ -3,7 +3,7 @@ import type { Database } from "@benplate/db";
 import { implement, ORPCError } from "@orpc/server";
 import type { RequestLogger } from "evlog";
 
-import { appContract } from "../contracts";
+import { appContract } from "@benplate/contract";
 
 export type CreateORPCContextOptions = {
   db: Database;

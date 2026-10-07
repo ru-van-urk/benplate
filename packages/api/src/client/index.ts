@@ -5,7 +5,7 @@ import { SmartCoercionLinkPlugin } from "@orpc/json-schema";
 import { OpenAPILink } from "@orpc/openapi/fetch";
 import { createTanstackQueryUtils, type RouterUtils } from "@orpc/tanstack-query";
 
-import { appContract } from "../contracts";
+import { appContract } from "@benplate/contract";
 import { converters } from "../converters";
 
 export type APIClient = ContractRouterClient<typeof appContract>;
