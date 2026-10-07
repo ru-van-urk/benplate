@@ -6,12 +6,12 @@ import { FieldError, FieldGroup } from "@benplate/ui/components/field";
 import { Field, Form, setErrors, useForm } from "@formisch/react";
 import type * as v from "valibot";
 
-import { NumberField, SelectField, TextField } from "./form-fields";
+import { NumberField, SelectField, TextField } from "~/components/form-fields";
 
 type PlanetInput = v.InferOutput<typeof newPlanetSchema>;
 
 // Create and edit both validate with the contract's own schema, so the form and the API agree on every rule
-export function PlanetForm({
+export const PlanetForm = ({
   initialInput,
   submitLabel,
   onSubmit,
@@ -19,7 +19,7 @@ export function PlanetForm({
   initialInput?: v.InferInput<typeof newPlanetSchema>;
   submitLabel: string;
   onSubmit: (planet: PlanetInput) => Promise<unknown>;
-}) {
+}) => {
   const form = useForm({ schema: newPlanetSchema, initialInput });
 
   return (
@@ -85,4 +85,4 @@ export function PlanetForm({
       </Button>
     </Form>
   );
-}
+};

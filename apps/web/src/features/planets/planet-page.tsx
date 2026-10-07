@@ -1,26 +1,13 @@
 import { buttonVariants } from "@benplate/ui/components/button";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, getRouteApi } from "@tanstack/react-router";
 import { Suspense, lazy } from "react";
 
-// Only signed-in users see it, so only they download the dialog (Base UI, about 50 KB)
-const DeletePlanet = lazy(() =>
-  import("~/components/delete-planet").then(({ DeletePlanet }) => ({ default: DeletePlanet })),
-);
+const route = getRouteApi("/(public)/planets/$id");
 
-export const Route = createFileRoute("/(public)/planets/$id")({
-  context: ({ context, params }) => ({
-    planetQueryOptions: context.orpc.planet.find.queryOptions({ input: { id: params.id } }),
-  }),
-  loader: async ({ context }) => {
-    await context.queryClient.query({ ...context.planetQueryOptions, staleTime: "static" });
-  },
-  component: PlanetComponent,
-});
-
-function PlanetComponent() {
-  const context = Route.useRouteContext();
+export const PlanetPage = () => {
+  const context = route.useRouteContext();
 
   const { data: planet } = useSuspenseQuery(context.planetQueryOptions);
 
@@ -65,4 +52,9 @@ function PlanetComponent() {
       </dl>
     </div>
   );
-}
+};
+
+// Only signed-in users see it, so only they download the dialog (Base UI, about 50 KB)
+const DeletePlanet = lazy(() =>
+  import("./delete-planet").then(({ DeletePlanet }) => ({ default: DeletePlanet })),
+);

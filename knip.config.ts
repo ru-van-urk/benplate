@@ -6,7 +6,7 @@ export default {
       entry: ["taze.config.ts"],
     },
     "apps/web": {
-      entry: ["src/routes/**/*.tsx"],
+      entry: ["src/routes/**/*.ts"],
       vite: {
         config: [],
         entry: ["vite.config.ts"],

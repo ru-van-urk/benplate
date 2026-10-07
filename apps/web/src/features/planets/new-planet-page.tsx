@@ -1,15 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 
-import { PlanetForm } from "~/components/planet-form";
+import { PlanetForm } from "./planet-form";
 
-export const Route = createFileRoute("/_app/planets/new")({
-  component: NewPlanetComponent,
-});
+const route = getRouteApi("/_app/planets/new");
 
-function NewPlanetComponent() {
-  const { orpc } = Route.useRouteContext();
-  const navigate = Route.useNavigate();
+export const NewPlanetPage = () => {
+  const { orpc } = route.useRouteContext();
+  const navigate = route.useNavigate();
   const queryClient = useQueryClient();
 
   const createPlanet = useMutation(
@@ -30,4 +28,4 @@ function NewPlanetComponent() {
       />
     </div>
   );
-}
+};

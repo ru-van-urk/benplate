@@ -1,46 +1,21 @@
 import { Button, buttonVariants } from "@benplate/ui/components/button";
 
-import { type QueryClient, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   HeadContent,
   Link,
   Outlet,
-  createRootRouteWithContext,
+  getRouteApi,
   useLocation,
   useRouter,
 } from "@tanstack/react-router";
 
-import { loadAuthClient, refreshSession, sessionQueryOptions } from "~/utils/auth";
-import type { orpc } from "~/utils/orpc";
+import { loadAuthClient, refreshSession } from "~/utils/auth";
 
-import "../index.css";
+const route = getRouteApi("__root__");
 
-export interface RouterAppContext {
-  orpc: typeof orpc;
-  queryClient: QueryClient;
-}
-
-export const Route = createRootRouteWithContext<RouterAppContext>()({
-  // Every route reads the session from here; it is fetched once and kept until `refreshSession` drops it
-  beforeLoad: async ({ context }) => ({
-    session: await context.queryClient.query({ ...sessionQueryOptions, staleTime: "static" }),
-  }),
-  component: RootComponent,
-  head: () => ({
-    meta: [
-      {
-        title: "BenPlate",
-      },
-      {
-        name: "description",
-        content: "BenPlate is a web application",
-      },
-    ],
-  }),
-});
-
-function RootComponent() {
+export const RootLayout = () => {
   return (
     <>
       <HeadContent />
@@ -54,10 +29,10 @@ function RootComponent() {
       <ReactQueryDevtools />
     </>
   );
-}
+};
 
-function Header() {
-  const { session } = Route.useRouteContext();
+const Header = () => {
+  const { session } = route.useRouteContext();
   const location = useLocation();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -92,4 +67,4 @@ function Header() {
       )}
     </header>
   );
-}
+};

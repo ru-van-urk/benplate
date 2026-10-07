@@ -93,8 +93,8 @@ Two groups are pinned to exact pre-release versions in the catalog (`pnpm-worksp
    pnpm template:init <name> "Display Name"
    ```
 
-3. Follow the steps it prints: the description in `apps/web/src/routes/__root.tsx` and `apps/web/public/favicon.svg`.
-4. Remove the example once you no longer need it: delete the `planets` schema, contract and router (and their entries in each `index.ts`) and the planet routes and components in `apps/web/src`, then run `pnpm run db:generate --name remove_planets`. Keep the earlier planet migrations: they may have run somewhere already, and on a new database the table is simply created and dropped again.
+3. Follow the steps it prints: the description in `apps/web/src/routes/__root.ts` and `apps/web/public/favicon.svg`.
+4. Remove the example once you no longer need it: delete the `planets` schema, contract and router (and their entries in each `index.ts`) and the planet routes and pages (`apps/web/src/routes`, `apps/web/src/features/planets`), then run `pnpm run db:generate --name remove_planets`. Keep the earlier planet migrations: they may have run somewhere already, and on a new database the table is simply created and dropped again.
 
 ## Adding a resource
 
@@ -131,7 +131,7 @@ The contract ships to the browser, so it imports only oRPC and Valibot, never `@
 - **Input schemas carry the rules** (`v.nonEmpty`, `v.minValue`, `integerSchema` for `integer` columns), and the web forms validate with them. Columns that are nullable or have a default are optional.
 - **The router checks both against the table.** A handler that returns a row the output schema can't hold, or inserts input the table doesn't accept, fails to type-check, so a contract that drifts from the table fails `pnpm check`. That is also why an enum list such as `planetTypes` can be written in both packages.
 
-Then decide who may call each route. Public routes use `oc` in the contract and `os` in the router. Routes that need a signed-in user start from `authedContract` and `protectedProcedure` (see [Authentication](#authentication)). The pages go under `routes/(public)/` or `routes/_app/` to match (see [Web routes](#web-routes)).
+Then decide who may call each route. Public routes use `oc` in the contract and `os` in the router. Routes that need a signed-in user start from `authedContract` and `protectedProcedure` (see [Authentication](#authentication)). Its route files go under `routes/(public)/` or `routes/_app/` to match, and its pages under `features/<resource>/` (see [Web routes](#web-routes)).
 
 ## Authentication
 
@@ -147,12 +147,16 @@ Then decide who may call each route. Public routes use `oc` in the contract and 
 
 TanStack Router's file routes, in two groups:
 
-| Route                                               | What it does                                                                                     |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `__root.tsx`                                        | Loads the session once (`beforeLoad`) into the router context; the header shows the user         |
-| `(public)/…`                                        | Pages anyone can open: the planet list and detail, `/login` and `/register`                      |
-| `_app/route.tsx`                                    | Pathless layout for pages that need a signed-in user; redirects to `/login?redirect=<this page>` |
-| `_app/planets/new.tsx`, `_app/planets/$id/edit.tsx` | The create and edit forms                                                                        |
+| Route                                             | What it does                                                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `__root.ts`                                       | Loads the session once (`beforeLoad`) into the router context; the header shows the user         |
+| `(public)/…`                                      | Pages anyone can open: the planet list and detail, `/login` and `/register`                      |
+| `_app/route.ts`                                   | Pathless layout for pages that need a signed-in user; redirects to `/login?redirect=<this page>` |
+| `_app/planets/new.ts`, `_app/planets/$id/edit.ts` | The create and edit forms                                                                        |
+
+Route files only declare the route: its `context`, `loader`, `beforeLoad`, `validateSearch` and the page as `component`. They are `.ts`, so they can't hold JSX. The page itself lives in `src/features/<feature>/` (`planets/planet-page.tsx`, `auth/login-page.tsx`, `layout/root-layout.tsx`) and reads its route through `getRouteApi("<route id>")`; importing a route file from a page would be circular, and lint rejects it. Code splitting still moves each page into its route's own chunk. App-wide pieces (form fields, the loader, the error and not-found screens) stay in `src/components/`.
+
+Components are `const` arrow functions, which lint enforces in `apps/web` (`packages/ui` keeps shadcn's `function` style, so `shadcn add` output needs no edits). A component may render one defined further down the file; `no-use-before-define` is off on purpose, because tsc already rejects a value that is read before its declaration while the module loads (TS2448).
 
 The login and register pages send signed-in users on to their `redirect` parameter, which only accepts a path on the same origin. After signing in or out, `refreshSession` (`apps/web/src/utils/auth.ts`) reloads the session and reruns every route's `beforeLoad`, so the guards redirect wherever the user now belongs. An API call that answers `UNAUTHORIZED`, such as after the session expired, does the same, which sends the user to the login page and back afterwards.
 

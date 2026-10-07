@@ -9,7 +9,7 @@ import {
 
 import { type ErrorComponentProps, useRouter } from "@tanstack/react-router";
 
-export default function RouteError({ error }: ErrorComponentProps) {
+const RouteError = ({ error }: ErrorComponentProps) => {
   const router = useRouter();
 
   return (
@@ -26,4 +26,6 @@ export default function RouteError({ error }: ErrorComponentProps) {
       </EmptyContent>
     </Empty>
   );
-}
+};
+
+export default RouteError;

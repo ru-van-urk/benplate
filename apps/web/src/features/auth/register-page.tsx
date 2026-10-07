@@ -3,32 +3,16 @@ import { FieldError, FieldGroup } from "@benplate/ui/components/field";
 
 import { Field, Form, setErrors, useForm } from "@formisch/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Link, createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { Link, getRouteApi, useRouter } from "@tanstack/react-router";
 import * as v from "valibot";
 
 import { TextField } from "~/components/form-fields";
-import { loadAuthClient, redirectSearchSchema, refreshSession } from "~/utils/auth";
+import { loadAuthClient, refreshSession } from "~/utils/auth";
 
-const registerSchema = v.object({
-  name: v.pipe(v.string(), v.trim(), v.nonEmpty("Enter your name")),
-  email: v.pipe(v.string(), v.email("Enter a valid email address")),
-  // Better Auth's default minimum
-  password: v.pipe(v.string(), v.minLength(8, "Use at least 8 characters")),
-});
+const route = getRouteApi("/(public)/register");
 
-export const Route = createFileRoute("/(public)/register")({
-  validateSearch: redirectSearchSchema,
-  // Also runs after a successful sign-up, which signs in too (`autoSignIn`)
-  beforeLoad: ({ context, search }) => {
-    if (context.session) {
-      throw redirect({ href: search.redirect ?? "/" });
-    }
-  },
-  component: RegisterComponent,
-});
-
-function RegisterComponent() {
-  const search = Route.useSearch();
+export const RegisterPage = () => {
+  const search = route.useSearch();
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -88,4 +72,11 @@ function RegisterComponent() {
       </p>
     </div>
   );
-}
+};
+
+const registerSchema = v.object({
+  name: v.pipe(v.string(), v.trim(), v.nonEmpty("Enter your name")),
+  email: v.pipe(v.string(), v.email("Enter a valid email address")),
+  // Better Auth's default minimum
+  password: v.pipe(v.string(), v.minLength(8, "Use at least 8 characters")),
+});

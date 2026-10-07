@@ -17,7 +17,7 @@ import { getRouteApi } from "@tanstack/react-router";
 // Split from the planet page, which loads it lazily
 const route = getRouteApi("/(public)/planets/$id");
 
-export function DeletePlanet({ id, name }: { id: string; name: string }) {
+export const DeletePlanet = ({ id, name }: { id: string; name: string }) => {
   const { orpc } = route.useRouteContext();
   const navigate = route.useNavigate();
   const queryClient = useQueryClient();
@@ -54,4 +54,4 @@ export function DeletePlanet({ id, name }: { id: string; name: string }) {
       </AlertDialogContent>
     </AlertDialog>
   );
-}
+};

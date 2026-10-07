@@ -22,7 +22,9 @@ A full-stack template: React + TanStack Router (`apps/web`), Hono + oRPC (`apps/
 
 - Forms use Formisch (`@formisch/react`), never TanStack Form. They validate with the contract's own schemas, exported from `@benplate/contract`, and map API errors to fields with `setErrors`.
 - Read the session through `sessionQueryOptions` and get Better Auth's client from `loadAuthClient()` (`apps/web/src/utils/auth.ts`); never import `@benplate/auth/client` statically, which puts it back in every first page load.
-- Pages that need a signed-in user live under `routes/_app/`; everything else under `routes/(public)/`. See [Web routes](README.md#web-routes).
+- Route files (`src/routes/`) are `.ts` and only declare the route (`context`, `loader`, `beforeLoad`, `validateSearch`, `component`). The page component lives in `src/features/<feature>/`, is imported as `component`, and reads its route through `getRouteApi("<route id>")`, never by importing a route file.
+- Routes that need a signed-in user live under `routes/_app/`; everything else under `routes/(public)/`. See [Web routes](README.md#web-routes).
+- Components are `const` arrow functions (`packages/ui` keeps shadcn's `function` style). Keep `no-use-before-define` off: tsc already rejects a value read before its declaration (TS2448).
 
 ## Server
 
