@@ -24,9 +24,6 @@
     "db:migrate": {
       "cache": false
     },
-    "db:codegen": {
-      "cache": false
-    },
     "db:studio": {
       "cache": false,
       "persistent": true

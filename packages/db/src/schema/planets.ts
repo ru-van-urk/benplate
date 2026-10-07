@@ -2,7 +2,7 @@ import { pgEnum, snakeCase } from "drizzle-orm/pg-core";
 
 import { timestamps } from "./columns";
 
-// A Postgres enum, so the database rejects other values and kysely-codegen types the column as their union.
+// A Postgres enum, so the database rejects other values and the column is typed as their union.
 // Adding a value is a normal migration, but it can't be used in the same deploy (see docs/database.md)
 export const climate = pgEnum("climate", [
   "arid",

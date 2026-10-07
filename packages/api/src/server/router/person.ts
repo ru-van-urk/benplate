@@ -1,50 +1,32 @@
-import { type Database, jsonObjectFrom, newPublicId } from "@benplate/db";
+import { type Database, newPublicId } from "@benplate/db";
+import { people } from "@benplate/db/schema";
+import { eq } from "drizzle-orm";
 
 import { publicIdPrefixes } from "@benplate/contract";
 
 import { os, protectedProcedure } from "../orpc";
 
-// People as the contract returns them: the homeworld comes along as a JSON object built by Postgres, with the
-// planet's public id instead of the private `homeworld_id`
-const selectPeople = (db: Database) =>
-  db.selectFrom("people").select((eb) => [
-    "people.publicId",
-    "people.name",
-    "people.birthYear",
-    "people.heightCm",
-    "people.massKg",
-    "people.createdAt",
-    "people.updatedAt",
-    jsonObjectFrom(
-      eb
-        .selectFrom("planets")
-        .select(["planets.publicId", "planets.name"])
-        .whereRef("planets.id", "=", "people.homeworldId"),
-    )
-      // The foreign key guarantees the planet exists
-      .$notNull()
-      .as("homeworld"),
-  ]);
+// What a person embeds of their homeworld: the planet's public id instead of the private `homeworld_id`
+const homeworld = { columns: { publicId: true, name: true } } as const;
 
-// The private id behind a planet's public id, which is what the API takes for a relation
-const findPlanetId = async (db: Database, publicId: string) => {
-  const planet = await db
-    .selectFrom("planets")
-    .select("id")
-    .where("publicId", "=", publicId)
-    .executeTakeFirst();
+const findPerson = (db: Database, publicId: string) => {
+  return db.query.people.findFirst({ where: { publicId }, with: { homeworld } });
+};
 
-  return planet?.id;
+// The planet behind a public id, which is what the API takes for a relation; its private id is what's stored
+const findPlanet = (db: Database, publicId: string) => {
+  return db.query.planets.findFirst({
+    where: { publicId },
+    columns: { id: true, publicId: true, name: true },
+  });
 };
 
 const listPeople = os.person.list.handler(({ context }) => {
-  return selectPeople(context.db).orderBy("people.name").execute();
+  return context.db.query.people.findMany({ orderBy: { name: "asc" }, with: { homeworld } });
 });
 
 const getPerson = os.person.get.handler(async ({ context, input, errors }) => {
-  const person = await selectPeople(context.db)
-    .where("people.publicId", "=", input.publicId)
-    .executeTakeFirst();
+  const person = await findPerson(context.db, input.publicId);
 
   if (!person) {
     throw errors.NOT_FOUND({ message: `Person ${input.publicId} not found` });
@@ -55,22 +37,24 @@ const getPerson = os.person.get.handler(async ({ context, input, errors }) => {
 
 const createPerson = protectedProcedure.person.create.handler(
   async ({ context, input, errors }) => {
-    const { homeworldPublicId, ...person } = input;
-    const homeworldId = await findPlanetId(context.db, homeworldPublicId);
+    const { homeworldPublicId, ...values } = input;
+    const planet = await findPlanet(context.db, homeworldPublicId);
 
-    if (homeworldId === undefined) {
+    if (!planet) {
       throw errors.NOT_FOUND({ message: `Planet ${homeworldPublicId} not found` });
     }
 
-    const { publicId } = await context.db
-      .insertInto("people")
-      .values({ ...person, homeworldId, publicId: newPublicId(publicIdPrefixes.person) })
-      .returning("publicId")
-      .executeTakeFirstOrThrow();
+    const [person] = await context.db
+      .insert(people)
+      .values({ ...values, homeworldId: planet.id, publicId: newPublicId(publicIdPrefixes.person) })
+      .returning();
 
-    return selectPeople(context.db)
-      .where("people.publicId", "=", publicId)
-      .executeTakeFirstOrThrow();
+    if (!person) {
+      throw new Error("The insert returned no row");
+    }
+
+    // The output schema keeps the planet's public id and name, and drops its private id
+    return { ...person, homeworld: planet };
   },
 );
 
@@ -80,40 +64,40 @@ const updatePerson = protectedProcedure.person.update.handler(
     let homeworldId: number | undefined;
 
     if (homeworldPublicId !== undefined) {
-      homeworldId = await findPlanetId(context.db, homeworldPublicId);
+      const planet = await findPlanet(context.db, homeworldPublicId);
 
-      if (homeworldId === undefined) {
+      if (!planet) {
         throw errors.NOT_FOUND({ message: `Planet ${homeworldPublicId} not found` });
       }
+
+      homeworldId = planet.id;
     }
 
-    const person = await context.db
-      .updateTable("people")
-      // Kysely skips undefined values, so an unchanged homeworld stays. An empty patch still needs a SET clause;
-      // the updated_at trigger overwrites it anyway
-      .set({ ...changes, homeworldId, updatedAt: new Date() })
-      .where("publicId", "=", publicId)
-      .returning("publicId")
-      .executeTakeFirst();
+    // Drizzle skips undefined values, so an unchanged homeworld stays
+    await context.db
+      .update(people)
+      .set({ ...changes, homeworldId })
+      .where(eq(people.publicId, publicId));
+
+    // Read back with the homeworld; nothing to read means there was no such person
+    const person = await findPerson(context.db, publicId);
 
     if (!person) {
       throw errors.NOT_FOUND({ message: `Person ${publicId} not found` });
     }
 
-    return selectPeople(context.db)
-      .where("people.publicId", "=", publicId)
-      .executeTakeFirstOrThrow();
+    return person;
   },
 );
 
 const deletePerson = protectedProcedure.person.delete.handler(
   async ({ context, input, errors }) => {
-    const result = await context.db
-      .deleteFrom("people")
-      .where("publicId", "=", input.publicId)
-      .executeTakeFirst();
+    const deleted = await context.db
+      .delete(people)
+      .where(eq(people.publicId, input.publicId))
+      .returning({ id: people.id });
 
-    if (result.numDeletedRows === 0n) {
+    if (deleted.length === 0) {
       throw errors.NOT_FOUND({ message: `Person ${input.publicId} not found` });
     }
   },

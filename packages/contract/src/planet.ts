@@ -4,6 +4,7 @@ import * as v from "valibot";
 
 import {
   authedContract,
+  hasChanges,
   integerSchema,
   publicIdPrefixes,
   publicIdSchema,
@@ -90,7 +91,12 @@ const createPlanet = authedContract
 const updatePlanet = authedContract
   .meta(openapi({ method: "PATCH", path: "/planets/{publicId}", tags, summary: "Update a planet" }))
   .errors({ NOT_FOUND: {}, CONFLICT: {} })
-  .input(v.object({ publicId: planetIdSchema, ...v.partial(newPlanetSchema).entries }))
+  .input(
+    v.pipe(
+      v.object({ publicId: planetIdSchema, ...v.partial(newPlanetSchema).entries }),
+      v.check(hasChanges, "Send at least one field to change"),
+    ),
+  )
   .output(planetSchema);
 
 const deletePlanet = authedContract

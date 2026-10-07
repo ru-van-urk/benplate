@@ -23,12 +23,16 @@ type PublicIdPrefix = (typeof publicIdPrefixes)[keyof typeof publicIdPrefixes];
 export const publicIdSchema = (prefix: PublicIdPrefix, message = "Invalid id") =>
   v.pipe(v.string(message), v.regex(new RegExp(`^${prefix}_[0-9a-z]{12}$`), message));
 
-// Another resource, as a response embeds it: enough to show and link it. JSON-built in the query
-// (`jsonObjectFrom`), so it holds strings and numbers only; a date would arrive as a string
+// Another resource, as a response embeds it (`with: { homeworld: … }`): enough to show and link it
 export const referenceSchema = v.object({
   publicId: v.string(),
   name: v.string(),
 });
+
+// For update inputs: something besides the id has to change, since an UPDATE needs a value to set. An empty patch
+// is a 400 instead of a no-op
+export const hasChanges = <TInput extends { publicId: string }>(input: TInput) =>
+  Object.entries(input).some(([key, value]) => key !== "publicId" && value !== undefined);
 
 // Base for routes that need a signed-in user (implemented with `protectedProcedure`), so clients see
 // UNAUTHORIZED as a typed error

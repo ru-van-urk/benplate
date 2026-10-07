@@ -1,16 +1,15 @@
 # BenPlate
 
-A full-stack template: React + TanStack Router (`apps/web`), Hono + oRPC (`apps/server`, `packages/contract`, `packages/api`), Better Auth (`packages/auth`), and Postgres with a Drizzle schema, Kysely queries and kysely-codegen types (`packages/db`). The [docs](docs/) explain the setup; these are the rules.
+A full-stack template: React + TanStack Router (`apps/web`), Hono + oRPC (`apps/server`, `packages/contract`, `packages/api`), Better Auth (`packages/auth`), and Postgres with Drizzle (`packages/db`). The [docs](docs/) explain the setup; these are the rules.
 
 ## Database
 
-- Define tables with `snakeCase.table`, never `pgTable`. SQL defaults only, never `$defaultFn` or `$onUpdate`. Column names free of digits and acronym runs.
-- Never edit `packages/db/src/generated/db.ts`: `pnpm db:push` and `pnpm db:migrate` regenerate it, and it is committed with the migration.
+- Drizzle does everything: schema, migrations and queries. Define tables with `snakeCase.table`, never `pgTable`.
 - Always pass `--name` to `pnpm db:generate` (`--custom --name` for hand-written SQL). Never edit a committed migration; add a new one. See [Schema changes](docs/database.md#schema-changes).
-- Every table has a private `id: t.integer().primaryKey().generatedByDefaultAsIdentity()` that the API never exposes, and spreads `...timestamps`. Its `add_<table>` migration ends with the table's `updated_at` trigger, added by hand before committing (see [updated_at](docs/database.md#updated_at)).
+- Every table has a private `id: t.integer().primaryKey().generatedByDefaultAsIdentity()` that the API never exposes, and spreads `...timestamps`, whose `$onUpdate` keeps `updatedAt` current. No triggers.
 - Tables whose rows clients address have `publicId: t.text().notNull().unique("<table>_public_id_unique")`, filled with `newPublicId(publicIdPrefixes.<resource>)`. Every prefix lives in `publicIdPrefixes` (`packages/contract/src/common.ts`).
 - Name constraints: `.unique("<table>_<column>_unique")`, `foreignKey({ name: "<table>_<column>_fkey", … })`. Map them by name with `isUniqueViolation` and `isForeignKeyViolation`, so any other violation stays a 500.
-- A relation stores the private id (`homeworldId: t.integer()`), with a named foreign key and an index. Responses embed the related row with `jsonObjectFrom`/`jsonArrayFrom`, selecting strings and numbers only. See [Relations](docs/database.md#relations).
+- A relation stores the private id (`homeworldId: t.integer()`), with a named foreign key and an index, and is declared in `src/relations.ts`. Reads load it with `db.query…({ with })`, picking only the columns the contract shows. See [Relations](docs/database.md#relations).
 - A fixed set of values is a `pgEnum`, never `t.text({ enum })`. A migration can't use an enum value added in the same deploy.
 - Auth tables (`schema/auth.ts`) keep Better Auth's random `text` ids, so a foreign key to `user` is `t.text()`. Add a Better Auth plugin by copying its tables from its docs into the schema.
 
@@ -21,6 +20,7 @@ A full-stack template: React + TanStack Router (`apps/web`), Hono + oRPC (`apps/
 - Routes that need a signed-in user use `authedContract` and `protectedProcedure`, which sets `context.session`. Public routes use `oc` and `os`, and never look up the session.
 - Name procedures after what they promise: `get` returns one record or throws `NOT_FOUND`; `list` returns a collection, possibly empty.
 - Declare expected errors in the contract (`.errors({ NOT_FOUND: {} })`) and throw them with `errors.NOT_FOUND()`. Only common codes have an HTTP status.
+- Update inputs pipe through `v.check(hasChanges, …)`: Drizzle refuses an UPDATE with nothing to set.
 
 ## Web
 

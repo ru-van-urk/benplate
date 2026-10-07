@@ -1,6 +1,6 @@
 # BenPlate
 
-A pnpm monorepo starter for full-stack TypeScript apps: React and TanStack Router on the web, a Hono server with a type-safe oRPC API, email and password auth with Better Auth, and Postgres with a Drizzle schema, Kysely queries and generated types. It deploys as one Docker Compose stack.
+A pnpm monorepo starter for full-stack TypeScript apps: React and TanStack Router on the web, a Hono server with a type-safe oRPC API, email and password auth with Better Auth, and Postgres with Drizzle for the schema, migrations and queries. It deploys as one Docker Compose stack.
 
 A small Star Wars example, after [SWAPI](https://swapi.dev), shows every layer end to end: planets and the people who live there. Anyone can browse them; signed-in users can create, edit and delete them, except a planet that still has residents.
 
@@ -9,7 +9,7 @@ A small Star Wars example, after [SWAPI](https://swapi.dev), shows every layer e
 - **Web**: React, TanStack Router and Query, Tailwind with shadcn/ui (`packages/ui`), Formisch forms validated by the API's own schemas
 - **API**: Hono and oRPC, contract first, served as REST with an OpenAPI spec
 - **Auth**: Better Auth, email and password, sessions in Postgres
-- **Database**: Postgres; Drizzle for the schema and migrations, Kysely for queries, kysely-codegen for their types
+- **Database**: Postgres with Drizzle: schema, migrations, relational queries and Studio
 - **Tooling**: Oxlint, Oxfmt, sherif and tsc through uncheck, knip, Turborepo, evlog for logging
 
 ## Quick start
@@ -24,7 +24,7 @@ pnpm run dev                                   # http://localhost:3000
 ## Docs
 
 - [Getting started](docs/getting-started.md): setup, environment variables, starting a project from the template
-- [Database](docs/database.md): schema changes, table rules, ids, relations, enums, `updated_at`
+- [Database](docs/database.md): schema changes, table rules, ids, queries, relations, enums, `updated_at`
 - [API](docs/api.md): the contract, procedures and errors
 - [Web app](docs/web.md): routes, data loading, forms, the session, UI
 - [Adding a resource](docs/adding-a-resource.md): every file a new resource touches
@@ -46,7 +46,7 @@ benplate/
 │   ├── contract/    # oRPC contract: routes, schemas and errors, shared by server and clients
 │   ├── api/         # oRPC server implementation and typed client
 │   ├── auth/        # Better Auth: server setup and browser client
-│   └── db/          # Schema, migrations, generated types, Kysely
+│   └── db/          # Drizzle: schema, relations, migrations
 ├── docs/            # The docs above
 ├── scripts/         # template-init.ts
 └── tooling/         # Shared tsconfig, Oxlint and Oxfmt presets

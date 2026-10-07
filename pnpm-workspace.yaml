@@ -7,6 +7,7 @@ catalogMode: prefer
 allowBuilds:
   esbuild: true
 catalog:
+  "@better-auth/drizzle-adapter": 1.7.7
   "@formisch/react": ^1.1.0
   "@orpc/client": 2.0.0-beta.40
   "@orpc/contract": 2.0.0-beta.40
@@ -28,7 +29,6 @@ catalog:
   drizzle-orm: 1.0.0-rc.4
   evlog: ^2.29.0
   knip: ^6.38.0
-  kysely-codegen: ^0.20.0
   lucide-react: ^1.41.0
   nanoid: ^6.0.1
   oxfmt: ^0.66.0

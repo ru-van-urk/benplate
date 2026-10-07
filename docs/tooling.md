@@ -11,7 +11,7 @@
 CI (`.github/workflows/ci.yml`) runs on pull requests:
 
 - **`check`**: `pnpm check`, `pnpm build`, and a check that `packages/db/src/migrations` matches the schema
-- **`database`**: migrates a fresh Postgres 18, checks every `updated_at` trigger exists and `kysely-codegen --verify` passes, then boots the built server (which runs Better Auth's schema check) and reads the seeded planets and people and signs up once
+- **`database`**: migrates a fresh Postgres 18, then boots the built server (which runs Better Auth's schema check), reads the seeded planets and people and signs up once
 
 `main` only takes pull requests (the "protect main" ruleset), with `check` as a required status check. Renaming that job blocks merges until the ruleset names the new one.
 
@@ -33,17 +33,16 @@ Two groups are pinned to exact pre-release versions in the catalog (`pnpm-worksp
 
 ## Scripts
 
-| Script                                                    | What it does                                                            |
-| --------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `dev`, `dev:web`, `dev:server`                            | Start everything, or one app, in development                            |
-| `build`                                                   | Build all apps                                                          |
-| `db:push`                                                 | Push the schema to the local database, then regenerate the Kysely types |
-| `db:generate --name <change>`                             | Generate a migration from schema changes (`--custom` for an empty one)  |
-| `db:migrate`                                              | Apply pending migrations locally, then regenerate the Kysely types      |
-| `db:codegen`                                              | Regenerate the Kysely types from the local database                     |
-| `db:studio`                                               | Open Drizzle Studio                                                     |
-| `check`, `fix`                                            | Verify everything, or apply the fixes that can be applied               |
-| `deps:check`, `deps:update`                               | Report or write dependency updates (Taze)                               |
-| `docker:build`, `docker:up`, `docker:logs`, `docker:down` | Manage the Compose stack                                                |
-| `template:init <name> [Display Name]`                     | Rename a project created from this template                             |
-| `clean`                                                   | Remove build output, caches and `node_modules`                          |
+| Script                                                    | What it does                                                           |
+| --------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `dev`, `dev:web`, `dev:server`                            | Start everything, or one app, in development                           |
+| `build`                                                   | Build all apps                                                         |
+| `db:push`                                                 | Push the schema to the local database                                  |
+| `db:generate --name <change>`                             | Generate a migration from schema changes (`--custom` for an empty one) |
+| `db:migrate`                                              | Apply pending migrations to the local database                         |
+| `db:studio`                                               | Open Drizzle Studio                                                    |
+| `check`, `fix`                                            | Verify everything, or apply the fixes that can be applied              |
+| `deps:check`, `deps:update`                               | Report or write dependency updates (Taze)                              |
+| `docker:build`, `docker:up`, `docker:logs`, `docker:down` | Manage the Compose stack                                               |
+| `template:init <name> [Display Name]`                     | Rename a project created from this template                            |
+| `clean`                                                   | Remove build output, caches and `node_modules`                         |

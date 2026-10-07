@@ -164,6 +164,9 @@ settings:
 
 catalogs:
   default:
+    '@better-auth/drizzle-adapter':
+      specifier: 1.7.7
+      version: 1.7.7
     '@formisch/react':
       specifier: ^1.1.0
       version: 1.1.0
@@ -227,9 +230,6 @@ catalogs:
     knip:
       specifier: ^6.38.0
       version: 6.38.0
-    kysely-codegen:
-      specifier: ^0.20.0
-      version: 0.20.0
     lucide-react:
       specifier: ^1.41.0
       version: 1.48.0
@@ -468,6 +468,9 @@ importers:
       '@orpc/valibot':
         specifier: 'catalog:'
         version: 2.0.0-beta.40(valibot@1.5.0(typescript@7.0.2))
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 1.0.0-rc.4(@libsql/client@0.18.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5)
       evlog:
         specifier: 'catalog:'
         version: 2.29.0(@orpc/server@2.0.0-beta.40)(express@5.2.1(supports-color@7.2.0))(hono@4.13.11)(ofetch@1.5.1)(react@19.3.0)(vite@8.3.1(@types/node@24.19.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
@@ -487,9 +490,15 @@ importers:
       '@benplate/db':
         specifier: workspace:*
         version: link:../db
+      '@better-auth/drizzle-adapter':
+        specifier: 'catalog:'
+        version: 1.7.7(@better-auth/core@1.7.7(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.2)(better-call@1.4.0(zod@4.6.5))(jose@6.2.12)(kysely@0.29.6)(nanostores@1.5.4))(@better-auth/utils@0.4.2)(drizzle-orm@1.0.0-rc.4(@libsql/client@0.18.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5))
       better-auth:
         specifier: 'catalog:'
         version: 1.7.7(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@libsql/client@0.18.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5))(pg@8.23.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(solid-js@1.9.15)
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 1.0.0-rc.4(@libsql/client@0.18.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5)
     devDependencies:
       '@benplate/oxlint-config':
         specifier: workspace:*
@@ -528,9 +537,6 @@ importers:
       drizzle-orm:
         specifier: 'catalog:'
         version: 1.0.0-rc.4(@libsql/client@0.18.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.5)
-      kysely:
-        specifier: ^0.29.6
-        version: 0.29.6
       nanoid:
         specifier: 'catalog:'
         version: 6.0.1
@@ -556,9 +562,6 @@ importers:
       drizzle-kit:
         specifier: 'catalog:'
         version: 1.0.0-rc.4
-      kysely-codegen:
-        specifier: 'catalog:'
-        version: 0.20.0(kysely@0.29.6)(pg@8.23.1)(typescript@7.0.2)
       oxlint:
         specifier: 'catalog:'
         version: 1.86.0(oxlint-tsgolint@7.0.2003)
@@ -2695,10 +2698,6 @@ packages:
     resolution: {integrity: sha512-KzTVk2tCWAHtYrvvvaP8bJKJq2pVinhLcGEQdtLIYPbmNGNyYe8QwNaTUYQp2J7/vIsUKt5QCqAfUkYyG9DkOw==}
     engines: {node: '>=12'}
 
-  ansi-styles@4.3.0:
-    resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
-    engines: {node: '>=8'}
-
   ansis@4.4.0:
     resolution: {integrity: sha512-9k3v7xcHwgdO/DruxGIg4HtjvlAZlcnsX/mzqUb1t3NkYnl9kK2UJ+Gq0io+vQf7iT//BD/HB/NBkUR1LWxoeA==}
     engines: {node: '>=14'}
@@ -2837,10 +2836,6 @@ packages:
   caniuse-lite@1.0.30001813:
     resolution: {integrity: sha512-zfjJo4rM0+fUomGDBW/xcDjhIwz/210DGvip2MAMDZ8KHcRPnOHmEgHPZP0UHlZoxr8fYKVJOqcORhYQcG4FKQ==}
 
-  chalk@4.1.2:
-    resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
-    engines: {node: '>=10'}
-
   chalk@5.6.2:
     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
@@ -2871,13 +2866,6 @@ packages:
 
   code-block-writer@13.0.3:
     resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
-
-  color-convert@2.0.1:
-    resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
-    engines: {node: '>=7.0.0'}
-
-  color-name@1.1.4:
-    resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
   commander@11.1.0:
     resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
@@ -3016,14 +3004,6 @@ packages:
   dot-prop@6.0.1:
     resolution: {integrity: sha512-tE7ztYzXHIeyvc7N+hR3oi7FIbf/NIjVP9hmAt3yMXzrQ072/fpjGLx2GxNxGxUl5V73MEqYzioOMoVhGMJ5cA==}
     engines: {node: '>=10'}
-
-  dotenv-expand@12.0.3:
-    resolution: {integrity: sha512-uc47g4b+4k/M/SeaW1y4OApx+mtLWl92l5LMPP0GNXctZqELk+YGgOPIIC5elYmUH4OuoK3JLhuRUYegeySiFA==}
-    engines: {node: '>=12'}
-
-  dotenv@16.6.1:
-    resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
-    engines: {node: '>=12'}
 
   dotenv@17.4.2:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
@@ -3679,41 +3659,6 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  kysely-codegen@0.20.0:
-    resolution: {integrity: sha512-LSi2KBG7uDmNCZ+XurLSA9LH7XFyyoQ6xb5DLJSInPTSYLVApjOP2KwO8mSaREWTtoX+C2AG2GTlYR0DLjTbcA==}
-    engines: {node: '>=20.0.0'}
-    hasBin: true
-    peerDependencies:
-      '@libsql/kysely-libsql': '>=0.3.0 <0.5.0'
-      '@tediousjs/connection-string': ^1.0.0
-      better-sqlite3: '>=7.6.2 <13.0.0'
-      kysely: '>=0.27.0 <1.0.0'
-      kysely-bun-sqlite: '>=0.3.2 <1.0.0'
-      kysely-bun-worker: '>=1.2.0 <2.0.0'
-      mysql2: '>=2.3.3 <4.0.0'
-      pg: '>=8.8.0 <9.0.0'
-      tarn: '>=3.0.0 <4.0.0'
-      tedious: '>=18.0.0 <20.0.0'
-    peerDependenciesMeta:
-      '@libsql/kysely-libsql':
-        optional: true
-      '@tediousjs/connection-string':
-        optional: true
-      better-sqlite3:
-        optional: true
-      kysely-bun-sqlite:
-        optional: true
-      kysely-bun-worker:
-        optional: true
-      mysql2:
-        optional: true
-      pg:
-        optional: true
-      tarn:
-        optional: true
-      tedious:
-        optional: true
-
   kysely@0.29.6:
     resolution: {integrity: sha512-hHaB8C/rfzDDtr/t8YZwxAuPJTT0zHyaPoVzcXwDYhYNAgH/4sIfVhi/XLLIY+bL/FqaIJnjATDbi8ObSELmxg==}
     engines: {node: '>=22.0.0'}
@@ -4170,10 +4115,6 @@ packages:
   pkg-up@3.1.0:
     resolution: {integrity: sha512-nDywThFk1i4BQK4twPQ6TA4RT8bDY96yeuCVBWL3ePARCiEKDRSrNGbFIgUJpLp+XeIR65v8ra7WuJOFUBtkMA==}
     engines: {node: '>=8'}
-
-  pluralize@8.0.0:
-    resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
-    engines: {node: '>=4'}
 
   pnpm-workspace-yaml@1.9.1:
     resolution: {integrity: sha512-Xj/T2X6DNAWbtk/9UQ0/TJRswltiHZevmcMjqoL7WrpJi67lu3qaslU4+I+zJ8wtwqmuvAE0KkB8rbv2ZdogBg==}
@@ -6511,10 +6452,6 @@ snapshots:
 
   ansi-regex@6.4.0: {}
 
-  ansi-styles@4.3.0:
-    dependencies:
-      color-convert: 2.0.1
-
   ansis@4.4.0: {}
 
   argparse@2.0.1: {}
@@ -6628,11 +6565,6 @@ snapshots:
 
   caniuse-lite@1.0.30001813: {}
 
-  chalk@4.1.2:
-    dependencies:
-      ansi-styles: 4.3.0
-      supports-color: 7.2.0
-
   chalk@5.6.2: {}
 
   chokidar@5.0.0:
@@ -6654,12 +6586,6 @@ snapshots:
   cn@0.2.6: {}
 
   code-block-writer@13.0.3: {}
-
-  color-convert@2.0.1:
-    dependencies:
-      color-name: 1.1.4
-
-  color-name@1.1.4: {}
 
   commander@11.1.0: {}
 
@@ -6761,12 +6687,6 @@ snapshots:
   dot-prop@6.0.1:
     dependencies:
       is-obj: 2.0.0
-
-  dotenv-expand@12.0.3:
-    dependencies:
-      dotenv: 16.6.1
-
-  dotenv@16.6.1: {}
 
   dotenv@17.4.2: {}
 
@@ -7101,7 +7021,8 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  has-flag@4.0.0: {}
+  has-flag@4.0.0:
+    optional: true
 
   has-symbols@1.1.0: {}
 
@@ -7250,23 +7171,6 @@ snapshots:
       unbash: 4.0.11
       yaml: 2.9.1
       zod: 4.6.5
-
-  kysely-codegen@0.20.0(kysely@0.29.6)(pg@8.23.1)(typescript@7.0.2):
-    dependencies:
-      chalk: 4.1.2
-      cosmiconfig: 9.0.2(typescript@7.0.2)
-      diff: 8.0.4
-      dotenv: 17.4.2
-      dotenv-expand: 12.0.3
-      kysely: 0.29.6
-      micromatch: 4.0.8
-      minimist: 1.2.8
-      pluralize: 8.0.0
-      zod: 4.6.5
-    optionalDependencies:
-      pg: 8.23.1
-    transitivePeerDependencies:
-      - typescript
 
   kysely@0.29.6: {}
 
@@ -7713,8 +7617,6 @@ snapshots:
     dependencies:
       find-up: 3.0.0
 
-  pluralize@8.0.0: {}
-
   pnpm-workspace-yaml@1.9.1:
     dependencies:
       yaml: 2.9.1
@@ -8111,6 +8013,7 @@ snapshots:
   supports-color@7.2.0:
     dependencies:
       has-flag: 4.0.0
+    optional: true
 
   systeminformation@5.33.14: {}
 

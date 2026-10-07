@@ -17,7 +17,7 @@
 
 2. Copy `apps/server/.env.example` to `apps/server/.env` and point `DATABASE_URL` at your database. The other values work as they are for development (see [Environment](#environment)).
 
-3. Apply the migrations. They create the tables and triggers, insert the example planets and people, and regenerate the Kysely types, the same way every deployed database starts:
+3. Apply the migrations. They create the tables and insert the example planets and people, the same way every deployed database starts:
 
    ```bash
    pnpm run db:migrate
@@ -50,7 +50,7 @@ Env files are ignored by git; keep secrets in them or in your deployment platfor
 | `NODE_ENV`            | no       | `production` in the Docker image; turns off the API docs and the `.evlog` file output                            |
 
 - **Web** needs no configuration. It calls the API under `/api` on its own origin, which the Vite dev server and nginx in production proxy to the server, so there is no CORS and one web image works everywhere.
-- **Database tooling** (`drizzle.config.ts`, `kysely-codegen.config.cjs`) reads `DATABASE_URL` from `apps/server/.env` when it isn't already set. Codegen writes types from whatever database that is, so give this project a database of its own.
+- **Database tooling** (`drizzle.config.ts`) reads `DATABASE_URL` from `apps/server/.env` when it isn't already set. `db:push` and `db:migrate` change whatever database that is, so give this project a database of its own.
 
 ## Start a new project from the template
 

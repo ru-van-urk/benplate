@@ -10,8 +10,7 @@ const migrationsFolder = fileURLToPath(new URL("./migrations", import.meta.url))
 
 // Applies all pending migrations in one transaction, so a failing migration leaves the database untouched.
 // There is no lock: run it from a single process (the `migrate` Compose service), never per server replica.
-// Drizzle's migrator owns the migrations folder and its bookkeeping table, so it gets a short-lived Drizzle
-// connection of its own; queries go through Kysely (see ./index)
+// A short-lived connection of its own, closed when done; the server's pool comes from createDb (see ./index)
 export async function migrateDb(env: DatabaseConfig) {
   const db = drizzle(env.DATABASE_URL);
 

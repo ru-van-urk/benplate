@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@benplate/db": "workspace:*",
-    "better-auth": "catalog:"
+    "@better-auth/drizzle-adapter": "catalog:",
+    "better-auth": "catalog:",
+    "drizzle-orm": "catalog:"
   },
   "devDependencies": {
     "@benplate/oxlint-config": "workspace:*",

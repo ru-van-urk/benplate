@@ -47,8 +47,8 @@ jobs:
       # Vite build, and the tsdown bundle with its migrations copy
       - run: pnpm build
 
-  # Not a test suite: runs the migrations on a real Postgres, checks the committed Kysely types against the
-  # result, then boots the server on it, which runs Better Auth's schema check, and makes one call per layer
+  # Not a test suite: runs the migrations on a real Postgres, then boots the server on it, which runs Better
+  # Auth's schema check, and makes one call per layer
   database:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -83,32 +83,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # drizzle-kit directly, not db:migrate, which would regenerate the types the next step checks
       - name: Apply the migrations
-        run: pnpm --filter @benplate/db exec drizzle-kit migrate
-
-      # Each table's migration creates its trigger by hand; this catches one that was forgotten
-      - name: Check every table with updated_at has its trigger
-        run: |
-          missing=$(psql "$DATABASE_URL" -Atc "
-            SELECT string_agg(c.relname, ', ')
-            FROM pg_class AS c
-            JOIN pg_namespace AS n ON n.oid = c.relnamespace
-            JOIN pg_attribute AS a ON a.attrelid = c.oid AND a.attname = 'updated_at' AND NOT a.attisdropped
-            WHERE n.nspname = 'public' AND c.relkind = 'r' AND NOT EXISTS (
-              SELECT FROM pg_trigger AS t WHERE t.tgrelid = c.oid AND t.tgname = c.relname || '_updated_at'
-            )")
-          if [ -n "$missing" ]; then
-            echo "::error::Tables without their updated_at trigger: $missing"
-            exit 1
-          fi
-
-      - name: Check the Kysely types match the migrated database
-        run: |
-          if ! pnpm --filter @benplate/db exec kysely-codegen --verify; then
-            echo "::error::The generated Kysely types are out of date: run pnpm run db:codegen against a migrated database and commit the result"
-            exit 1
-          fi
+        run: pnpm --filter @benplate/db db:migrate
 
       - run: pnpm --filter server build
 
@@ -127,7 +103,7 @@ jobs:
             sleep 1
           done
 
-          # The seeded planets and people, read through Kysely; people embed their homeworld (jsonObjectFrom)
+          # The seeded planets and people; people embed their homeworld (relational query)
           planets=$(curl -sf http://localhost:3000/api/planets | jq length)
           people=$(curl -sf http://localhost:3000/api/people | jq '[.[] | select(.homeworld.publicId)] | length')
           if [ "$planets" != "13" ] || [ "$people" != "13" ]; then

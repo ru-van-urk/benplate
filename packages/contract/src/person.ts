@@ -4,6 +4,7 @@ import * as v from "valibot";
 
 import {
   authedContract,
+  hasChanges,
   integerSchema,
   publicIdPrefixes,
   publicIdSchema,
@@ -74,7 +75,12 @@ const updatePerson = authedContract
   .meta(openapi({ method: "PATCH", path: "/people/{publicId}", tags, summary: "Update a person" }))
   // NOT_FOUND: the person or the new homeworld
   .errors({ NOT_FOUND: {} })
-  .input(v.object({ publicId: personIdSchema, ...v.partial(newPersonSchema).entries }))
+  .input(
+    v.pipe(
+      v.object({ publicId: personIdSchema, ...v.partial(newPersonSchema).entries }),
+      v.check(hasChanges, "Send at least one field to change"),
+    ),
+  )
   .output(personSchema);
 
 const deletePerson = authedContract
