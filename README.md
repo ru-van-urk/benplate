@@ -98,11 +98,16 @@ Two groups are pinned to exact pre-release versions in the catalog (`pnpm-worksp
 
 ## Adding a resource
 
-A resource touches six files. Copy the `planets` files as a starting point:
+Copy the `planets` files as a starting point. On the server, a resource touches six files:
 
 1. `packages/db/src/schema/<resource>.ts`: the table, and its export in `packages/db/src/schema/index.ts`
 2. `packages/contract/src/<resource>.ts`: the routes, inputs, outputs and errors, and its entry in `packages/contract/src/index.ts`
 3. `packages/api/src/server/router/<resource>.ts`: the handlers, and its entry in `packages/api/src/server/router/index.ts`
+
+In the web app, each page is a route file and a page component (see [Web routes](#web-routes)):
+
+4. `apps/web/src/routes/(public)/…` or `routes/_app/…`: one `.ts` route file per page. Its `context` builds the query options, named after the procedure (`getPlanetQueryOptions` for `planet.get`); its `loader` prefetches them, turning the API's `NOT_FOUND` into `notFound()` for a page about one record; and its `component` is the page
+5. `apps/web/src/features/<resource>/`: the pages, which read those query options through `getRouteApi("<route id>")`, and their parts, such as the form and the delete dialog
 
 Then generate two migrations and commit them (see [Schema changes](#schema-changes)):
 
@@ -127,7 +132,7 @@ The table rules, which [CLAUDE.md](CLAUDE.md) lists too:
 
 The contract ships to the browser, so it imports only oRPC and Valibot, never `@benplate/db` or Drizzle. Its schemas are written by hand:
 
-- **The output schema is what clients see.** A new column stays private until you list it. It holds types only (`v.string()`, `v.nullable(…)`), no input rules, so a row stored before a rule was tightened still passes the client's response validation.
+- **The output schema is what clients see.** A new column stays private until you list it. It holds types only (`v.string()`, `v.nullable(…)`), no input rules, so a row stored before a rule was tightened still passes the server's output validation.
 - **Input schemas carry the rules** (`v.nonEmpty`, `v.minValue`, `integerSchema` for `integer` columns), and the web forms validate with them. Columns that are nullable or have a default are optional.
 - **The router checks both against the table.** A handler that returns a row the output schema can't hold, or inserts input the table doesn't accept, fails to type-check, so a contract that drifts from the table fails `pnpm check`. That is also why an enum list such as `planetTypes` can be written in both packages.
 
