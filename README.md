@@ -10,7 +10,7 @@ A small Star Wars example, after [SWAPI](https://swapi.dev), shows every layer e
 - **API**: Hono and oRPC, contract first, served as REST with an OpenAPI spec
 - **Auth**: Better Auth, email and password, sessions in Postgres
 - **Database**: Postgres with Drizzle: schema, migrations, relational queries and Studio
-- **Tooling**: Oxlint, Oxfmt, sherif and tsc through uncheck, knip, Turborepo, evlog for logging
+- **Tooling**: Oxlint, Oxfmt, sherif, tsc, knip, Turborepo, evlog for logging
 
 ## Quick start
 

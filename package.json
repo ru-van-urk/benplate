@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "uncheck && knip",
-    "fix": "uncheck --fix",
+    "check": "sherif && oxlint && oxfmt --check && tsc --noEmit && turbo run typecheck && knip",
+    "fix": "sherif --fix --select=highest; oxlint --fix; oxfmt",
     "build": "turbo run build",
     "clean": "turbo run clean",
     "knip": "knip",
@@ -22,8 +22,7 @@
     "docker:logs": "docker compose logs -f",
     "deps:check": "taze",
     "deps:update": "taze -w",
-    "template:init": "node scripts/template-init.ts",
-    "prepare": "uncheck prepare --pre-commit --only=oxlint --only=oxfmt"
+    "template:init": "node scripts/template-init.ts"
   },
   "devDependencies": {
     "@benplate/oxfmt-config": "workspace:*",
@@ -37,8 +36,7 @@
     "sherif": "catalog:",
     "taze": "catalog:",
     "turbo": "catalog:",
-    "typescript": "catalog:",
-    "uncheck": "catalog:"
+    "typescript": "catalog:"
   },
   "engines": {
     "node": "^24.14.0"

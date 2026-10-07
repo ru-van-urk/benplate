@@ -269,9 +269,6 @@ catalogs:
     typescript:
       specifier: ^7.0.2
       version: 7.0.2
-    uncheck:
-      specifier: ^0.1.1
-      version: 0.1.1
     valibot:
       specifier: ^1.5.0
       version: 1.5.0
@@ -316,9 +313,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
-      uncheck:
-        specifier: 'catalog:'
-        version: 0.1.1(oxfmt@0.66.0)(oxlint@1.86.0(oxlint-tsgolint@7.0.2003))(sherif@1.13.0)(typescript@7.0.2)
 
   apps/server:
     dependencies:
@@ -4637,25 +4631,6 @@ packages:
     resolution: {integrity: sha512-FoSOKV7NEofQSkAefMVHam4ZPKYMxjAydxiV72UFEDNV/YofxjGfiZ2A9pZjdL/lRJzTjcu4PABo1JYJX8N5iQ==}
     engines: {node: '>=14'}
 
-  uncheck@0.1.1:
-    resolution: {integrity: sha512-MOem/+M0H0hqQscT8Yv3VTxVwwGgrPjHvJjaSG+UEi5vTHdTX9ZwF9eqk/6soFoQEOQmSrUEmKGgejiF9E77RQ==}
-    engines: {node: '>=22.20'}
-    hasBin: true
-    peerDependencies:
-      oxfmt: '*'
-      oxlint: '>=1.60.0'
-      sherif: '>=1.10.0'
-      typescript: '*'
-    peerDependenciesMeta:
-      oxfmt:
-        optional: true
-      oxlint:
-        optional: true
-      sherif:
-        optional: true
-      typescript:
-        optional: true
-
   unconfig-core@7.5.0:
     resolution: {integrity: sha512-Su3FauozOGP44ZmKdHy2oE6LPjk51M/TRRjHv2HNCWiDvfvCoxC2lno6jevMA91MYAdCdwP05QnWdWpSbncX/w==}
 
@@ -8163,13 +8138,6 @@ snapshots:
   ufo@1.6.4: {}
 
   unbash@4.0.11: {}
-
-  uncheck@0.1.1(oxfmt@0.66.0)(oxlint@1.86.0(oxlint-tsgolint@7.0.2003))(sherif@1.13.0)(typescript@7.0.2):
-    optionalDependencies:
-      oxfmt: 0.66.0
-      oxlint: 1.86.0(oxlint-tsgolint@7.0.2003)
-      sherif: 1.13.0
-      typescript: 7.0.2
 
   unconfig-core@7.5.0:
     dependencies:

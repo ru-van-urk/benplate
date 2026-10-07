@@ -2,11 +2,10 @@
 
 ## Checks and CI
 
-[uncheck](https://github.com/middleapi/uncheck) runs sherif, Oxlint, Oxfmt and tsc once from the root, and every check runs even after one fails. Each package's `oxlint.config.ts` / `oxfmt.config.ts` picks a preset from `tooling/` (`node` or `react`); anything without its own config falls back to the root `base`. Generated files (`migrations`, `generated`, `routeTree.gen.ts`) are left alone.
+`pnpm check` runs sherif, Oxlint, Oxfmt, tsc and knip in that order, and stops at the first one that fails. Oxlint and Oxfmt run once from the root; tsc checks the root `tsconfig.json`, then every package's `typecheck` script through Turborepo, which caches packages that didn't change. A new package with a `tsconfig.json` needs a `typecheck` script (`tsc --noEmit`, or `tsc -b` for a config with references like `apps/web`). Each package's `oxlint.config.ts` / `oxfmt.config.ts` picks a preset from `tooling/` (`node` or `react`); anything without its own config falls back to the root `base`. Generated files (`migrations`, `generated`, `routeTree.gen.ts`) are left alone.
 
-- `pnpm run fix`: Oxlint, Oxfmt and sherif fixes; type errors are reported
-- `pnpm run check`: uncheck without fixes, then knip (unused files, dependencies and exports)
-- Every commit runs Oxlint and Oxfmt on the staged files and stages the fixes; `pnpm install` writes the hook through `prepare`. Skip it with `git commit --no-verify`. uncheck can't write the hook when a global `core.hooksPath` is set
+- `pnpm run fix`: sherif, Oxlint and Oxfmt fixes. Each runs even when the one before it leaves problems; run `check` for what remains
+- `pnpm run check`: the checks above without fixes, then knip (unused files, dependencies and exports)
 
 CI (`.github/workflows/ci.yml`) runs on pull requests:
 

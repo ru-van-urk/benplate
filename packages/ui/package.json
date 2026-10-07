@@ -9,6 +9,7 @@
     "./components/*": "./src/components/*.tsx"
   },
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {

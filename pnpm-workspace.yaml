@@ -41,7 +41,4 @@ catalog:
   taze: ^21.2.0
   turbo: ^2.10.12
   typescript: ^7.0.2
-  uncheck: ^0.1.1
   valibot: ^1.5.0
-minimumReleaseAgeExclude:
-  - uncheck@0.1.1
