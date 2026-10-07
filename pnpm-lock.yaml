@@ -206,6 +206,9 @@ catalogs:
     '@tanstack/router-plugin':
       specifier: ^1.168.35
       version: 1.168.41
+    '@total-typescript/ts-reset':
+      specifier: ^0.6.1
+      version: 0.6.1
     '@types/node':
       specifier: ^24
       version: 24.19.0
@@ -638,7 +641,11 @@ importers:
         specifier: workspace:*
         version: link:../typescript
 
-  tooling/typescript: {}
+  tooling/typescript:
+    dependencies:
+      '@total-typescript/ts-reset':
+        specifier: 'catalog:'
+        version: 0.6.1
 
 packages:
 
@@ -2327,6 +2334,9 @@ packages:
   '@tanstack/virtual-file-routes@1.162.0':
     resolution: {integrity: sha512-uhOeFyxLcU41HzvrxsGpiWdcMbScY1EDgbZ5K7DVRMYInbLYWAC0EA/kx9wXAoSM8q82bUG2hRl8+EAjE6XAbA==}
     engines: {node: '>=20.19'}
+
+  '@total-typescript/ts-reset@0.6.1':
+    resolution: {integrity: sha512-cka47fVSo6lfQDIATYqb/vO1nvFfbPw7uWLayIXIhGETj0wcOOlrlkobOMDNQOFr9QOafegUPq13V2+6vtD7yg==}
 
   '@ts-morph/common@0.27.0':
     resolution: {integrity: sha512-Wf29UqxWDpc+i61k3oIOzcUfQt79PIT9y/MWfAGlrkjg6lBC1hwDECLXPVJAhWjiGbfBCxZd65F/LIZF3+jeJQ==}
@@ -6224,6 +6234,8 @@ snapshots:
   '@tanstack/store@0.11.2': {}
 
   '@tanstack/virtual-file-routes@1.162.0': {}
+
+  '@total-typescript/ts-reset@0.6.1': {}
 
   '@ts-morph/common@0.27.0':
     dependencies:

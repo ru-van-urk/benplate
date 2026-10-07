@@ -11,7 +11,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 
-import { authClient, refreshSession } from "~/utils/auth";
+import { authClient, refreshSession } from "#/utils/auth";
 
 const route = getRouteApi("__root__");
 

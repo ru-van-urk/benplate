@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { NewPersonPage } from "~/features/people/new-person-page";
+import { NewPersonPage } from "#/features/people/new-person-page";
 
 export const Route = createFileRoute("/_app/people/new")({
   // The planets to choose a homeworld from

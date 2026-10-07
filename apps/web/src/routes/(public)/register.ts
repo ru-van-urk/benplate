@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-import { RegisterPage } from "~/features/auth/register-page";
-import { redirectSearchSchema } from "~/utils/auth";
+import { RegisterPage } from "#/features/auth/register-page";
+import { redirectSearchSchema } from "#/utils/auth";
 
 export const Route = createFileRoute("/(public)/register")({
   validateSearch: redirectSearchSchema,

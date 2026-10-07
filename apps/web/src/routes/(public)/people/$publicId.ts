@@ -1,7 +1,7 @@
 import { isApiError } from "@benplate/api/client";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
-import { PersonPage } from "~/features/people/person-page";
+import { PersonPage } from "#/features/people/person-page";
 
 export const Route = createFileRoute("/(public)/people/$publicId")({
   context: ({ context, params }) => ({

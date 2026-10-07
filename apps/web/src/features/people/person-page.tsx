@@ -6,7 +6,7 @@ import { Suspense, lazy } from "react";
 
 const route = getRouteApi("/(public)/people/$publicId");
 
-const ConfirmDelete = lazy(() => import("~/components/confirm-delete"));
+const ConfirmDelete = lazy(() => import("#/components/confirm-delete"));
 
 export const PersonPage = () => {
   const context = route.useRouteContext();

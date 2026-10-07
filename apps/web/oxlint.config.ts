@@ -17,7 +17,7 @@ export default defineConfig({
       {
         patterns: [
           {
-            group: ["~/routes/*", "**/routes/*"],
+            group: ["#/routes/*", "**/routes/*"],
             message:
               "Route files import their page, never the other way round: use getRouteApi('<route id>') instead.",
           },

@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-import { LoginPage } from "~/features/auth/login-page";
-import { redirectSearchSchema } from "~/utils/auth";
+import { LoginPage } from "#/features/auth/login-page";
+import { redirectSearchSchema } from "#/utils/auth";
 
 export const Route = createFileRoute("/(public)/login")({
   validateSearch: redirectSearchSchema,

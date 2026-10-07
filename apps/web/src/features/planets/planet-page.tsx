@@ -9,7 +9,7 @@ import { formatPopulation } from "./population";
 
 const route = getRouteApi("/(public)/planets/$publicId");
 
-const ConfirmDelete = lazy(() => import("~/components/confirm-delete"));
+const ConfirmDelete = lazy(() => import("#/components/confirm-delete"));
 
 export const PlanetPage = () => {
   const context = route.useRouteContext();

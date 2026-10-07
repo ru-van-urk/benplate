@@ -1,7 +1,7 @@
 import { isApiError } from "@benplate/api/client";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
-import { EditPlanetPage } from "~/features/planets/edit-planet-page";
+import { EditPlanetPage } from "#/features/planets/edit-planet-page";
 
 export const Route = createFileRoute("/_app/planets/$publicId/edit")({
   context: ({ context, params }) => ({

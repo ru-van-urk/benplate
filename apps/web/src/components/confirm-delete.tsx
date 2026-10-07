@@ -12,7 +12,7 @@ import {
 import { Button } from "@benplate/ui/components/button";
 
 // Only signed-in users see it, so pages load it lazily (Base UI, about 50 KB):
-// `lazy(() => import("~/components/confirm-delete"))`. The page owns the mutation; the dialog stays open on an
+// `lazy(() => import("#/components/confirm-delete"))`. The page owns the mutation; the dialog stays open on an
 // error and shows it, such as a planet that still has residents
 const ConfirmDelete = ({
   name,

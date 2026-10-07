@@ -6,7 +6,7 @@ import { FieldError, FieldGroup } from "@benplate/ui/components/field";
 import { Field, Form, setErrors, useForm } from "@formisch/react";
 import type * as v from "valibot";
 
-import { NumberField, SelectField, TextField } from "~/components/form-fields";
+import { NumberField, SelectField, TextField } from "#/components/form-fields";
 
 type PlanetInput = v.InferOutput<typeof newPlanetSchema>;
 

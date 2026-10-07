@@ -29,5 +29,8 @@
     "moduleResolution": "bundler",
     "noEmit": true
   },
+  // Inherited by every config that extends this one, since they only override `include`. A config must set `include`:
+  // with `files` set, it no longer defaults to everything
+  "files": ["./reset.d.ts"],
   "exclude": ["${configDir}/node_modules", "${configDir}/dist"]
 }

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { PlanetListPage } from "~/features/planets/planet-list-page";
+import { PlanetListPage } from "#/features/planets/planet-list-page";
 
 export const Route = createFileRoute("/(public)/")({
   context: ({ context }) => ({

@@ -6,8 +6,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Link, getRouteApi, useRouter } from "@tanstack/react-router";
 import * as v from "valibot";
 
-import { TextField } from "~/components/form-fields";
-import { authClient, refreshSession } from "~/utils/auth";
+import { TextField } from "#/components/form-fields";
+import { authClient, refreshSession } from "#/utils/auth";
 
 const route = getRouteApi("/(public)/login");
 

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { PeopleListPage } from "~/features/people/people-list-page";
+import { PeopleListPage } from "#/features/people/people-list-page";
 
 export const Route = createFileRoute("/(public)/people/")({
   context: ({ context }) => ({
