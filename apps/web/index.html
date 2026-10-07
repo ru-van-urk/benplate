@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BenPlate</title>
+    <!-- In the HTML, not in __root's head(), so the browser never guesses /favicon.ico first -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Every page needs the session (__root's beforeLoad): start it alongside the scripts instead of after
+         them, one round trip less. fetchSession must keep making this exact request, or it is fetched twice -->
+    <link rel="preload" href="/api/auth/get-session" as="fetch" crossorigin />
   </head>
 
   <body>

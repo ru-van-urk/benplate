@@ -1,18 +1,13 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@benplate/ui/components/alert-dialog";
-import { Button, buttonVariants } from "@benplate/ui/components/button";
+import { buttonVariants } from "@benplate/ui/components/button";
 
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { Suspense, lazy } from "react";
+
+// Only signed-in users see it, so only they download the dialog (Base UI, about 50 KB)
+const DeletePlanet = lazy(() =>
+  import("~/components/delete-planet").then(({ DeletePlanet }) => ({ default: DeletePlanet })),
+);
 
 export const Route = createFileRoute("/(public)/planets/$id")({
   context: ({ context, params }) => ({
@@ -51,7 +46,9 @@ function PlanetComponent() {
             >
               Edit
             </Link>
-            <DeletePlanet id={planet.id} name={planet.name} />
+            <Suspense>
+              <DeletePlanet id={planet.id} name={planet.name} />
+            </Suspense>
           </div>
         )}
       </div>
@@ -67,44 +64,5 @@ function PlanetComponent() {
         ))}
       </dl>
     </div>
-  );
-}
-
-function DeletePlanet({ id, name }: { id: string; name: string }) {
-  const { orpc } = Route.useRouteContext();
-  const navigate = Route.useNavigate();
-  const queryClient = useQueryClient();
-
-  const deletePlanet = useMutation(
-    orpc.planet.delete.mutationOptions({
-      onSuccess: async () => {
-        await navigate({ to: "/" });
-        await queryClient.invalidateQueries({ queryKey: orpc.planet.key() });
-      },
-    }),
-  );
-
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger render={<Button variant="destructive" size="sm" />}>
-        Delete
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete {name}?</AlertDialogTitle>
-          <AlertDialogDescription>This can't be undone.</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            variant="destructive"
-            disabled={deletePlanet.isPending}
-            onClick={() => deletePlanet.mutate({ id })}
-          >
-            Delete
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
   );
 }

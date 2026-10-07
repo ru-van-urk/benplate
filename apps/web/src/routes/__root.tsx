@@ -1,5 +1,4 @@
 import { Button, buttonVariants } from "@benplate/ui/components/button";
-import { Toaster } from "@benplate/ui/components/sonner";
 
 import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -12,7 +11,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 
-import { authClient, refreshSession, sessionQueryOptions } from "~/utils/auth";
+import { loadAuthClient, refreshSession, sessionQueryOptions } from "~/utils/auth";
 import type { orpc } from "~/utils/orpc";
 
 import "../index.css";
@@ -38,13 +37,6 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
         content: "BenPlate is a web application",
       },
     ],
-    links: [
-      {
-        rel: "icon",
-        type: "image/svg+xml",
-        href: "/favicon.svg",
-      },
-    ],
   }),
 });
 
@@ -59,8 +51,6 @@ function RootComponent() {
         <Outlet />
       </main>
 
-      <Toaster richColors />
-
       <ReactQueryDevtools />
     </>
   );
@@ -73,6 +63,7 @@ function Header() {
   const router = useRouter();
 
   const signOut = async () => {
+    const authClient = await loadAuthClient();
     await authClient.signOut();
     await refreshSession(queryClient, router);
   };

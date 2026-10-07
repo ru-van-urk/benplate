@@ -7,7 +7,7 @@ import { Link, createFileRoute, redirect, useRouter } from "@tanstack/react-rout
 import * as v from "valibot";
 
 import { TextField } from "~/components/form-fields";
-import { authClient, redirectSearchSchema, refreshSession } from "~/utils/auth";
+import { loadAuthClient, redirectSearchSchema, refreshSession } from "~/utils/auth";
 
 const registerSchema = v.object({
   name: v.pipe(v.string(), v.trim(), v.nonEmpty("Enter your name")),
@@ -42,6 +42,7 @@ function RegisterComponent() {
         of={form}
         className="grid gap-4"
         onSubmit={async (output) => {
+          const authClient = await loadAuthClient();
           const { error } = await authClient.signUp.email(output);
 
           // Includes "sign-up is disabled" when AUTH_DISABLE_SIGNUP is set

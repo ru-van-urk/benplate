@@ -7,7 +7,7 @@ import { Link, createFileRoute, redirect, useRouter } from "@tanstack/react-rout
 import * as v from "valibot";
 
 import { TextField } from "~/components/form-fields";
-import { authClient, redirectSearchSchema, refreshSession } from "~/utils/auth";
+import { loadAuthClient, redirectSearchSchema, refreshSession } from "~/utils/auth";
 
 const loginSchema = v.object({
   email: v.pipe(v.string(), v.email("Enter a valid email address")),
@@ -40,6 +40,7 @@ function LoginComponent() {
         of={form}
         className="grid gap-4"
         onSubmit={async (output) => {
+          const authClient = await loadAuthClient();
           const { error } = await authClient.signIn.email(output);
 
           if (error) {

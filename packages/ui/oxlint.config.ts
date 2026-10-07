@@ -17,15 +17,5 @@ export default defineConfig({
       files: ["src/components/field.tsx"],
       rules: { "jsx-a11y/prefer-tag-over-role": "off" },
     },
-    {
-      // `role="group"` on a div matches upstream (a fieldset brings UA styling), and the addon's click
-      // only forwards focus to the input, which is keyboard-reachable on its own.
-      files: ["src/components/input-group.tsx"],
-      rules: {
-        "jsx-a11y/prefer-tag-over-role": "off",
-        "jsx-a11y/click-events-have-key-events": "off",
-        "jsx-a11y/no-noninteractive-element-interactions": "off",
-      },
-    },
   ],
 });

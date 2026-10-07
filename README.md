@@ -69,7 +69,8 @@ pnpm run dev
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the web application.
 The server runs at [http://localhost:3001](http://localhost:3001), and the Vite dev server proxies `/api` to it:
 
-- REST API, also used by the web app: [http://localhost:3000/api](http://localhost:3000/api/planets) (e.g. `GET /api/planets`, `GET /api/planets/{id}`, `POST /api/planets`)
+- REST API, for everyone but the web app: [http://localhost:3000/api](http://localhost:3000/api/planets) (e.g. `GET /api/planets`, `GET /api/planets/{id}`, `POST /api/planets`)
+- oRPC's RPC protocol, for the web app's typed client: `/api/rpc/*` (e.g. `POST /api/rpc/planet/list`). The same router answers both; RPC keeps `Date`s without the contract's schemas, so the browser bundle skips them
 - Better Auth: `/api/auth/*` (e.g. `POST /api/auth/sign-in/email`, `GET /api/auth/get-session`)
 - API docs and OpenAPI spec: [http://localhost:3000/api/docs](http://localhost:3000/api/docs), `/api/docs/spec.json`. They are served only when `NODE_ENV` is not `production`, so never in the Docker image
 - Health check (Hono, outside the API): `/api/health`
@@ -155,6 +156,8 @@ TanStack Router's file routes, in two groups:
 
 The login and register pages send signed-in users on to their `redirect` parameter, which only accepts a path on the same origin. After signing in or out, `refreshSession` (`apps/web/src/utils/auth.ts`) reloads the session and reruns every route's `beforeLoad`, so the guards redirect wherever the user now belongs. An API call that answers `UNAUTHORIZED`, such as after the session expired, does the same, which sends the user to the login page and back afterwards.
 
+The session comes from a plain `fetch` (`@benplate/auth/session`), which `index.html` preloads so it downloads alongside the scripts; Better Auth's client (about 30 KB) loads only when someone signs in, up or out (`loadAuthClient`). Keep code that only some visitors need out of the first load the same way: the delete dialog on the public planet page is a `lazy` component, so only signed-in users download it.
+
 Forms use [Formisch](https://formisch.dev) with the contract's own Valibot schemas (exported from `@benplate/contract`), so the form and the API agree on every rule. `apps/web/src/components/form-fields.tsx` renders Formisch fields with the shared shadcn `Field` components, and `planet-form.tsx` shows how an API error (`CONFLICT`) becomes a field error.
 
 ## Logging
@@ -209,7 +212,7 @@ Copy `.env.example` to `.env` in `apps/server`. Env files are ignored by git; ke
   | `PORT`                | no       | Default `3001`; the Docker image sets `3000`                                                                     |
   | `NODE_ENV`            | no       | `production` in the Docker image; turns off the API docs and the `.evlog` file output                            |
 
-- **Web**: needs no configuration. The client calls the REST API under `/api` on its own origin, which the Vite dev server (`vite.config.ts`) and nginx in production (`apps/web/nginx.conf`) proxy to the server. There is no CORS, and the same web image works in every environment.
+- **Web**: needs no configuration. The client calls the API under `/api` on its own origin, which the Vite dev server (`vite.config.ts`) and nginx in production (`apps/web/nginx.conf`) proxy to the server. There is no CORS, and the same web image works in every environment.
 - **Database tooling**: `drizzle.config.ts` reads `DATABASE_URL` from `apps/server/.env` when the variable is not already set.
 
 Shared packages (`@benplate/db`, `@benplate/api`, `@benplate/auth`) receive configuration or initialized clients from the application.
@@ -227,7 +230,7 @@ Shared packages (`@benplate/db`, `@benplate/api`, `@benplate/auth`) receive conf
 - Logs: pnpm run docker:logs
 - Stop: pnpm run docker:down
 
-Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST, `/api/auth` and `/api/health`) to `server:3000` over the internal Compose network. On Dokploy, enable Isolated Deployments for the stack, so two stacks on one host don't share the `server` hostname. Then add the domain to the `web` service in the Domains tab.
+Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST, `/api/rpc`, `/api/auth` and `/api/health`) to `server:3000` over the internal Compose network. On Dokploy, enable Isolated Deployments for the stack, so two stacks on one host don't share the `server` hostname. Then add the domain to the `web` service in the Domains tab.
 
 Compose refuses to start without these variables in `.env` (or Dokploy's Environment tab):
 
