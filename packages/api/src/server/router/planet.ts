@@ -6,7 +6,7 @@ const listPlanets = os.planet.list.handler(({ context }) => {
   return context.db.selectFrom("planets").selectAll().orderBy("distanceFromSunAu").execute();
 });
 
-const findPlanet = os.planet.find.handler(async ({ context, input, errors }) => {
+const getPlanet = os.planet.get.handler(async ({ context, input, errors }) => {
   const planet = await context.db
     .selectFrom("planets")
     .selectAll()
@@ -81,7 +81,7 @@ const deletePlanet = protectedProcedure.planet.delete.handler(
 
 export const planetRouter = os.planet.router({
   list: listPlanets,
-  find: findPlanet,
+  get: getPlanet,
   create: createPlanet,
   update: updatePlanet,
   delete: deletePlanet,

@@ -8,7 +8,7 @@ const route = getRouteApi("/(public)/");
 export const PlanetListPage = () => {
   const context = route.useRouteContext();
 
-  const planets = useSuspenseQuery(context.planetQueryOptions);
+  const planets = useSuspenseQuery(context.listPlanetsQueryOptions);
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-2">

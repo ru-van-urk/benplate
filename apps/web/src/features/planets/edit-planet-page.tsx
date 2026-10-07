@@ -6,11 +6,11 @@ import { PlanetForm } from "./planet-form";
 const route = getRouteApi("/_app/planets/$id/edit");
 
 export const EditPlanetPage = () => {
-  const { orpc, planetQueryOptions } = route.useRouteContext();
+  const { orpc, getPlanetQueryOptions } = route.useRouteContext();
   const navigate = route.useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: planet } = useSuspenseQuery(planetQueryOptions);
+  const { data: planet } = useSuspenseQuery(getPlanetQueryOptions);
 
   const updatePlanet = useMutation(
     orpc.planet.update.mutationOptions({

@@ -47,8 +47,8 @@ const listPlanets = oc
   )
   .output(v.array(planetSchema));
 
-const findPlanet = oc
-  .meta(openapi({ method: "GET", path: "/planets/{id}", tags, summary: "Find a planet by id" }))
+const getPlanet = oc
+  .meta(openapi({ method: "GET", path: "/planets/{id}", tags, summary: "Get a planet by id" }))
   .errors({ NOT_FOUND: {} })
   .input(v.object({ id: idSchema }))
   .output(planetSchema);
@@ -88,7 +88,7 @@ const deletePlanet = authedContract
 
 export const planetContract = {
   list: listPlanets,
-  find: findPlanet,
+  get: getPlanet,
   create: createPlanet,
   update: updatePlanet,
   delete: deletePlanet,

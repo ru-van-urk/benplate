@@ -9,7 +9,7 @@ const route = getRouteApi("/(public)/planets/$id");
 export const PlanetPage = () => {
   const context = route.useRouteContext();
 
-  const { data: planet } = useSuspenseQuery(context.planetQueryOptions);
+  const { data: planet } = useSuspenseQuery(context.getPlanetQueryOptions);
 
   const facts = [
     ["Type", planet.type],

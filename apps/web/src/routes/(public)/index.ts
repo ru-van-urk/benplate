@@ -4,10 +4,10 @@ import { PlanetListPage } from "~/features/planets/planet-list-page";
 
 export const Route = createFileRoute("/(public)/")({
   context: ({ context }) => ({
-    planetQueryOptions: context.orpc.planet.list.queryOptions(),
+    listPlanetsQueryOptions: context.orpc.planet.list.queryOptions(),
   }),
   loader: async ({ context }) => {
-    await context.queryClient.query({ ...context.planetQueryOptions, staleTime: "static" });
+    await context.queryClient.query({ ...context.listPlanetsQueryOptions, staleTime: "static" });
   },
   component: PlanetListPage,
 });
