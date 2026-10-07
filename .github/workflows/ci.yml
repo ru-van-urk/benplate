@@ -87,6 +87,22 @@ jobs:
       - name: Apply the migrations
         run: pnpm --filter @benplate/db exec drizzle-kit migrate
 
+      # Each table's migration creates its trigger by hand; this catches one that was forgotten
+      - name: Check every table with updated_at has its trigger
+        run: |
+          missing=$(psql "$DATABASE_URL" -Atc "
+            SELECT string_agg(c.relname, ', ')
+            FROM pg_class AS c
+            JOIN pg_namespace AS n ON n.oid = c.relnamespace
+            JOIN pg_attribute AS a ON a.attrelid = c.oid AND a.attname = 'updated_at' AND NOT a.attisdropped
+            WHERE n.nspname = 'public' AND c.relkind = 'r' AND NOT EXISTS (
+              SELECT FROM pg_trigger AS t WHERE t.tgrelid = c.oid AND t.tgname = c.relname || '_updated_at'
+            )")
+          if [ -n "$missing" ]; then
+            echo "::error::Tables without their updated_at trigger: $missing"
+            exit 1
+          fi
+
       - name: Check the Kysely types match the migrated database
         run: |
           if ! pnpm --filter @benplate/db exec kysely-codegen --verify; then
@@ -111,10 +127,11 @@ jobs:
             sleep 1
           done
 
-          # The seeded planets, read through Kysely
+          # The seeded planets and people, read through Kysely; people embed their homeworld (jsonObjectFrom)
           planets=$(curl -sf http://localhost:3000/api/planets | jq length)
-          if [ "$planets" != "8" ]; then
-            echo "::error::Expected the 8 seeded planets, got: $planets"
+          people=$(curl -sf http://localhost:3000/api/people | jq '[.[] | select(.homeworld.publicId)] | length')
+          if [ "$planets" != "13" ] || [ "$people" != "13" ]; then
+            echo "::error::Expected the 13 seeded planets and 13 people with a homeworld, got: $planets and $people"
             exit 1
           fi
 

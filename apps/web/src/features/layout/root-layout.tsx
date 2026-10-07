@@ -44,9 +44,26 @@ const Header = () => {
 
   return (
     <header className="container mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3">
-      <Link to="/" className="font-medium">
-        BenPlate
-      </Link>
+      <nav className="flex items-center gap-4">
+        <Link to="/" className="font-medium">
+          BenPlate
+        </Link>
+        <Link
+          to="/"
+          className="text-sm text-muted-foreground hover:text-foreground"
+          activeProps={{ className: "text-foreground" }}
+          activeOptions={{ exact: true }}
+        >
+          Planets
+        </Link>
+        <Link
+          to="/people"
+          className="text-sm text-muted-foreground hover:text-foreground"
+          activeProps={{ className: "text-foreground" }}
+        >
+          People
+        </Link>
+      </nav>
 
       {session ? (
         <div className="flex items-center gap-3">

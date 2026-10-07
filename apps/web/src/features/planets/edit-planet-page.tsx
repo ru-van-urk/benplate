@@ -28,11 +28,12 @@ export const EditPlanetPage = () => {
         initialInput={{
           name: planet.name,
           description: planet.description,
-          type: planet.type,
-          moons: planet.moons,
+          climate: planet.climate,
+          terrain: planet.terrain,
           diameterKm: planet.diameterKm,
-          distanceFromSunAu: planet.distanceFromSunAu,
+          rotationPeriodHours: planet.rotationPeriodHours,
           orbitalPeriodDays: planet.orbitalPeriodDays,
+          population: planet.population,
         }}
         submitLabel="Save changes"
         onSubmit={(changes) => updatePlanet.mutateAsync({ publicId: planet.publicId, ...changes })}

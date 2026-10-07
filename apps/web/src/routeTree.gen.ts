@@ -13,8 +13,12 @@ import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as publicLoginRouteImport } from './routes/(public)/login'
 import { Route as publicRegisterRouteImport } from './routes/(public)/register'
+import { Route as publicPeopleIndexRouteImport } from './routes/(public)/people/index'
+import { Route as publicPeoplePublicIdRouteImport } from './routes/(public)/people/$publicId'
 import { Route as publicPlanetsPublicIdRouteImport } from './routes/(public)/planets/$publicId'
+import { Route as AppPeopleNewRouteImport } from './routes/_app/people/new'
 import { Route as AppPlanetsNewRouteImport } from './routes/_app/planets/new'
+import { Route as AppPeoplePublicIdEditRouteImport } from './routes/_app/people/$publicId/edit'
 import { Route as AppPlanetsPublicIdEditRouteImport } from './routes/_app/planets/$publicId/edit'
 
 const AppRouteRoute = AppRouteRouteImport.update({
@@ -36,14 +40,34 @@ const publicRegisterRoute = publicRegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const publicPeopleIndexRoute = publicPeopleIndexRouteImport.update({
+  id: '/(public)/people/',
+  path: '/people/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const publicPeoplePublicIdRoute = publicPeoplePublicIdRouteImport.update({
+  id: '/(public)/people/$publicId',
+  path: '/people/$publicId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const publicPlanetsPublicIdRoute = publicPlanetsPublicIdRouteImport.update({
   id: '/(public)/planets/$publicId',
   path: '/planets/$publicId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppPeopleNewRoute = AppPeopleNewRouteImport.update({
+  id: '/people/new',
+  path: '/people/new',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppPlanetsNewRoute = AppPlanetsNewRouteImport.update({
   id: '/planets/new',
   path: '/planets/new',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppPeoplePublicIdEditRoute = AppPeoplePublicIdEditRouteImport.update({
+  id: '/people/$publicId/edit',
+  path: '/people/$publicId/edit',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppPlanetsPublicIdEditRoute = AppPlanetsPublicIdEditRouteImport.update({
@@ -56,16 +80,24 @@ export interface FileRoutesByFullPath {
   '/': typeof publicIndexRoute
   '/login': typeof publicLoginRoute
   '/register': typeof publicRegisterRoute
+  '/people/$publicId': typeof publicPeoplePublicIdRoute
   '/planets/$publicId': typeof publicPlanetsPublicIdRoute
+  '/people/new': typeof AppPeopleNewRoute
   '/planets/new': typeof AppPlanetsNewRoute
+  '/people/': typeof publicPeopleIndexRoute
+  '/people/$publicId/edit': typeof AppPeoplePublicIdEditRoute
   '/planets/$publicId/edit': typeof AppPlanetsPublicIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof publicIndexRoute
   '/login': typeof publicLoginRoute
   '/register': typeof publicRegisterRoute
+  '/people/$publicId': typeof publicPeoplePublicIdRoute
   '/planets/$publicId': typeof publicPlanetsPublicIdRoute
+  '/people/new': typeof AppPeopleNewRoute
   '/planets/new': typeof AppPlanetsNewRoute
+  '/people': typeof publicPeopleIndexRoute
+  '/people/$publicId/edit': typeof AppPeoplePublicIdEditRoute
   '/planets/$publicId/edit': typeof AppPlanetsPublicIdEditRoute
 }
 export interface FileRoutesById {
@@ -74,8 +106,12 @@ export interface FileRoutesById {
   '/(public)/login': typeof publicLoginRoute
   '/(public)/register': typeof publicRegisterRoute
   '/(public)/': typeof publicIndexRoute
+  '/(public)/people/$publicId': typeof publicPeoplePublicIdRoute
   '/(public)/planets/$publicId': typeof publicPlanetsPublicIdRoute
+  '/_app/people/new': typeof AppPeopleNewRoute
   '/_app/planets/new': typeof AppPlanetsNewRoute
+  '/(public)/people/': typeof publicPeopleIndexRoute
+  '/_app/people/$publicId/edit': typeof AppPeoplePublicIdEditRoute
   '/_app/planets/$publicId/edit': typeof AppPlanetsPublicIdEditRoute
 }
 export interface FileRouteTypes {
@@ -84,16 +120,24 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/people/$publicId'
     | '/planets/$publicId'
+    | '/people/new'
     | '/planets/new'
+    | '/people/'
+    | '/people/$publicId/edit'
     | '/planets/$publicId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/register'
+    | '/people/$publicId'
     | '/planets/$publicId'
+    | '/people/new'
     | '/planets/new'
+    | '/people'
+    | '/people/$publicId/edit'
     | '/planets/$publicId/edit'
   id:
     | '__root__'
@@ -101,8 +145,12 @@ export interface FileRouteTypes {
     | '/(public)/login'
     | '/(public)/register'
     | '/(public)/'
+    | '/(public)/people/$publicId'
     | '/(public)/planets/$publicId'
+    | '/_app/people/new'
     | '/_app/planets/new'
+    | '/(public)/people/'
+    | '/_app/people/$publicId/edit'
     | '/_app/planets/$publicId/edit'
   fileRoutesById: FileRoutesById
 }
@@ -111,7 +159,9 @@ export interface RootRouteChildren {
   publicLoginRoute: typeof publicLoginRoute
   publicRegisterRoute: typeof publicRegisterRoute
   publicIndexRoute: typeof publicIndexRoute
+  publicPeoplePublicIdRoute: typeof publicPeoplePublicIdRoute
   publicPlanetsPublicIdRoute: typeof publicPlanetsPublicIdRoute
+  publicPeopleIndexRoute: typeof publicPeopleIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -144,6 +194,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(public)/people/': {
+      id: '/(public)/people/'
+      path: '/people'
+      fullPath: '/people/'
+      preLoaderRoute: typeof publicPeopleIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(public)/people/$publicId': {
+      id: '/(public)/people/$publicId'
+      path: '/people/$publicId'
+      fullPath: '/people/$publicId'
+      preLoaderRoute: typeof publicPeoplePublicIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(public)/planets/$publicId': {
       id: '/(public)/planets/$publicId'
       path: '/planets/$publicId'
@@ -151,11 +215,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicPlanetsPublicIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/people/new': {
+      id: '/_app/people/new'
+      path: '/people/new'
+      fullPath: '/people/new'
+      preLoaderRoute: typeof AppPeopleNewRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/planets/new': {
       id: '/_app/planets/new'
       path: '/planets/new'
       fullPath: '/planets/new'
       preLoaderRoute: typeof AppPlanetsNewRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/people/$publicId/edit': {
+      id: '/_app/people/$publicId/edit'
+      path: '/people/$publicId/edit'
+      fullPath: '/people/$publicId/edit'
+      preLoaderRoute: typeof AppPeoplePublicIdEditRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/planets/$publicId/edit': {
@@ -169,12 +247,16 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteRouteChildren {
+  AppPeopleNewRoute: typeof AppPeopleNewRoute
   AppPlanetsNewRoute: typeof AppPlanetsNewRoute
+  AppPeoplePublicIdEditRoute: typeof AppPeoplePublicIdEditRoute
   AppPlanetsPublicIdEditRoute: typeof AppPlanetsPublicIdEditRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppPeopleNewRoute: AppPeopleNewRoute,
   AppPlanetsNewRoute: AppPlanetsNewRoute,
+  AppPeoplePublicIdEditRoute: AppPeoplePublicIdEditRoute,
   AppPlanetsPublicIdEditRoute: AppPlanetsPublicIdEditRoute,
 }
 
@@ -187,7 +269,9 @@ const rootRouteChildren: RootRouteChildren = {
   publicLoginRoute: publicLoginRoute,
   publicRegisterRoute: publicRegisterRoute,
   publicIndexRoute: publicIndexRoute,
+  publicPeoplePublicIdRoute: publicPeoplePublicIdRoute,
   publicPlanetsPublicIdRoute: publicPlanetsPublicIdRoute,
+  publicPeopleIndexRoute: publicPeopleIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

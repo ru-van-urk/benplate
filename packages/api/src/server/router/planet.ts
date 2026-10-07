@@ -1,18 +1,28 @@
-import { isUniqueViolation, newPublicId } from "@benplate/db";
+import { isForeignKeyViolation, isUniqueViolation, jsonArrayFrom, newPublicId } from "@benplate/db";
 
-import { planetIdPrefix } from "@benplate/contract";
+import { publicIdPrefixes } from "@benplate/contract";
 
 import { os, protectedProcedure } from "../orpc";
 
 const listPlanets = os.planet.list.handler(({ context }) => {
-  return context.db.selectFrom("planets").selectAll().orderBy("distanceFromSunAu").execute();
+  return context.db.selectFrom("planets").selectAll().orderBy("name").execute();
 });
 
 const getPlanet = os.planet.get.handler(async ({ context, input, errors }) => {
+  // The residents come along in the same query, as a JSON array built by Postgres
   const planet = await context.db
     .selectFrom("planets")
-    .selectAll()
-    .where("publicId", "=", input.publicId)
+    .selectAll("planets")
+    .select((eb) =>
+      jsonArrayFrom(
+        eb
+          .selectFrom("people")
+          .select(["people.publicId", "people.name"])
+          .whereRef("people.homeworldId", "=", "planets.id")
+          .orderBy("people.name"),
+      ).as("residents"),
+    )
+    .where("planets.publicId", "=", input.publicId)
     .executeTakeFirst();
 
   if (!planet) {
@@ -27,7 +37,7 @@ const createPlanet = protectedProcedure.planet.create.handler(
     try {
       return await context.db
         .insertInto("planets")
-        .values({ ...input, publicId: newPublicId(planetIdPrefix) })
+        .values({ ...input, publicId: newPublicId(publicIdPrefixes.planet) })
         .returningAll()
         .executeTakeFirstOrThrow();
     } catch (error) {
@@ -70,13 +80,25 @@ const updatePlanet = protectedProcedure.planet.update.handler(
 
 const deletePlanet = protectedProcedure.planet.delete.handler(
   async ({ context, input, errors }) => {
-    const result = await context.db
-      .deleteFrom("planets")
-      .where("publicId", "=", input.publicId)
-      .executeTakeFirst();
+    try {
+      const result = await context.db
+        .deleteFrom("planets")
+        .where("publicId", "=", input.publicId)
+        .executeTakeFirst();
 
-    if (result.numDeletedRows === 0n) {
-      throw errors.NOT_FOUND({ message: `Planet ${input.publicId} not found` });
+      if (result.numDeletedRows === 0n) {
+        throw errors.NOT_FOUND({ message: `Planet ${input.publicId} not found` });
+      }
+    } catch (error) {
+      // The foreign key refuses (ON DELETE RESTRICT) while people still live there
+      if (isForeignKeyViolation(error, "people_homeworld_id_fkey")) {
+        throw errors.CONFLICT({
+          message: `Planet ${input.publicId} still has residents`,
+          cause: error,
+        });
+      }
+
+      throw error;
     }
   },
 );

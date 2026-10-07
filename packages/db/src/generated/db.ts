@@ -5,11 +5,13 @@
 
 import type { ColumnType } from "kysely";
 
+export type Climate = "arid" | "frozen" | "hot" | "murky" | "temperate" | "tropical";
+
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
-export type PlanetType = "gas giant" | "ice giant" | "terrestrial";
+export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
@@ -29,17 +31,30 @@ export interface Account {
   userId: string;
 }
 
+export interface People {
+  birthYear: string | null;
+  createdAt: Generated<Timestamp>;
+  heightCm: number | null;
+  homeworldId: number;
+  id: Generated<number>;
+  massKg: number | null;
+  name: string;
+  publicId: string;
+  updatedAt: Generated<Timestamp>;
+}
+
 export interface Planets {
+  climate: Climate;
   createdAt: Generated<Timestamp>;
   description: string | null;
   diameterKm: number;
-  distanceFromSunAu: number;
   id: Generated<number>;
-  moons: Generated<number>;
   name: string;
   orbitalPeriodDays: number;
+  population: Int8 | null;
   publicId: string;
-  type: PlanetType;
+  rotationPeriodHours: number;
+  terrain: string;
   updatedAt: Generated<Timestamp>;
 }
 
@@ -75,6 +90,7 @@ export interface Verification {
 
 export interface DB {
   account: Account;
+  people: People;
   planets: Planets;
   session: Session;
   user: User;

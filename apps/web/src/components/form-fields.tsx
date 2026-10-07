@@ -46,7 +46,8 @@ export const NumberField = ({
   ...props
 }: InputProps & {
   label: string;
-  field: FieldState<number | undefined> & { onChange: (value: number | undefined) => void };
+  // Nullable too, for an optional number; an emptied input is undefined, which the form turns into null
+  field: FieldState<number | null | undefined> & { onChange: (value: number | undefined) => void };
 }) => {
   return (
     <Field data-invalid={!!field.errors}>
@@ -76,7 +77,8 @@ export const SelectField = ({
 }: {
   label: string;
   placeholder: string;
-  options: readonly string[];
+  // A value that is its own label (an enum), or a value with a label (a related record's public id and name)
+  options: readonly (string | { value: string; label: string })[];
   field: FieldState<string | undefined>;
 }) => {
   return (
@@ -92,11 +94,16 @@ export const SelectField = ({
         <NativeSelectOption value="" disabled>
           {placeholder}
         </NativeSelectOption>
-        {options.map((option) => (
-          <NativeSelectOption key={option} value={option}>
-            {option}
-          </NativeSelectOption>
-        ))}
+        {options.map((option) => {
+          const { value, label } =
+            typeof option === "string" ? { value: option, label: option } : option;
+
+          return (
+            <NativeSelectOption key={value} value={value}>
+              {label}
+            </NativeSelectOption>
+          );
+        })}
       </NativeSelect>
       <FieldError>{field.errors?.[0]}</FieldError>
     </Field>

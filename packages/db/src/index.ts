@@ -4,8 +4,11 @@ import { Pool } from "pg";
 import type { DatabaseConfig } from "./config";
 import type { DB } from "./generated/db";
 
-export { isUniqueViolation } from "./errors";
+export { isForeignKeyViolation, isUniqueViolation } from "./errors";
 export { newPublicId } from "./ids";
+
+// Nest related rows in one query (a person's homeworld, a planet's residents); see docs/database.md#relations
+export { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres";
 
 // Drizzle owns the schema and migrations, Kysely runs the queries. Kysely's types come from kysely-codegen, which
 // reads the migrated database (./generated/db.ts), so they describe what pg actually returns. Two rules remain:
@@ -27,7 +30,9 @@ export function createDb(env: DatabaseConfig, { onError }: CreateDbOptions) {
 
   return new Kysely<DB>({
     dialect: new PostgresDialect({ pool }),
-    plugins: [new CamelCasePlugin({ maintainNestedObjectKeys: true })],
+    // Also camelCases the keys of nested JSON, so `jsonObjectFrom` and `jsonArrayFrom` results match the
+    // contract. That includes what a `jsonb` column holds: store camelCase keys in one
+    plugins: [new CamelCasePlugin()],
   });
 }
 

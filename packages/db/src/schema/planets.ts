@@ -3,8 +3,15 @@ import { pgEnum, snakeCase } from "drizzle-orm/pg-core";
 import { timestamps } from "./columns";
 
 // A Postgres enum, so the database rejects other values and kysely-codegen types the column as their union.
-// Adding a value is a normal migration, but it can't be used in the same deploy (see the README)
-export const planetType = pgEnum("planet_type", ["terrestrial", "gas giant", "ice giant"]);
+// Adding a value is a normal migration, but it can't be used in the same deploy (see docs/database.md)
+export const climate = pgEnum("climate", [
+  "arid",
+  "temperate",
+  "tropical",
+  "frozen",
+  "murky",
+  "hot",
+]);
 
 export const planets = snakeCase.table("planets", (t) => ({
   id: t.integer().primaryKey().generatedByDefaultAsIdentity(),
@@ -14,15 +21,15 @@ export const planets = snakeCase.table("planets", (t) => ({
   name: t.text().notNull().unique("planets_name_unique"),
   description: t.text(),
 
-  type: planetType().notNull(),
+  climate: climate().notNull(),
+  terrain: t.text().notNull(),
 
-  moons: t.integer().notNull().default(0),
   diameterKm: t.integer().notNull(),
+  rotationPeriodHours: t.integer().notNull(),
+  orbitalPeriodDays: t.integer().notNull(),
 
-  distanceFromSunAu: t.real().notNull(),
-  orbitalPeriodDays: t.real().notNull(),
+  // Coruscant's trillion doesn't fit an `integer`. pg returns `bigint` as a string, so the API does too
+  population: t.bigint({ mode: "string" }),
 
   ...timestamps,
 }));
-
-export type Planet = typeof planets.$inferSelect;
