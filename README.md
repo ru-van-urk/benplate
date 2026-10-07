@@ -69,8 +69,7 @@ pnpm run dev
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the web application.
 The server runs at [http://localhost:3001](http://localhost:3001), and the Vite dev server proxies `/api` to it:
 
-- REST API, for everyone but the web app: [http://localhost:3000/api](http://localhost:3000/api/planets) (e.g. `GET /api/planets`, `GET /api/planets/{id}`, `POST /api/planets`)
-- oRPC's RPC protocol, for the web app's typed client: `/api/rpc/*` (e.g. `POST /api/rpc/planet/list`). The same router answers both; RPC keeps `Date`s without the contract's schemas, so the browser bundle skips them
+- REST API, also used by the web app: [http://localhost:3000/api](http://localhost:3000/api/planets) (e.g. `GET /api/planets`, `GET /api/planets/{id}`, `POST /api/planets`)
 - Better Auth: `/api/auth/*` (e.g. `POST /api/auth/sign-in/email`, `GET /api/auth/get-session`)
 - API docs and OpenAPI spec: [http://localhost:3000/api/docs](http://localhost:3000/api/docs), `/api/docs/spec.json`. They are served only when `NODE_ENV` is not `production`, so never in the Docker image
 - Health check (Hono, outside the API): `/api/health`
@@ -241,7 +240,7 @@ Shared packages (`@benplate/db`, `@benplate/api`, `@benplate/auth`) receive conf
 - Logs: pnpm run docker:logs
 - Stop: pnpm run docker:down
 
-Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST, `/api/rpc`, `/api/auth` and `/api/health`) to `server:3000` over the internal Compose network. On Dokploy, enable Isolated Deployments for the stack, so two stacks on one host don't share the `server` hostname. Then add the domain to the `web` service in the Domains tab.
+Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST, `/api/auth` and `/api/health`) to `server:3000` over the internal Compose network. On Dokploy, enable Isolated Deployments for the stack, so two stacks on one host don't share the `server` hostname. Then add the domain to the `web` service in the Domains tab.
 
 Compose refuses to start without these variables in `.env` (or Dokploy's Environment tab):
 
