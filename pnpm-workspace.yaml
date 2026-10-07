@@ -28,6 +28,7 @@ catalog:
   drizzle-orm: 1.0.0-rc.4
   evlog: ^2.29.0
   knip: ^6.38.0
+  kysely-codegen: ^0.20.0
   lucide-react: ^1.41.0
   nanoid: ^6.0.1
   oxfmt: ^0.66.0

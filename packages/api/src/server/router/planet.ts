@@ -1,4 +1,6 @@
-import { isUniqueViolation, newId } from "@benplate/db";
+import { isUniqueViolation, newPublicId } from "@benplate/db";
+
+import { planetIdPrefix } from "@benplate/contract";
 
 import { os, protectedProcedure } from "../orpc";
 
@@ -10,11 +12,11 @@ const getPlanet = os.planet.get.handler(async ({ context, input, errors }) => {
   const planet = await context.db
     .selectFrom("planets")
     .selectAll()
-    .where("id", "=", input.id)
+    .where("publicId", "=", input.publicId)
     .executeTakeFirst();
 
   if (!planet) {
-    throw errors.NOT_FOUND({ message: `Planet ${input.id} not found` });
+    throw errors.NOT_FOUND({ message: `Planet ${input.publicId} not found` });
   }
 
   return planet;
@@ -25,7 +27,7 @@ const createPlanet = protectedProcedure.planet.create.handler(
     try {
       return await context.db
         .insertInto("planets")
-        .values({ ...input, id: newId() })
+        .values({ ...input, publicId: newPublicId(planetIdPrefix) })
         .returningAll()
         .executeTakeFirstOrThrow();
     } catch (error) {
@@ -40,19 +42,19 @@ const createPlanet = protectedProcedure.planet.create.handler(
 
 const updatePlanet = protectedProcedure.planet.update.handler(
   async ({ context, input, errors }) => {
-    const { id, ...changes } = input;
+    const { publicId, ...changes } = input;
 
     try {
       const planet = await context.db
         .updateTable("planets")
         // An empty patch still needs a SET clause; the updated_at trigger overwrites it anyway
         .set({ ...changes, updatedAt: new Date() })
-        .where("id", "=", id)
+        .where("publicId", "=", publicId)
         .returningAll()
         .executeTakeFirst();
 
       if (!planet) {
-        throw errors.NOT_FOUND({ message: `Planet ${id} not found` });
+        throw errors.NOT_FOUND({ message: `Planet ${publicId} not found` });
       }
 
       return planet;
@@ -70,11 +72,11 @@ const deletePlanet = protectedProcedure.planet.delete.handler(
   async ({ context, input, errors }) => {
     const result = await context.db
       .deleteFrom("planets")
-      .where("id", "=", input.id)
+      .where("publicId", "=", input.publicId)
       .executeTakeFirst();
 
     if (result.numDeletedRows === 0n) {
-      throw errors.NOT_FOUND({ message: `Planet ${input.id} not found` });
+      throw errors.NOT_FOUND({ message: `Planet ${input.publicId} not found` });
     }
   },
 );

@@ -15,6 +15,7 @@
     "db:generate": "turbo run db:generate -F @benplate/db --",
     "db:studio": "turbo run db:studio -F @benplate/db --",
     "db:migrate": "turbo run db:migrate -F @benplate/db --",
+    "db:codegen": "turbo run db:codegen -F @benplate/db --",
     "docker:build": "docker compose build",
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down",

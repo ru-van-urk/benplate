@@ -8,9 +8,10 @@
     "./migrate": "./src/migrate.ts"
   },
   "scripts": {
-    "db:push": "drizzle-kit push",
+    "db:push": "drizzle-kit push && kysely-codegen",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "drizzle-kit migrate && kysely-codegen",
+    "db:codegen": "kysely-codegen",
     "db:studio": "drizzle-kit studio",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
@@ -27,6 +28,7 @@
     "@types/node": "catalog:",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "catalog:",
+    "kysely-codegen": "catalog:",
     "oxlint": "catalog:"
   }
 }

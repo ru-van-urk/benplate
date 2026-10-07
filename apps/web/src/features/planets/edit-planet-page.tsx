@@ -3,7 +3,7 @@ import { getRouteApi } from "@tanstack/react-router";
 
 import { PlanetForm } from "./planet-form";
 
-const route = getRouteApi("/_app/planets/$id/edit");
+const route = getRouteApi("/_app/planets/$publicId/edit");
 
 export const EditPlanetPage = () => {
   const { orpc, getPlanetQueryOptions } = route.useRouteContext();
@@ -16,7 +16,7 @@ export const EditPlanetPage = () => {
     orpc.planet.update.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: orpc.planet.key() });
-        await navigate({ to: "/planets/$id", params: { id: planet.id } });
+        await navigate({ to: "/planets/$publicId", params: { publicId: planet.publicId } });
       },
     }),
   );
@@ -35,7 +35,7 @@ export const EditPlanetPage = () => {
           orbitalPeriodDays: planet.orbitalPeriodDays,
         }}
         submitLabel="Save changes"
-        onSubmit={(changes) => updatePlanet.mutateAsync({ id: planet.id, ...changes })}
+        onSubmit={(changes) => updatePlanet.mutateAsync({ publicId: planet.publicId, ...changes })}
       />
     </div>
   );

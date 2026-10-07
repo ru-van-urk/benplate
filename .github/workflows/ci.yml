@@ -46,3 +46,83 @@ jobs:
 
       # Vite build, and the tsdown bundle with its migrations copy
       - run: pnpm build
+
+  # Not a test suite: runs the migrations on a real Postgres, checks the committed Kysely types against the
+  # result, then boots the server on it, which runs Better Auth's schema check, and makes one call per layer
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        # Same major as docker-compose.yml
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: benplate
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d benplate"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/benplate
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # drizzle-kit directly, not db:migrate, which would regenerate the types the next step checks
+      - name: Apply the migrations
+        run: pnpm --filter @benplate/db exec drizzle-kit migrate
+
+      - name: Check the Kysely types match the migrated database
+        run: |
+          if ! pnpm --filter @benplate/db exec kysely-codegen --verify; then
+            echo "::error::The generated Kysely types are out of date: run pnpm run db:codegen against a migrated database and commit the result"
+            exit 1
+          fi
+
+      - run: pnpm --filter server build
+
+      - name: Start the server and call the API
+        env:
+          NODE_ENV: production
+          PORT: "3000"
+          APP_URL: http://localhost:3000
+          BETTER_AUTH_SECRET: ci-only-secret-at-least-32-characters-long
+        run: |
+          node apps/server/dist/index.mjs > server.log 2>&1 &
+
+          # The server exits on an auth schema mismatch, so health never answers and the calls below fail
+          for _ in $(seq 1 30); do
+            curl -sf http://localhost:3000/api/health > /dev/null && break
+            sleep 1
+          done
+
+          # The seeded planets, read through Kysely
+          planets=$(curl -sf http://localhost:3000/api/planets | jq length)
+          if [ "$planets" != "8" ]; then
+            echo "::error::Expected the 8 seeded planets, got: $planets"
+            exit 1
+          fi
+
+          # Better Auth writes its tables
+          curl -sf -H "Origin: http://localhost:3000" -H "Content-Type: application/json" \
+            -d '{"name":"CI","email":"ci@example.com","password":"ci-password-123"}' \
+            http://localhost:3000/api/auth/sign-up/email > /dev/null
+
+      - name: Server log
+        if: failure()
+        run: cat server.log

@@ -3,9 +3,11 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 
 import { PlanetPage } from "~/features/planets/planet-page";
 
-export const Route = createFileRoute("/(public)/planets/$id")({
+export const Route = createFileRoute("/(public)/planets/$publicId")({
   context: ({ context, params }) => ({
-    getPlanetQueryOptions: context.orpc.planet.get.queryOptions({ input: { id: params.id } }),
+    getPlanetQueryOptions: context.orpc.planet.get.queryOptions({
+      input: { publicId: params.publicId },
+    }),
   }),
   loader: async ({ context }) => {
     try {

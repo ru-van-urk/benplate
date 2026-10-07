@@ -15,9 +15,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 
 // Split from the planet page, which loads it lazily
-const route = getRouteApi("/(public)/planets/$id");
+const route = getRouteApi("/(public)/planets/$publicId");
 
-export const DeletePlanet = ({ id, name }: { id: string; name: string }) => {
+export const DeletePlanet = ({ publicId, name }: { publicId: string; name: string }) => {
   const { orpc } = route.useRouteContext();
   const navigate = route.useNavigate();
   const queryClient = useQueryClient();
@@ -46,7 +46,7 @@ export const DeletePlanet = ({ id, name }: { id: string; name: string }) => {
           <AlertDialogAction
             variant="destructive"
             disabled={deletePlanet.isPending}
-            onClick={() => deletePlanet.mutate({ id })}
+            onClick={() => deletePlanet.mutate({ publicId })}
           >
             Delete
           </AlertDialogAction>

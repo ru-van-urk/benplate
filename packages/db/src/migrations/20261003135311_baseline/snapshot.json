@@ -7,10 +7,42 @@
   ],
   "ddl": [
     {
+      "values": [
+        "terrestrial",
+        "gas giant",
+        "ice giant"
+      ],
+      "name": "planet_type",
+      "entityType": "enums",
+      "schema": "public"
+    },
+    {
       "isRlsEnabled": false,
       "name": "planets",
       "entityType": "tables",
       "schema": "public"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "byDefault",
+        "name": "planets_id_seq",
+        "increment": "1",
+        "startWith": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "cache": 1,
+        "cycle": false
+      },
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "planets"
     },
     {
       "type": "text",
@@ -20,7 +52,7 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "id",
+      "name": "public_id",
       "entityType": "columns",
       "schema": "public",
       "table": "planets"
@@ -52,8 +84,8 @@
       "table": "planets"
     },
     {
-      "type": "text",
-      "typeSchema": null,
+      "type": "planet_type",
+      "typeSchema": "public",
       "notNull": true,
       "dimensions": 0,
       "default": null,
@@ -159,6 +191,17 @@
       ],
       "nullsNotDistinct": false,
       "name": "planets_name_unique",
+      "schema": "public",
+      "table": "planets",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        "public_id"
+      ],
+      "nullsNotDistinct": false,
+      "name": "planets_public_id_unique",
       "schema": "public",
       "table": "planets",
       "entityType": "uniques"

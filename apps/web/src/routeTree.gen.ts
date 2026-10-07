@@ -13,9 +13,9 @@ import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as publicLoginRouteImport } from './routes/(public)/login'
 import { Route as publicRegisterRouteImport } from './routes/(public)/register'
-import { Route as publicPlanetsIdRouteImport } from './routes/(public)/planets/$id'
+import { Route as publicPlanetsPublicIdRouteImport } from './routes/(public)/planets/$publicId'
 import { Route as AppPlanetsNewRouteImport } from './routes/_app/planets/new'
-import { Route as AppPlanetsIdEditRouteImport } from './routes/_app/planets/$id/edit'
+import { Route as AppPlanetsPublicIdEditRouteImport } from './routes/_app/planets/$publicId/edit'
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
@@ -36,9 +36,9 @@ const publicRegisterRoute = publicRegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
-const publicPlanetsIdRoute = publicPlanetsIdRouteImport.update({
-  id: '/(public)/planets/$id',
-  path: '/planets/$id',
+const publicPlanetsPublicIdRoute = publicPlanetsPublicIdRouteImport.update({
+  id: '/(public)/planets/$publicId',
+  path: '/planets/$publicId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppPlanetsNewRoute = AppPlanetsNewRouteImport.update({
@@ -46,9 +46,9 @@ const AppPlanetsNewRoute = AppPlanetsNewRouteImport.update({
   path: '/planets/new',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const AppPlanetsIdEditRoute = AppPlanetsIdEditRouteImport.update({
-  id: '/planets/$id/edit',
-  path: '/planets/$id/edit',
+const AppPlanetsPublicIdEditRoute = AppPlanetsPublicIdEditRouteImport.update({
+  id: '/planets/$publicId/edit',
+  path: '/planets/$publicId/edit',
   getParentRoute: () => AppRouteRoute,
 } as any)
 
@@ -56,17 +56,17 @@ export interface FileRoutesByFullPath {
   '/': typeof publicIndexRoute
   '/login': typeof publicLoginRoute
   '/register': typeof publicRegisterRoute
-  '/planets/$id': typeof publicPlanetsIdRoute
+  '/planets/$publicId': typeof publicPlanetsPublicIdRoute
   '/planets/new': typeof AppPlanetsNewRoute
-  '/planets/$id/edit': typeof AppPlanetsIdEditRoute
+  '/planets/$publicId/edit': typeof AppPlanetsPublicIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof publicIndexRoute
   '/login': typeof publicLoginRoute
   '/register': typeof publicRegisterRoute
-  '/planets/$id': typeof publicPlanetsIdRoute
+  '/planets/$publicId': typeof publicPlanetsPublicIdRoute
   '/planets/new': typeof AppPlanetsNewRoute
-  '/planets/$id/edit': typeof AppPlanetsIdEditRoute
+  '/planets/$publicId/edit': typeof AppPlanetsPublicIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -74,9 +74,9 @@ export interface FileRoutesById {
   '/(public)/login': typeof publicLoginRoute
   '/(public)/register': typeof publicRegisterRoute
   '/(public)/': typeof publicIndexRoute
-  '/(public)/planets/$id': typeof publicPlanetsIdRoute
+  '/(public)/planets/$publicId': typeof publicPlanetsPublicIdRoute
   '/_app/planets/new': typeof AppPlanetsNewRoute
-  '/_app/planets/$id/edit': typeof AppPlanetsIdEditRoute
+  '/_app/planets/$publicId/edit': typeof AppPlanetsPublicIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -84,26 +84,26 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
-    | '/planets/$id'
+    | '/planets/$publicId'
     | '/planets/new'
-    | '/planets/$id/edit'
+    | '/planets/$publicId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/register'
-    | '/planets/$id'
+    | '/planets/$publicId'
     | '/planets/new'
-    | '/planets/$id/edit'
+    | '/planets/$publicId/edit'
   id:
     | '__root__'
     | '/_app'
     | '/(public)/login'
     | '/(public)/register'
     | '/(public)/'
-    | '/(public)/planets/$id'
+    | '/(public)/planets/$publicId'
     | '/_app/planets/new'
-    | '/_app/planets/$id/edit'
+    | '/_app/planets/$publicId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -111,7 +111,7 @@ export interface RootRouteChildren {
   publicLoginRoute: typeof publicLoginRoute
   publicRegisterRoute: typeof publicRegisterRoute
   publicIndexRoute: typeof publicIndexRoute
-  publicPlanetsIdRoute: typeof publicPlanetsIdRoute
+  publicPlanetsPublicIdRoute: typeof publicPlanetsPublicIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -144,11 +144,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(public)/planets/$id': {
-      id: '/(public)/planets/$id'
-      path: '/planets/$id'
-      fullPath: '/planets/$id'
-      preLoaderRoute: typeof publicPlanetsIdRouteImport
+    '/(public)/planets/$publicId': {
+      id: '/(public)/planets/$publicId'
+      path: '/planets/$publicId'
+      fullPath: '/planets/$publicId'
+      preLoaderRoute: typeof publicPlanetsPublicIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/planets/new': {
@@ -158,11 +158,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPlanetsNewRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/_app/planets/$id/edit': {
-      id: '/_app/planets/$id/edit'
-      path: '/planets/$id/edit'
-      fullPath: '/planets/$id/edit'
-      preLoaderRoute: typeof AppPlanetsIdEditRouteImport
+    '/_app/planets/$publicId/edit': {
+      id: '/_app/planets/$publicId/edit'
+      path: '/planets/$publicId/edit'
+      fullPath: '/planets/$publicId/edit'
+      preLoaderRoute: typeof AppPlanetsPublicIdEditRouteImport
       parentRoute: typeof AppRouteRoute
     }
   }
@@ -170,12 +170,12 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteRouteChildren {
   AppPlanetsNewRoute: typeof AppPlanetsNewRoute
-  AppPlanetsIdEditRoute: typeof AppPlanetsIdEditRoute
+  AppPlanetsPublicIdEditRoute: typeof AppPlanetsPublicIdEditRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppPlanetsNewRoute: AppPlanetsNewRoute,
-  AppPlanetsIdEditRoute: AppPlanetsIdEditRoute,
+  AppPlanetsPublicIdEditRoute: AppPlanetsPublicIdEditRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
@@ -187,7 +187,7 @@ const rootRouteChildren: RootRouteChildren = {
   publicLoginRoute: publicLoginRoute,
   publicRegisterRoute: publicRegisterRoute,
   publicIndexRoute: publicIndexRoute,
-  publicPlanetsIdRoute: publicPlanetsIdRoute,
+  publicPlanetsPublicIdRoute: publicPlanetsPublicIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

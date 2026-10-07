@@ -11,7 +11,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 
-import { loadAuthClient, refreshSession } from "~/utils/auth";
+import { authClient, refreshSession } from "~/utils/auth";
 
 const route = getRouteApi("__root__");
 
@@ -38,7 +38,6 @@ const Header = () => {
   const router = useRouter();
 
   const signOut = async () => {
-    const authClient = await loadAuthClient();
     await authClient.signOut();
     await refreshSession(queryClient, router);
   };

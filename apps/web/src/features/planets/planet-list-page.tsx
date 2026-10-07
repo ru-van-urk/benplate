@@ -24,11 +24,11 @@ export const PlanetListPage = () => {
           {planets.data?.length ? (
             <ul className="divide-y">
               {planets.data.map((planet) => (
-                <li key={planet.id} className="grid gap-0.5 py-2">
+                <li key={planet.publicId} className="grid gap-0.5 py-2">
                   <div className="flex items-baseline justify-between gap-4">
                     <Link
-                      to="/planets/$id"
-                      params={{ id: planet.id }}
+                      to="/planets/$publicId"
+                      params={{ publicId: planet.publicId }}
                       className="font-medium hover:underline"
                     >
                       {planet.name}

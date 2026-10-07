@@ -1,4 +1,4 @@
-import { type Database, newId } from "@benplate/db";
+import type { Database } from "@benplate/db";
 import { betterAuth } from "better-auth";
 
 export type CreateAuthOptions = {
@@ -23,9 +23,6 @@ export function createAuth({ db, appUrl, secret, disableSignUp, log }: CreateAut
     rateLimit: { enabled: true },
     // A signed cookie carries the session for 5 minutes, so most protected calls skip the session query
     session: { cookieCache: { enabled: true, maxAge: 5 * 60 } },
-    advanced: {
-      database: { generateId: () => newId() },
-    },
     logger: { log },
   });
 }

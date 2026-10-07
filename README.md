@@ -15,7 +15,7 @@ A pnpm monorepo starter for full-stack TypeScript apps: a React and TanStack Rou
 - **evlog** - One structured log event per request
 - **Node.js** - Runtime environment
 - **Drizzle** - Schema and migrations
-- **Kysely** - Type-safe SQL query builder, typed from the Drizzle schema
+- **Kysely** - Type-safe SQL query builder, typed by kysely-codegen from the migrated database
 - **Postgresql** - Database engine
 - **Oxlint** - Oxlint + Oxfmt (linting & formatting)
 - **uncheck** - One command for Oxlint, Oxfmt, tsc and sherif, and the pre-commit hook
@@ -38,7 +38,7 @@ pnpm install
 
 ## Database Setup
 
-This project uses Postgresql. Drizzle owns the schema and migrations, Kysely runs the queries (`packages/db/src/index.ts`).
+This project uses Postgresql. Drizzle owns the schema and migrations, Kysely runs the queries (`packages/db/src/index.ts`). Kysely's types are generated from the database by [kysely-codegen](https://github.com/RobinBlomberg/kysely-codegen) into `packages/db/src/generated/db.ts`, so they describe what Postgres and `pg` actually return.
 
 1. Run a local Postgresql (Postgres.app, Homebrew or your own container) and create a database for the project.
 
@@ -54,11 +54,13 @@ pnpm run db:migrate
 
 Deployed databases only receive committed migrations from `packages/db/src/migrations`; `push` never runs against them.
 
-1. Edit the schema in `packages/db/src/schema` and iterate locally with `pnpm run db:push`. Push applies the schema only, not custom migrations such as `updated_at` triggers.
-2. Once the change is settled, run `pnpm run db:generate --name <change>` (for example `--name add_moons_table`) and commit the new migration folder with the schema change. Always pass `--name`, so folders never get random names. Drizzle asks here whether a changed column or table is a rename, so answer in the terminal; the SQL it writes is what every deployed database runs.
+1. Edit the schema in `packages/db/src/schema` and iterate locally with `pnpm run db:push`. Push applies the schema only, not custom migrations such as `updated_at` triggers. Push and `db:migrate` both regenerate the Kysely types afterwards (`pnpm run db:codegen` does only that), so queries type-check against what's in your local database.
+2. Once the change is settled, run `pnpm run db:generate --name <change>` (for example `--name add_moons_table`) and commit the new migration folder with the schema change and `packages/db/src/generated/db.ts`. Always pass `--name`, so folders never get random names. Drizzle asks here whether a changed column or table is a rename, so answer in the terminal; the SQL it writes is what every deployed database runs.
 3. For hand-written SQL (`updated_at` triggers, backfills, splitting a column, example data like `seed_planets`), `pnpm run db:generate --custom --name <name>` creates an empty migration to fill in. Data that only belongs in some environments does not go in a migration: every database runs all of them.
 
-CI fails when the schema changed without a migration. Never edit a migration that has been deployed; add a new one instead.
+CI fails when the schema changed without a migration, and when the committed types don't match a database that ran every migration. Never edit a migration that has been deployed; add a new one instead, and never edit the generated types by hand.
+
+A fixed set of values is a Postgres enum (`pgEnum`, like `planet_type`), so the database rejects anything else and the generated types hold the union. Adding a value is a normal migration, with one catch: the migrator runs all pending migrations in one transaction, and Postgres can't use a new enum value before the transaction that adds it commits. Ship a migration that uses a new value (a backfill, example data) in a later deploy than the one that adds it.
 
 Then, run the development server:
 
@@ -69,7 +71,7 @@ pnpm run dev
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the web application.
 The server runs at [http://localhost:3001](http://localhost:3001), and the Vite dev server proxies `/api` to it:
 
-- REST API, also used by the web app: [http://localhost:3000/api](http://localhost:3000/api/planets) (e.g. `GET /api/planets`, `GET /api/planets/{id}`, `POST /api/planets`)
+- REST API, also used by the web app: [http://localhost:3000/api](http://localhost:3000/api/planets) (e.g. `GET /api/planets`, `GET /api/planets/{publicId}`, `POST /api/planets`)
 - Better Auth: `/api/auth/*` (e.g. `POST /api/auth/sign-in/email`, `GET /api/auth/get-session`)
 - API docs and OpenAPI spec: [http://localhost:3000/api/docs](http://localhost:3000/api/docs), `/api/docs/spec.json`. They are served only when `NODE_ENV` is not `production`, so never in the Docker image
 - Health check (Hono, outside the API): `/api/health`
@@ -78,7 +80,7 @@ The server runs at [http://localhost:3001](http://localhost:3001), and the Vite 
 
 Two groups are pinned to exact pre-release versions in the catalog (`pnpm-workspace.yaml`). Bump each group together, in one change, and read the changelog first.
 
-- **drizzle-orm and drizzle-kit, on a 1.0 release candidate.** The setup relies on v1: `snakeCase.table`, `drizzle-orm/valibot`, folder-per-migration output and the name-based migrator. The Kysely bridge in `packages/db/src/index.ts` reads Drizzle v1's table types, so check it after every bump. [Changelog](https://github.com/drizzle-team/drizzle-orm/releases)
+- **drizzle-orm and drizzle-kit, on a 1.0 release candidate.** The setup relies on v1: `snakeCase.table`, folder-per-migration output and the name-based migrator. [Changelog](https://github.com/drizzle-team/drizzle-orm/releases)
 - **`@orpc/*`, on a 2.0 beta.** The template starts on the upcoming major, so new projects don't have to migrate from v1 to v2 soon after starting. [Changelog](https://github.com/middleapi/orpc/releases)
 
 `pnpm run deps:check` lists bumps for these pins too.
@@ -124,16 +126,17 @@ FOR EACH ROW EXECUTE FUNCTION "set_updated_at"();
 
 The table rules, which [CLAUDE.md](CLAUDE.md) lists too:
 
-- **`snakeCase.table`, never `pgTable`.** Lint fails otherwise, because Kysely's `CamelCasePlugin` expects snake_case columns. Only some column modes return what their types say through Kysely, and only SQL defaults run. The comment at the top of `packages/db/src/index.ts` lists the supported modes.
-- **`id: t.text().primaryKey()`, filled by `newId()`.** Ids are 12 random characters from `0-9a-z`, generated in the app (`packages/db/src/ids.ts`) and passed on every insert: `.values({ ...input, id: newId() })`. The column has no default, so a forgotten id is a type error. The database id is the API id, so URLs stay short (`/planets/k3m9x0q2a7zd`) and reveal no row counts. Ids aren't time-ordered: sort by `createdAt`. Foreign keys are `t.text()`; join tables use a composite primary key of their two foreign keys instead of an id.
+- **`snakeCase.table`, never `pgTable`.** Lint fails otherwise, because Kysely's `CamelCasePlugin` expects snake_case columns. Only SQL defaults run, because Kysely runs the queries, and column names stay free of digits and acronym runs (`address_line_2`) so kysely-codegen and the `CamelCasePlugin` convert them alike. The comment at the top of `packages/db/src/index.ts` explains both.
+- **A private `id: t.integer().primaryKey().generatedByDefaultAsIdentity()`.** Postgres numbers the rows from an identity column (the modern form of `serial`), so inserts leave `id` out. Joins and foreign keys use it; the API never shows it. Foreign keys are `t.integer()` (`t.text()` to `user`, see [Authentication](#authentication)); join tables use a composite primary key of their two foreign keys instead of an id.
+- **A public `publicId`** on tables whose rows clients address: `publicId: t.text().notNull().unique("planets_public_id_unique")`, a per-resource prefix and 12 random characters from `0-9a-z`, generated in the app (`packages/db/src/ids.ts`) and passed on every insert: `.values({ ...input, publicId: newPublicId(planetIdPrefix) })`. The column has no default, so a forgotten one is a type error. It's the only id in the API and in URLs (`/planets/pl_k3m9x0q2a7zd`), so URLs reveal no row counts, and the prefix tells you what an id points to. Each contract defines its prefix once (`planetIdPrefix = "pl"`, short, Stripe-style) for the router to import. In the contract, outputs list `publicId: v.string()` and leave `id` out, which strips it from responses; inputs take `publicId: publicIdSchema(planetIdPrefix)`, so another resource's id is a 400. Lookups go `where("publicId", "=", input.publicId)`, and web routes name the param `$publicId`.
 - **`...timestamps`** (`packages/db/src/schema/columns.ts`) adds `createdAt` and `updatedAt`. The trigger above keeps `updatedAt` current, whatever writes the row.
-- **Named unique constraints**, such as `.unique("planets_name_unique")`. To return a typed error, map the database error in the handler, as `createPlanet` does with `isUniqueViolation(error, "planets_name_unique")`. The constraint name keeps an id collision from turning into a misleading `CONFLICT`: it stays a 500.
+- **Named unique constraints**, such as `.unique("planets_name_unique")`. To return a typed error, map the database error in the handler, as `createPlanet` does with `isUniqueViolation(error, "planets_name_unique")`. The constraint name keeps a violation of any other constraint from turning into a misleading `CONFLICT`: it stays a 500.
 
 The contract ships to the browser, so it imports only oRPC and Valibot, never `@benplate/db` or Drizzle. Its schemas are written by hand:
 
 - **The output schema is what clients see.** A new column stays private until you list it. It holds types only (`v.string()`, `v.nullable(…)`), no input rules, so a row stored before a rule was tightened still passes the server's output validation.
 - **Input schemas carry the rules** (`v.nonEmpty`, `v.minValue`, `integerSchema` for `integer` columns), and the web forms validate with them. Columns that are nullable or have a default are optional.
-- **The router checks both against the table.** A handler that returns a row the output schema can't hold, or inserts input the table doesn't accept, fails to type-check, so a contract that drifts from the table fails `pnpm check`. That is also why an enum list such as `planetTypes` can be written in both packages.
+- **The router checks both against the table.** A handler that returns a row the output schema can't hold, or inserts input the table doesn't accept, fails to type-check, so a contract that drifts from the table fails `pnpm check`. That is also why an enum list such as `planetTypes` can be written in both packages: the generated types carry the database enum's values.
 
 Then decide who may call each route. Public routes use `oc` in the contract and `os` in the router. Routes that need a signed-in user start from `authedContract` and `protectedProcedure` (see [Authentication](#authentication)). Its route files go under `routes/(public)/` or `routes/_app/` to match, and its pages under `features/<resource>/` (see [Web routes](#web-routes)).
 
@@ -141,7 +144,7 @@ Then decide who may call each route. Public routes use `oc` in the contract and 
 
 [Better Auth](https://www.better-auth.com) handles email and password accounts. `packages/auth` creates it from the app's database and settings (`createAuth`) and holds the browser client (`@benplate/auth/client`). The server serves it under `/api/auth/*`, same origin as the app, so there is no CORS.
 
-- **Tables.** `user`, `session`, `account` and `verification` are written by hand in `packages/db/src/schema/auth.ts`, copied from Better Auth's [core schema](https://www.better-auth.com/docs/concepts/database#core-schema) and following the same rules as every table. Better Auth uses the app's Kysely instance, and its ids come from `newId()`. At startup the server checks the tables against what Better Auth expects and exits on a mismatch, so a missing column crashes the deploy with a clear log line instead of failing sign-ins later. To add a Better Auth plugin, copy its tables and fields from the plugin's docs page into the schema and generate a migration.
+- **Tables.** `user`, `session`, `account` and `verification` are written by hand in `packages/db/src/schema/auth.ts`, copied from Better Auth's [core schema](https://www.better-auth.com/docs/concepts/database#core-schema) and following the same rules as every table except for ids: Better Auth generates its own random `text` ids, as in its docs. They reveal no row counts, so they're safe to expose and need no `publicId`, and a plugin's tables can be copied from its docs as they are. Better Auth uses the app's Kysely instance. At startup the server checks the tables against what Better Auth expects and exits on a mismatch, so a missing column crashes the deploy with a clear log line instead of failing sign-ins later. To add a Better Auth plugin, copy its tables and fields from the plugin's docs page into the schema and generate a migration.
 - **Sessions.** Better Auth keeps sessions in Postgres and caches them in a signed cookie for 5 minutes, so most protected calls skip the session query. Public API routes never look the session up.
 - **Protected API routes.** Start the contract from `authedContract`, which declares `UNAUTHORIZED` so clients get a typed error, and implement it with `protectedProcedure`. It loads the session, sets `context.session`, adds the user id to the request's log event, and rejects anonymous calls with 401.
 - **Sign-up.** Open by default. Set `AUTH_DISABLE_SIGNUP=true` to close it, for example once your own account exists; the register page then shows Better Auth's error.
@@ -166,7 +169,7 @@ Components are `const` arrow functions, which lint enforces in `apps/web` (`pack
 
 The login and register pages send signed-in users on to their `redirect` parameter, which only accepts a path on the same origin. After signing in or out, `refreshSession` (`apps/web/src/utils/auth.ts`) reloads the session and reruns every route's `beforeLoad`, so the guards redirect wherever the user now belongs. An API call that answers `UNAUTHORIZED`, such as after the session expired, does the same, which sends the user to the login page and back afterwards.
 
-The session comes from a plain `fetch` (`@benplate/auth/session`), which `index.html` preloads so it downloads alongside the scripts; Better Auth's client (about 30 KB) loads only when someone signs in, up or out (`loadAuthClient`). Keep code that only some visitors need out of the first load the same way: the delete dialog on the public planet page is a `lazy` component, so only signed-in users download it.
+The session comes from Better Auth's client (`authClient.getSession()` in `apps/web/src/utils/auth.ts`). Keep code that only some visitors need out of the first load: the delete dialog on the public planet page is a `lazy` component, so only signed-in users download it.
 
 Forms use [Formisch](https://formisch.dev) with the contract's own Valibot schemas (exported from `@benplate/contract`), so the form and the API agree on every rule. `apps/web/src/components/form-fields.tsx` renders Formisch fields with the shared shadcn `Field` components, and `planet-form.tsx` shows how an API error (`CONFLICT`) becomes a field error.
 
@@ -289,9 +292,10 @@ benplate/
 - `pnpm run build`: Build all applications
 - `pnpm run dev:web`: Start only the web application
 - `pnpm run dev:server`: Start only the server
-- `pnpm run db:push`: Push the schema straight to the local database (development only)
+- `pnpm run db:push`: Push the schema straight to the local database (development only), then regenerate the Kysely types
 - `pnpm run db:generate --name <change>`: Generate a migration from schema changes
-- `pnpm run db:migrate`: Apply pending migrations to the local database (deployments do this in the `migrate` service)
+- `pnpm run db:migrate`: Apply pending migrations to the local database (deployments do this in the `migrate` service), then regenerate the Kysely types
+- `pnpm run db:codegen`: Regenerate the Kysely types from the local database
 - `pnpm run db:studio`: Open database studio UI
 - `pnpm run check`: Run sherif, Oxlint, Oxfmt and tsc through uncheck, then knip (unused files, dependencies and exports)
 - `pnpm run fix`: Apply Oxlint, Oxfmt and sherif fixes, and report what's left

@@ -7,7 +7,7 @@ import { Link, getRouteApi, useRouter } from "@tanstack/react-router";
 import * as v from "valibot";
 
 import { TextField } from "~/components/form-fields";
-import { loadAuthClient, refreshSession } from "~/utils/auth";
+import { authClient, refreshSession } from "~/utils/auth";
 
 const route = getRouteApi("/(public)/login");
 
@@ -26,7 +26,6 @@ export const LoginPage = () => {
         of={form}
         className="grid gap-4"
         onSubmit={async (output) => {
-          const authClient = await loadAuthClient();
           const { error } = await authClient.signIn.email(output);
 
           if (error) {

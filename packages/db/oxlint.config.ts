@@ -3,6 +3,7 @@ import { defineConfig } from "oxlint";
 
 export default defineConfig({
   extends: [node],
+  ignorePatterns: ["src/generated"],
   rules: {
     "no-restricted-imports": [
       "error",

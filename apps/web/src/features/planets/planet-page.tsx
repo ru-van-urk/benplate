@@ -4,7 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, getRouteApi } from "@tanstack/react-router";
 import { Suspense, lazy } from "react";
 
-const route = getRouteApi("/(public)/planets/$id");
+const route = getRouteApi("/(public)/planets/$publicId");
 
 export const PlanetPage = () => {
   const context = route.useRouteContext();
@@ -27,14 +27,14 @@ export const PlanetPage = () => {
         {context.session && (
           <div className="flex gap-2">
             <Link
-              to="/planets/$id/edit"
-              params={{ id: planet.id }}
+              to="/planets/$publicId/edit"
+              params={{ publicId: planet.publicId }}
               className={buttonVariants({ variant: "outline", size: "sm" })}
             >
               Edit
             </Link>
             <Suspense>
-              <DeletePlanet id={planet.id} name={planet.name} />
+              <DeletePlanet publicId={planet.publicId} name={planet.name} />
             </Suspense>
           </div>
         )}

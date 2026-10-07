@@ -1,40 +1,18 @@
-import type { InferInsertModel, InferSelectModel, Table } from "drizzle-orm";
-import { CamelCasePlugin, Kysely, PostgresDialect, type ColumnType } from "kysely";
+import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
 
 import type { DatabaseConfig } from "./config";
-import type * as schema from "./schema";
+import type { DB } from "./generated/db";
 
 export { isUniqueViolation } from "./errors";
-export { newId } from "./ids";
+export { newPublicId } from "./ids";
 
-// Drizzle stays the source of truth for the schema and migrations, Kysely is the query builder.
-// v1 dropped `drizzle-orm/kysely`, so this is its `Kyselify` ported to TS keys: `CamelCasePlugin` maps them onto the
-// `snakeCase.table` columns. Keep column names free of digits and acronym runs so both libraries convert them alike.
-//
-// The types come from Drizzle, but Kysely returns values parsed by pg's defaults and Drizzle's own parsers and
-// `$defaultFn` hooks never run. Only use column modes where both agree:
-// - `date({ mode: "date" })`, `bigint({ mode: "string" })`, default-mode `numeric` and
-//   `timestamp({ withTimezone: true })`; `date()` returns a `Date` and number-mode `bigint`/`numeric` a string
-// - SQL defaults only (`.default()`, `.defaultNow()`, `.defaultRandom()`), never `$defaultFn` or `$onUpdate`
-type Kyselify<T> = T extends Table
-  ? {
-      [K in keyof InferSelectModel<T>]: ColumnType<
-        InferSelectModel<T>[K],
-        InferInsertModel<T>[K & keyof InferInsertModel<T>],
-        InferInsertModel<T>[K & keyof InferInsertModel<T>]
-      >;
-    }
-  : never;
-
-// Keyed by the SQL table name Drizzle carries in its type, so the export name does not matter
-type DB = {
-  [
-    K in keyof typeof schema as (typeof schema)[K] extends Table
-      ? (typeof schema)[K]["_"]["name"]
-      : never
-  ]: Kyselify<(typeof schema)[K]>;
-};
+// Drizzle owns the schema and migrations, Kysely runs the queries. Kysely's types come from kysely-codegen, which
+// reads the migrated database (./generated/db.ts), so they describe what pg actually returns. Two rules remain:
+// - SQL defaults only (`.default()`, `.defaultNow()`, `.generatedByDefaultAsIdentity()`), never `$defaultFn` or
+//   `$onUpdate`: Drizzle's runtime never touches a query
+// - Column names free of digits and acronym runs (`address_line_2`), so kysely-codegen's camelCase and the
+//   `CamelCasePlugin` convert them alike
 
 export type CreateDbOptions = {
   // An idle client losing its connection (Postgres restart, failover) emits on the pool, and an unhandled
