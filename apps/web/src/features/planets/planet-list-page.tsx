@@ -1,22 +1,14 @@
 import { buttonVariants } from "@benplate/ui/components/button";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, getRouteApi } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(public)/")({
-  context: ({ context }) => ({
-    planetQueryOptions: context.orpc.planet.list.queryOptions(),
-  }),
-  loader: async ({ context }) => {
-    await context.queryClient.query({ ...context.planetQueryOptions, staleTime: "static" });
-  },
-  component: HomeComponent,
-});
+const route = getRouteApi("/(public)/");
 
-function HomeComponent() {
-  const context = Route.useRouteContext();
+export const PlanetListPage = () => {
+  const context = route.useRouteContext();
 
-  const planets = useSuspenseQuery(context.planetQueryOptions);
+  const planets = useSuspenseQuery(context.listPlanetsQueryOptions);
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-2">
@@ -59,4 +51,4 @@ function HomeComponent() {
       </div>
     </div>
   );
-}
+};

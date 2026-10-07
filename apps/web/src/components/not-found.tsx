@@ -9,7 +9,7 @@ import {
 
 import { Link } from "@tanstack/react-router";
 
-export default function NotFound() {
+const NotFound = () => {
   return (
     <Empty className="min-h-svh">
       <EmptyHeader>
@@ -23,4 +23,6 @@ export default function NotFound() {
       </EmptyContent>
     </Empty>
   );
-}
+};
+
+export default NotFound;

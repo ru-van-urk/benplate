@@ -18,6 +18,22 @@ export default defineConfig({
     }),
     react(),
   ],
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          // Libraries in a chunk of their own, so a deploy that only changes app code leaves its hash, and the
+          // browser's cached copy, untouched
+          groups: [
+            {
+              name: "vendor",
+              test: /[\\/]node_modules[\\/](?:react|react-dom|scheduler|@tanstack)[\\/]/,
+            },
+          ],
+        },
+      },
+    },
+  },
   server: {
     port: 3000,
     strictPort: true,

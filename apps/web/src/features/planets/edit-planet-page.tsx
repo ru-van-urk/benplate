@@ -1,24 +1,16 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 
-import { PlanetForm } from "~/components/planet-form";
+import { PlanetForm } from "./planet-form";
 
-export const Route = createFileRoute("/_app/planets/$id/edit")({
-  context: ({ context, params }) => ({
-    planetQueryOptions: context.orpc.planet.find.queryOptions({ input: { id: params.id } }),
-  }),
-  loader: async ({ context }) => {
-    await context.queryClient.query({ ...context.planetQueryOptions, staleTime: "static" });
-  },
-  component: EditPlanetComponent,
-});
+const route = getRouteApi("/_app/planets/$id/edit");
 
-function EditPlanetComponent() {
-  const { orpc, planetQueryOptions } = Route.useRouteContext();
-  const navigate = Route.useNavigate();
+export const EditPlanetPage = () => {
+  const { orpc, getPlanetQueryOptions } = route.useRouteContext();
+  const navigate = route.useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: planet } = useSuspenseQuery(planetQueryOptions);
+  const { data: planet } = useSuspenseQuery(getPlanetQueryOptions);
 
   const updatePlanet = useMutation(
     orpc.planet.update.mutationOptions({
@@ -47,4 +39,4 @@ function EditPlanetComponent() {
       />
     </div>
   );
-}
+};

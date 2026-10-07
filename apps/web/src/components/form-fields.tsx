@@ -19,11 +19,11 @@ type FieldState<TInput> = {
   errors: readonly string[] | null;
 };
 
-export function TextField({
+export const TextField = ({
   label,
   field,
   ...props
-}: InputProps & { label: string; field: FieldState<string | null | undefined> }) {
+}: InputProps & { label: string; field: FieldState<string | null | undefined> }) => {
   return (
     <Field data-invalid={!!field.errors}>
       <FieldLabel htmlFor={fieldId(field.path)}>{label}</FieldLabel>
@@ -37,17 +37,17 @@ export function TextField({
       <FieldError>{field.errors?.[0]}</FieldError>
     </Field>
   );
-}
+};
 
 // Formisch passes an input's value through as a string, so number fields set their input themselves
-export function NumberField({
+export const NumberField = ({
   label,
   field,
   ...props
 }: InputProps & {
   label: string;
   field: FieldState<number | undefined> & { onChange: (value: number | undefined) => void };
-}) {
+}) => {
   return (
     <Field data-invalid={!!field.errors}>
       <FieldLabel htmlFor={fieldId(field.path)}>{label}</FieldLabel>
@@ -66,9 +66,9 @@ export function NumberField({
       <FieldError>{field.errors?.[0]}</FieldError>
     </Field>
   );
-}
+};
 
-export function SelectField({
+export const SelectField = ({
   label,
   placeholder,
   options,
@@ -78,7 +78,7 @@ export function SelectField({
   placeholder: string;
   options: readonly string[];
   field: FieldState<string | undefined>;
-}) {
+}) => {
   return (
     <Field data-invalid={!!field.errors}>
       <FieldLabel htmlFor={fieldId(field.path)}>{label}</FieldLabel>
@@ -101,4 +101,4 @@ export function SelectField({
       <FieldError>{field.errors?.[0]}</FieldError>
     </Field>
   );
-}
+};

@@ -3,30 +3,16 @@ import { FieldError, FieldGroup } from "@benplate/ui/components/field";
 
 import { Field, Form, setErrors, useForm } from "@formisch/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Link, createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { Link, getRouteApi, useRouter } from "@tanstack/react-router";
 import * as v from "valibot";
 
 import { TextField } from "~/components/form-fields";
-import { authClient, redirectSearchSchema, refreshSession } from "~/utils/auth";
+import { loadAuthClient, refreshSession } from "~/utils/auth";
 
-const loginSchema = v.object({
-  email: v.pipe(v.string(), v.email("Enter a valid email address")),
-  password: v.pipe(v.string(), v.nonEmpty("Enter your password")),
-});
+const route = getRouteApi("/(public)/login");
 
-export const Route = createFileRoute("/(public)/login")({
-  validateSearch: redirectSearchSchema,
-  // Also runs after a successful sign-in (`refreshSession` reruns it), which is what navigates away
-  beforeLoad: ({ context, search }) => {
-    if (context.session) {
-      throw redirect({ href: search.redirect ?? "/" });
-    }
-  },
-  component: LoginComponent,
-});
-
-function LoginComponent() {
-  const search = Route.useSearch();
+export const LoginPage = () => {
+  const search = route.useSearch();
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -40,6 +26,7 @@ function LoginComponent() {
         of={form}
         className="grid gap-4"
         onSubmit={async (output) => {
+          const authClient = await loadAuthClient();
           const { error } = await authClient.signIn.email(output);
 
           if (error) {
@@ -81,4 +68,9 @@ function LoginComponent() {
       </p>
     </div>
   );
-}
+};
+
+const loginSchema = v.object({
+  email: v.pipe(v.string(), v.email("Enter a valid email address")),
+  password: v.pipe(v.string(), v.nonEmpty("Enter your password")),
+});

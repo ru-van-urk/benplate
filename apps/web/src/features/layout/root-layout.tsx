@@ -1,54 +1,21 @@
 import { Button, buttonVariants } from "@benplate/ui/components/button";
-import { Toaster } from "@benplate/ui/components/sonner";
 
-import { type QueryClient, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   HeadContent,
   Link,
   Outlet,
-  createRootRouteWithContext,
+  getRouteApi,
   useLocation,
   useRouter,
 } from "@tanstack/react-router";
 
-import { authClient, refreshSession, sessionQueryOptions } from "~/utils/auth";
-import type { orpc } from "~/utils/orpc";
+import { loadAuthClient, refreshSession } from "~/utils/auth";
 
-import "../index.css";
+const route = getRouteApi("__root__");
 
-export interface RouterAppContext {
-  orpc: typeof orpc;
-  queryClient: QueryClient;
-}
-
-export const Route = createRootRouteWithContext<RouterAppContext>()({
-  // Every route reads the session from here; it is fetched once and kept until `refreshSession` drops it
-  beforeLoad: async ({ context }) => ({
-    session: await context.queryClient.query({ ...sessionQueryOptions, staleTime: "static" }),
-  }),
-  component: RootComponent,
-  head: () => ({
-    meta: [
-      {
-        title: "BenPlate",
-      },
-      {
-        name: "description",
-        content: "BenPlate is a web application",
-      },
-    ],
-    links: [
-      {
-        rel: "icon",
-        type: "image/svg+xml",
-        href: "/favicon.svg",
-      },
-    ],
-  }),
-});
-
-function RootComponent() {
+export const RootLayout = () => {
   return (
     <>
       <HeadContent />
@@ -59,20 +26,19 @@ function RootComponent() {
         <Outlet />
       </main>
 
-      <Toaster richColors />
-
       <ReactQueryDevtools />
     </>
   );
-}
+};
 
-function Header() {
-  const { session } = Route.useRouteContext();
+const Header = () => {
+  const { session } = route.useRouteContext();
   const location = useLocation();
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const signOut = async () => {
+    const authClient = await loadAuthClient();
     await authClient.signOut();
     await refreshSession(queryClient, router);
   };
@@ -101,4 +67,4 @@ function Header() {
       )}
     </header>
   );
-}
+};
