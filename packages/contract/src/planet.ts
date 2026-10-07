@@ -1,28 +1,40 @@
-import { planets } from "@benplate/db/schema";
 import { oc } from "@orpc/contract";
 import { openapi } from "@orpc/openapi";
-import { createInsertSchema, createSelectSchema } from "drizzle-orm/valibot";
 import * as v from "valibot";
 
-import { authedContract, idSchema } from "./common";
-
-export { planetTypes } from "@benplate/db/schema";
+import { authedContract, idSchema, integerSchema } from "./common";
 
 const tags = ["Planets"];
 
-const planetSchema = createSelectSchema(planets);
+// The same list as the `type` column in @benplate/db; the router stops type-checking when they differ
+export const planetTypes = ["terrestrial", "gas giant", "ice giant"] as const;
+
+// What clients see of a planet: a column added to the table stays private until it is listed here. Types
+// only, no input rules, so a row stored before a rule was tightened still passes response validation
+const planetSchema = v.object({
+  id: idSchema,
+  name: v.string(),
+  description: v.nullable(v.string()),
+  type: v.picklist(planetTypes),
+  moons: v.number(),
+  diameterKm: v.number(),
+  distanceFromSunAu: v.number(),
+  orbitalPeriodDays: v.number(),
+  createdAt: v.date(),
+  updatedAt: v.date(),
+});
 
 // The server sets the id and both timestamps, so clients can't send them. Also the schema of the web forms
-export const newPlanetSchema = v.omit(
-  createInsertSchema(planets, {
-    name: (schema) => v.pipe(schema, v.nonEmpty("Enter a name")),
-    moons: (schema) => v.pipe(schema, v.minValue(0)),
-    diameterKm: (schema) => v.pipe(schema, v.minValue(1)),
-    distanceFromSunAu: (schema) => v.pipe(schema, v.minValue(0)),
-    orbitalPeriodDays: (schema) => v.pipe(schema, v.minValue(0)),
-  }),
-  ["id", "createdAt", "updatedAt"],
-);
+export const newPlanetSchema = v.object({
+  name: v.pipe(v.string(), v.nonEmpty("Enter a name")),
+  description: v.optional(v.nullable(v.string())),
+  type: v.picklist(planetTypes),
+  // The column defaults to 0
+  moons: v.optional(v.pipe(integerSchema, v.minValue(0))),
+  diameterKm: v.pipe(integerSchema, v.minValue(1)),
+  distanceFromSunAu: v.pipe(v.number(), v.minValue(0)),
+  orbitalPeriodDays: v.pipe(v.number(), v.minValue(0)),
+});
 
 const listPlanets = oc
   .meta(

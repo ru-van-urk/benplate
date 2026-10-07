@@ -100,7 +100,7 @@ Two groups are pinned to exact pre-release versions in the catalog (`pnpm-worksp
 A resource touches six files. Copy the `planets` files as a starting point:
 
 1. `packages/db/src/schema/<resource>.ts`: the table, and its export in `packages/db/src/schema/index.ts`
-2. `packages/api/src/contracts/<resource>.ts`: the routes, inputs, outputs and errors, and its entry in `packages/api/src/contracts/index.ts`
+2. `packages/contract/src/<resource>.ts`: the routes, inputs, outputs and errors, and its entry in `packages/contract/src/index.ts`
 3. `packages/api/src/server/router/<resource>.ts`: the handlers, and its entry in `packages/api/src/server/router/index.ts`
 
 Then generate two migrations and commit them (see [Schema changes](#schema-changes)):
@@ -123,6 +123,12 @@ The table rules, which [CLAUDE.md](CLAUDE.md) lists too:
 - **`id: t.text().primaryKey()`, filled by `newId()`.** Ids are 12 random characters from `0-9a-z`, generated in the app (`packages/db/src/ids.ts`) and passed on every insert: `.values({ ...input, id: newId() })`. The column has no default, so a forgotten id is a type error. The database id is the API id, so URLs stay short (`/planets/k3m9x0q2a7zd`) and reveal no row counts. Ids aren't time-ordered: sort by `createdAt`. Foreign keys are `t.text()`; join tables use a composite primary key of their two foreign keys instead of an id.
 - **`...timestamps`** (`packages/db/src/schema/columns.ts`) adds `createdAt` and `updatedAt`. The trigger above keeps `updatedAt` current, whatever writes the row.
 - **Named unique constraints**, such as `.unique("planets_name_unique")`. To return a typed error, map the database error in the handler, as `createPlanet` does with `isUniqueViolation(error, "planets_name_unique")`. The constraint name keeps an id collision from turning into a misleading `CONFLICT`: it stays a 500.
+
+The contract ships to the browser, so it imports only oRPC and Valibot, never `@benplate/db` or Drizzle. Its schemas are written by hand:
+
+- **The output schema is what clients see.** A new column stays private until you list it. It holds types only (`v.string()`, `v.nullable(…)`), no input rules, so a row stored before a rule was tightened still passes the client's response validation.
+- **Input schemas carry the rules** (`v.nonEmpty`, `v.minValue`, `integerSchema` for `integer` columns), and the web forms validate with them. Columns that are nullable or have a default are optional.
+- **The router checks both against the table.** A handler that returns a row the output schema can't hold, or inserts input the table doesn't accept, fails to type-check, so a contract that drifts from the table fails `pnpm check`. That is also why an enum list such as `planetTypes` can be written in both packages.
 
 Then decide who may call each route. Public routes use `oc` in the contract and `os` in the router. Routes that need a signed-in user start from `authedContract` and `protectedProcedure` (see [Authentication](#authentication)). The pages go under `routes/(public)/` or `routes/_app/` to match (see [Web routes](#web-routes)).
 
@@ -149,7 +155,7 @@ TanStack Router's file routes, in two groups:
 
 The login and register pages send signed-in users on to their `redirect` parameter, which only accepts a path on the same origin. After signing in or out, `refreshSession` (`apps/web/src/utils/auth.ts`) reloads the session and reruns every route's `beforeLoad`, so the guards redirect wherever the user now belongs. An API call that answers `UNAUTHORIZED`, such as after the session expired, does the same, which sends the user to the login page and back afterwards.
 
-Forms use [Formisch](https://formisch.dev) with the contract's own Valibot schemas (exported from `@benplate/api/contracts`), so the form and the API agree on every rule. `apps/web/src/components/form-fields.tsx` renders Formisch fields with the shared shadcn `Field` components, and `planet-form.tsx` shows how an API error (`CONFLICT`) becomes a field error.
+Forms use [Formisch](https://formisch.dev) with the contract's own Valibot schemas (exported from `@benplate/contract`), so the form and the API agree on every rule. `apps/web/src/components/form-fields.tsx` renders Formisch fields with the shared shadcn `Field` components, and `planet-form.tsx` shows how an API error (`CONFLICT`) becomes a field error.
 
 ## Logging
 
@@ -252,7 +258,8 @@ benplate/
 │   └── server/      # Hono server: health check, auth, mounts the API
 ├── packages/
 │   ├── ui/          # Shared shadcn/ui components and styles
-│   ├── api/         # oRPC: contracts, server implementation, typed client
+│   ├── contract/    # oRPC contract: routes, schemas and errors, shared by server and clients
+│   ├── api/         # oRPC: server implementation and typed client
 │   ├── auth/        # Better Auth: server setup and browser client
 │   └── db/          # Database schema & queries
 ├── scripts/

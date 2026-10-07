@@ -1,6 +1,6 @@
 # BenPlate
 
-A full-stack template: React + TanStack Router (`apps/web`), Hono + oRPC (`apps/server`, `packages/api`), Better Auth (`packages/auth`), and a Drizzle schema with Kysely queries on Postgres (`packages/db`). The [README](README.md) explains the setup. These are the rules.
+A full-stack template: React + TanStack Router (`apps/web`), Hono + oRPC (`apps/server`, `packages/contract`, `packages/api`), Better Auth (`packages/auth`), and a Drizzle schema with Kysely queries on Postgres (`packages/db`). The [README](README.md) explains the setup. These are the rules.
 
 ## Database
 
@@ -15,11 +15,12 @@ A full-stack template: React + TanStack Router (`apps/web`), Hono + oRPC (`apps/
 ## API
 
 - Routes that need a signed-in user use `authedContract` in the contract and `protectedProcedure` in the router, which sets `context.session`. Public routes use `oc` and `os`, and never look up the session.
+- The contract (`packages/contract`) ships to the browser: it imports only oRPC and Valibot, never `@benplate/db` or Drizzle (no `drizzle-orm/valibot`). Write its schemas by hand. Output schemas list exactly the fields clients see, with types only; input schemas carry the validation rules. See [Adding a resource](README.md#adding-a-resource).
 - Declare expected errors in the contract (`.errors({ NOT_FOUND: {} })`) and throw them with `errors.NOT_FOUND()`. Map database errors to them in the handler.
 
 ## Web
 
-- Forms use Formisch (`@formisch/react`), never TanStack Form. They validate with the contract's own schemas, exported from `@benplate/api/contracts`, and map API errors to fields with `setErrors`.
+- Forms use Formisch (`@formisch/react`), never TanStack Form. They validate with the contract's own schemas, exported from `@benplate/contract`, and map API errors to fields with `setErrors`.
 - Pages that need a signed-in user live under `routes/_app/`; everything else under `routes/(public)/`. See [Web routes](README.md#web-routes).
 
 ## Server

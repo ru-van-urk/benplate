@@ -12,6 +12,7 @@
   "dependencies": {
     "@benplate/api": "workspace:*",
     "@benplate/auth": "workspace:*",
+    "@benplate/contract": "workspace:*",
     "@benplate/ui": "workspace:*",
     "@formisch/react": "catalog:",
     "@tailwindcss/vite": "catalog:",
