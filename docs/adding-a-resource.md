@@ -10,4 +10,4 @@ Copy `people` (it has a relation) or `planets` (it has none) as a starting point
 6. **Routes**: one `.ts` file per page under `apps/web/src/routes/(public)/` or `routes/_app/`. Its `context` builds the query options, its `loader` prefetches them, and its `component` is the page ([Web app](web.md#routes)).
 7. **Pages**: `apps/web/src/features/<resource>/`, with the list, the page, the form and the new and edit pages.
 
-Then `pnpm fix` and `pnpm check`.
+Then `pnpm check` and `pnpm knip`.

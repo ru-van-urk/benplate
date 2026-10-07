@@ -40,8 +40,8 @@ jobs:
             exit 1
           fi
 
-      # sherif, oxlint, oxfmt, tsc, then knip. It never fixes, so CI fails instead of rewriting files
-      - run: pnpm check
+      # sherif, oxlint, oxfmt, then tsc. `check` without the fixes, so CI fails instead of rewriting files
+      - run: pnpm check:ci
 
       # Vite build, and the tsdown bundle with its migrations copy
       - run: pnpm build

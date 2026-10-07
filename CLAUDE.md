@@ -39,4 +39,4 @@ A full-stack template: React + TanStack Router (`apps/web`), Hono + oRPC (`apps/
 
 ## Before you finish
 
-Run `pnpm fix`, then `pnpm check` (sherif, oxlint, oxfmt, tsc, then knip; it stops at the first failure). It must pass.
+Run `pnpm check` (fixes with sherif, oxlint and oxfmt, then tsc; it stops at the first failure), then `pnpm knip`. Both must pass.

@@ -2,14 +2,16 @@
 
 ## Checks and CI
 
-`pnpm check` runs sherif, Oxlint, Oxfmt, tsc and knip in that order, and stops at the first one that fails. Oxlint and Oxfmt run once from the root; tsc checks the root `tsconfig.json`, then every package's `typecheck` script through Turborepo, which caches packages that didn't change. A new package with a `tsconfig.json` needs a `typecheck` script (`tsc --noEmit`, or `tsc -b` for a config with references like `apps/web`). Each package's `oxlint.config.ts` / `oxfmt.config.ts` picks a preset from `tooling/` (`node` or `react`); anything without its own config falls back to the root `base`. Generated files (`migrations`, `generated`, `routeTree.gen.ts`) are left alone.
+`pnpm check` runs sherif, Oxlint and Oxfmt with their fixes, then tsc, and stops at the first one that fails. Run it before you push. Oxlint and Oxfmt run once from the root; tsc checks the root `tsconfig.json`, then every package's `typecheck` script through Turborepo, which caches packages that didn't change. A new package with a `tsconfig.json` needs a `typecheck` script (`tsc --noEmit`, or `tsc -b` for a config with references like `apps/web`). Each package's `oxlint.config.ts` / `oxfmt.config.ts` picks a preset from `tooling/` (`node` or `react`); anything without its own config falls back to the root `base`. Generated files (`migrations`, `generated`, `routeTree.gen.ts`) are left alone.
 
-- `pnpm run fix`: sherif, Oxlint and Oxfmt fixes. Each runs even when the one before it leaves problems; run `check` for what remains
-- `pnpm run check`: the checks above without fixes, then knip (unused files, dependencies and exports)
+- `pnpm run check:ci`: the same checks without fixes, so they fail instead of rewriting files. CI runs this one
+- `pnpm run fix`: only the sherif, Oxlint and Oxfmt fixes. Each runs even when the one before it leaves problems
+- `pnpm run typecheck`: only the package type checks
+- `pnpm run knip`: unused files, dependencies and exports. Local only, CI doesn't run it
 
 CI (`.github/workflows/ci.yml`) runs on pull requests:
 
-- **`check`**: `pnpm check`, `pnpm build`, and a check that `packages/db/src/migrations` matches the schema
+- **`check`**: `pnpm check:ci`, `pnpm build`, and a check that `packages/db/src/migrations` matches the schema
 - **`database`**: migrates a fresh Postgres 18, then boots the built server (which runs Better Auth's schema check), reads the seeded planets and people and signs up once
 
 `main` only takes pull requests (the "protect main" ruleset), with `check` as a required status check. Renaming that job blocks merges until the ruleset names the new one.
