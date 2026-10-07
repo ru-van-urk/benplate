@@ -2,7 +2,6 @@ packages:
   - apps/*
   - packages/*
   - tooling/*
-# `pnpm add` writes `catalog:` for any dependency already listed below
 catalogMode: prefer
 allowBuilds:
   esbuild: true
