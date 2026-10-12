@@ -14,7 +14,7 @@ CI (`.github/workflows/ci.yml`) runs on pull requests:
 - **`check`**: `pnpm check:ci`, `pnpm build`, and a check that `packages/db/src/migrations` matches the schema
 - **`database`**: migrates a fresh Postgres 18, then boots the built server (which runs Better Auth's schema check), reads the seeded planets and people and signs up once
 
-`main` only takes pull requests (the "protect main" ruleset), with `check` as a required status check. Renaming that job blocks merges until the ruleset names the new one.
+`main` and `develop` only take pull requests (the "protect main" and "protect develop" rulesets), with `check` as a required status check. Renaming that job blocks merges until both rulesets name the new one. [Git and GitHub](git.md) has the full setup.
 
 ## Logging
 
@@ -43,6 +43,7 @@ Two groups are pinned to exact pre-release versions in the catalog (`pnpm-worksp
 | `db:migrate`                                              | Apply pending migrations to the local database                         |
 | `db:studio`                                               | Open Drizzle Studio                                                    |
 | `check`, `fix`                                            | Verify everything, or apply the fixes that can be applied              |
+| `add <pkg>`, `add:catalog <pkg>`                          | Add a dependency, or add it to the catalog and refer to it there       |
 | `deps:check`, `deps:update`                               | Report or write dependency updates (Taze)                              |
 | `docker:build`, `docker:up`, `docker:logs`, `docker:down` | Manage the Compose stack                                               |
 | `template:init <name> [Display Name]`                     | Rename a project created from this template                            |

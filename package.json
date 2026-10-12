@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "add": "pnpm add",
+    "add:catalog": "pnpm add --save-catalog",
     "typecheck": "turbo run typecheck",
     "check": "sherif --fix --select=highest && oxlint --fix && oxfmt && tsc --noEmit && pnpm typecheck",
     "check:ci": "sherif && oxlint && oxfmt --check && tsc --noEmit && pnpm typecheck",

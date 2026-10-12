@@ -31,6 +31,7 @@ pnpm run dev                                   # http://localhost:3000
 - [Authentication](docs/auth.md): Better Auth's tables, sessions, protected routes, rate limiting
 - [Deployment](docs/deployment.md): Docker Compose, Dokploy, migrations on deploy
 - [Tooling](docs/tooling.md): checks, CI, logging, pre-release dependencies, scripts
+- [Git and GitHub](docs/git.md): the `develop` and `main` flow, merge methods, rulesets for a new repository
 
 [CLAUDE.md](CLAUDE.md) lists the rules in short.
 
