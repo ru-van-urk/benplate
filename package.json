@@ -1,0 +1,51 @@
+{
+  "name": "benplate",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "add": "pnpm add",
+    "add:catalog": "pnpm add --save-catalog",
+    "typecheck": "turbo run typecheck",
+    "check": "sherif --fix --select=highest && oxlint --fix && oxfmt && tsc --noEmit && pnpm typecheck",
+    "check:ci": "sherif && oxlint && oxfmt --check && tsc --noEmit && pnpm typecheck",
+    "knip": "knip",
+    "fix": "sherif --fix --select=highest; oxlint --fix; oxfmt",
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "postclean": "git clean -xdf .cache .turbo node_modules",
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev -F web --",
+    "dev:server": "turbo run dev -F server --",
+    "db:push": "turbo run db:push -F @benplate/db --",
+    "db:generate": "turbo run db:generate -F @benplate/db --",
+    "db:studio": "turbo run db:studio -F @benplate/db --",
+    "db:migrate": "turbo run db:migrate -F @benplate/db --",
+    "db:seed": "turbo run db:seed -F server --",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:seed": "docker compose run --rm migrate node dist/seed.mjs",
+    "deps:check": "taze",
+    "deps:update": "taze -w",
+    "template:init": "node scripts/template-init.ts"
+  },
+  "devDependencies": {
+    "@benplate/oxfmt-config": "workspace:*",
+    "@benplate/oxlint-config": "workspace:*",
+    "@benplate/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "knip": "catalog:",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "sherif": "catalog:",
+    "taze": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": "^24.14.0"
+  },
+  "packageManager": "pnpm@12.6.0"
+}

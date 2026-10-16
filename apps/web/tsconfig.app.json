@@ -1,0 +1,10 @@
+{
+  "extends": "@benplate/typescript-config/vite.json",
+  "include": ["src"],
+  "compilerOptions": {
+    "paths": {
+      "#/*": ["./src/*"],
+      "@benplate/ui/*": ["../../packages/ui/src/*"]
+    }
+  }
+}

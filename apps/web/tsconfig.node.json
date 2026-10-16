@@ -1,0 +1,9 @@
+{
+  "extends": "@benplate/typescript-config/base.json",
+  "include": ["*.ts"],
+  "compilerOptions": {
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo.node.json"
+  }
+}

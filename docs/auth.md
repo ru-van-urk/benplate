@@ -1,0 +1,10 @@
+# Authentication
+
+[Better Auth](https://www.better-auth.com) handles email and password accounts. `packages/auth` creates it from the app's database and settings (`createAuth`) and holds the browser client (`@benplate/auth/client`). The server serves it under `/api/auth/*`, same origin as the app, so there is no CORS.
+
+- **Tables.** `user`, `session`, `account` and `verification` are written by hand in `packages/db/src/schema/auth.ts`, copied from Better Auth's [core schema](https://www.better-auth.com/docs/concepts/database#core-schema). They follow the [table rules](database.md#tables) except for ids: Better Auth generates its own random `text` ids, as in its docs, so a foreign key to `user` is `t.text()`. To add a plugin, copy its tables and fields from the plugin's docs page into the schema and generate a migration.
+- **Schema check.** At startup the server checks the tables against what Better Auth expects and exits on a mismatch, so a missing column crashes the deploy with a clear log line instead of failing sign-ins later. CI boots the server on a migrated database to catch it before that.
+- **Sessions.** Better Auth keeps sessions in Postgres and caches them in a signed cookie for 5 minutes, so most protected calls skip the session query. The flip side: a revoked session keeps working on protected calls for up to those 5 minutes. Public API routes never look the session up.
+- **Protected API routes.** Start the contract from `authedContract`, which declares `UNAUTHORIZED` so clients get a typed error, and implement it with `protectedProcedure`. It loads the session, sets `context.session`, adds the user id to the request's log event, and rejects anonymous calls with 401.
+- **Sign-up.** Open by default. Set `AUTH_DISABLE_SIGNUP=true` to close it, for example once your own account exists; the register page then shows Better Auth's error.
+- **Rate limiting.** Better Auth's limiter is on in every environment. Its counters live in memory, so they are per server process: fine for the single replica this stack runs. It limits by client IP, which nginx (and the Vite proxy in development) passes on in `X-Forwarded-For`.
