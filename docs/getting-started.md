@@ -54,7 +54,7 @@ Env files are ignored by git; keep secrets in them or in your deployment platfor
 
 ## Start a new project from the template
 
-1. On GitHub, use **Use this template** and clone the new repository. Set up its branches, merge methods and rulesets as in [Git and GitHub](git.md): the template's settings don't carry over.
+1. On GitHub, use **Use this template** and clone the new repository.
 2. Rename the project. The name becomes the package scope (`@<name>/*`) and the database name; the display name goes in titles. The script rewrites every tracked text file, then runs `pnpm install`:
 
    ```bash

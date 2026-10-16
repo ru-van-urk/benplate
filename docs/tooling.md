@@ -14,8 +14,6 @@ CI (`.github/workflows/ci.yml`) runs on pull requests:
 - **`check`**: `pnpm check:ci`, `pnpm build`, and a check that `packages/db/src/migrations` matches the schema
 - **`database`**: migrates a fresh Postgres 18, then boots the built server (which runs Better Auth's schema check), reads the seeded planets and people and signs up once
 
-`main` and `develop` only take pull requests (the "protect main" and "protect develop" rulesets), with `check` as a required status check. Renaming that job blocks merges until both rulesets name the new one. [Git and GitHub](git.md) has the full setup.
-
 ## Logging
 
 The server logs with [evlog](https://evlog.dev): one wide event per request, with method, path, status and duration, which the API adds to. Each event carries `operation` (the procedure, such as `planet.create`) and, on protected routes, `user.id`. Only real failures (5xx) set the level to `error`; expected API errors such as `NOT_FOUND` don't.
