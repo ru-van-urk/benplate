@@ -81,8 +81,9 @@ services:
       dockerfile: apps/web/Dockerfile
 
     # No depends_on: nginx resolves `server` per request, so the SPA stays up while the API is down
-    expose:
-      - "80"
+    # The only published port; put a reverse proxy in front of it for TLS and a domain
+    ports:
+      - "${WEB_PORT:-3030}:80"
 
     healthcheck:
       test:

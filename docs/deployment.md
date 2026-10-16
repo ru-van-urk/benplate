@@ -2,8 +2,8 @@
 
 One Docker Compose stack (`docker-compose.yml`, Dockerfiles in `apps/*/Dockerfile`): `web` (nginx with the built app), `server`, a Postgresql `db`, and a one-off `migrate` service.
 
-- **Local:** `docker-compose.override.yml` publishes `web` on http://localhost:3030 (override with `WEB_PORT`); Dokploy ignores it
-- **Env:** copy `.env.example` to `.env` at the repository root; on Dokploy, set the same variables in the Environment tab
+- **Port:** `web` is the only service with a published port, http://localhost:3030 by default (set `WEB_PORT` to change it). The server and the database stay on the internal Compose network
+- **Env:** copy `.env.example` to `.env` at the repository root; on a hosting platform, set the same variables in its environment settings
 - **Commands:** `pnpm run docker:build`, `docker:up`, `docker:logs`, `docker:down`
 
 Compose refuses to start without:
@@ -14,7 +14,7 @@ Compose refuses to start without:
 
 ## Routing
 
-Only `web` needs a public domain (container port `80`). nginx proxies `/api` (REST, `/api/auth` and `/api/health`) to `server:3000` over the internal Compose network. On Dokploy, enable Isolated Deployments for the stack, so two stacks on one host don't share the `server` hostname, then add the domain to the `web` service in the Domains tab. nginx takes the client IP from Traefik's `X-Forwarded-For` (trusting the private Docker networks) and passes it on, so auth rate limits apply per client.
+Only `web` needs a public domain: point it at `WEB_PORT` on the host. nginx proxies `/api` (REST, `/api/auth` and `/api/health`) to `server:3000` over the internal Compose network. Put your reverse proxy (Traefik, Caddy, a platform's own) in front of `web` and let it end TLS. If the platform attaches several stacks to one shared network, isolate this one, so two stacks don't share the `server` hostname. nginx takes the client IP from the proxy's `X-Forwarded-For` (trusting private networks) and passes it on, so auth rate limits apply per client.
 
 ## Migrations
 

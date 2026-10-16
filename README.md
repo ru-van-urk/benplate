@@ -23,13 +23,15 @@ pnpm run dev                                   # http://localhost:3000
 
 ## Docs
 
+- [Why BenPlate](docs/why.md): the problem it solves, where it came from, and the decisions behind the stack
+- [Goodies](docs/goodies.md): Turborepo, Knip, Taze and the other small tools that come with it
 - [Getting started](docs/getting-started.md): setup, environment variables, starting a project from the template
 - [Database](docs/database.md): schema changes, table rules, ids, queries, relations, enums, `updated_at`
 - [API](docs/api.md): the contract, procedures and errors
 - [Web app](docs/web.md): routes, data loading, forms, the session, UI
 - [Adding a resource](docs/adding-a-resource.md): every file a new resource touches
 - [Authentication](docs/auth.md): Better Auth's tables, sessions, protected routes, rate limiting
-- [Deployment](docs/deployment.md): Docker Compose, Dokploy, migrations on deploy
+- [Deployment](docs/deployment.md): Docker Compose, routing behind a proxy, migrations on deploy
 - [Tooling](docs/tooling.md): checks, CI, logging, pre-release dependencies, scripts
 - [Git and GitHub](docs/git.md): the `develop` and `main` flow, merge methods, rulesets for a new repository
 
