@@ -11,8 +11,7 @@ export default defineConfig({
           {
             name: "drizzle-orm/pg-core",
             importNames: ["pgTable"],
-            message:
-              "Use snakeCase.table so columns are snake_case, matching Kysely's CamelCasePlugin",
+            message: "Use snakeCase.table, so camelCase keys map onto snake_case columns",
           },
         ],
       },

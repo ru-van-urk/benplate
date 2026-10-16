@@ -1,22 +1,39 @@
+import { isApiError } from "@benplate/api/client";
 import { buttonVariants } from "@benplate/ui/components/button";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, getRouteApi } from "@tanstack/react-router";
 import { Suspense, lazy } from "react";
 
-const route = getRouteApi("/(public)/planets/$id");
+import { formatPopulation } from "./population";
+
+const route = getRouteApi("/(public)/planets/$publicId");
+
+const ConfirmDelete = lazy(() => import("#/components/confirm-delete"));
 
 export const PlanetPage = () => {
   const context = route.useRouteContext();
+  const navigate = route.useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: planet } = useSuspenseQuery(context.getPlanetQueryOptions);
 
+  const deletePlanet = useMutation(
+    context.orpc.planet.delete.mutationOptions({
+      onSuccess: async () => {
+        await navigate({ to: "/" });
+        await queryClient.invalidateQueries({ queryKey: context.orpc.planet.key() });
+      },
+    }),
+  );
+
   const facts = [
-    ["Type", planet.type],
-    ["Moons", planet.moons],
-    ["Diameter", `${planet.diameterKm} km`],
-    ["Distance from the Sun", `${planet.distanceFromSunAu} AU`],
-    ["Orbital period", `${planet.orbitalPeriodDays} days`],
+    ["Climate", planet.climate],
+    ["Terrain", planet.terrain],
+    ["Diameter", `${planet.diameterKm.toLocaleString("en-US")} km`],
+    ["Day", `${planet.rotationPeriodHours} hours`],
+    ["Year", `${planet.orbitalPeriodDays} days`],
+    ["Population", formatPopulation(planet.population)],
   ] as const;
 
   return (
@@ -27,14 +44,23 @@ export const PlanetPage = () => {
         {context.session && (
           <div className="flex gap-2">
             <Link
-              to="/planets/$id/edit"
-              params={{ id: planet.id }}
+              to="/planets/$publicId/edit"
+              params={{ publicId: planet.publicId }}
               className={buttonVariants({ variant: "outline", size: "sm" })}
             >
               Edit
             </Link>
             <Suspense>
-              <DeletePlanet id={planet.id} name={planet.name} />
+              <ConfirmDelete
+                name={planet.name}
+                isPending={deletePlanet.isPending}
+                error={
+                  isApiError(deletePlanet.error, "CONFLICT")
+                    ? `${planet.name} still has residents. Delete them or move them to another planet first.`
+                    : deletePlanet.error?.message
+                }
+                onConfirm={() => deletePlanet.mutate({ publicId: planet.publicId })}
+              />
             </Suspense>
           </div>
         )}
@@ -50,11 +76,27 @@ export const PlanetPage = () => {
           </div>
         ))}
       </dl>
+
+      <section className="grid gap-1">
+        <h2 className="text-sm font-medium">Residents</h2>
+        {planet.residents.length ? (
+          <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            {planet.residents.map((resident) => (
+              <li key={resident.publicId}>
+                <Link
+                  to="/people/$publicId"
+                  params={{ publicId: resident.publicId }}
+                  className="hover:underline"
+                >
+                  {resident.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <span className="text-sm text-muted-foreground">No known residents</span>
+        )}
+      </section>
     </div>
   );
 };
-
-// Only signed-in users see it, so only they download the dialog (Base UI, about 50 KB)
-const DeletePlanet = lazy(() =>
-  import("./delete-planet").then(({ DeletePlanet }) => ({ default: DeletePlanet })),
-);

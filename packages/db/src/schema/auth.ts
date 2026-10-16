@@ -3,7 +3,8 @@ import { index, snakeCase } from "drizzle-orm/pg-core";
 import { timestamps } from "./columns";
 
 // Better Auth's core schema (https://www.better-auth.com/docs/concepts/database#core-schema), written by hand in
-// our conventions. Better Auth fills `id` with newId() (see packages/auth) and checks these tables at startup.
+// our conventions, except for the ids: Better Auth generates its own random text ids, so `id` and `user_id` stay
+// `text`, as in its docs. It checks these tables at startup.
 // A plugin's tables or fields come from its docs page, added here like any other schema change
 
 export const user = snakeCase.table("user", (t) => ({

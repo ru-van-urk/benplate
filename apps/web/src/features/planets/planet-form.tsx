@@ -1,12 +1,12 @@
 import { isApiError } from "@benplate/api/client";
-import { newPlanetSchema, planetTypes } from "@benplate/contract";
+import { climates, newPlanetSchema } from "@benplate/contract";
 import { Button } from "@benplate/ui/components/button";
 import { FieldError, FieldGroup } from "@benplate/ui/components/field";
 
 import { Field, Form, setErrors, useForm } from "@formisch/react";
 import type * as v from "valibot";
 
-import { NumberField, SelectField, TextField } from "~/components/form-fields";
+import { NumberField, SelectField, TextField } from "#/components/form-fields";
 
 type PlanetInput = v.InferOutput<typeof newPlanetSchema>;
 
@@ -28,8 +28,12 @@ export const PlanetForm = ({
       className="grid gap-4"
       onSubmit={async (output) => {
         try {
-          // An emptied description input is "", which means no description
-          await onSubmit({ ...output, description: output.description || null });
+          // An emptied text input is "", which means none (unknown, for the population)
+          await onSubmit({
+            ...output,
+            description: output.description || null,
+            population: output.population || null,
+          });
         } catch (error) {
           if (isApiError(error, "CONFLICT")) {
             setErrors(form, { path: ["name"], errors: [error.message] });
@@ -51,29 +55,31 @@ export const PlanetForm = ({
           {(field) => <TextField label="Description" field={field} />}
         </Field>
 
-        <Field of={form} path={["type"]}>
-          {(field) => (
-            <SelectField
-              label="Type"
-              placeholder="Choose a type"
-              options={planetTypes}
-              field={field}
-            />
-          )}
-        </Field>
-
         <div className="grid grid-cols-2 gap-4">
-          <Field of={form} path={["moons"]}>
-            {(field) => <NumberField label="Moons" step={1} field={field} />}
+          <Field of={form} path={["climate"]}>
+            {(field) => (
+              <SelectField
+                label="Climate"
+                placeholder="Choose a climate"
+                options={climates}
+                field={field}
+              />
+            )}
+          </Field>
+          <Field of={form} path={["terrain"]}>
+            {(field) => <TextField label="Terrain" placeholder="desert, mountains" field={field} />}
           </Field>
           <Field of={form} path={["diameterKm"]}>
             {(field) => <NumberField label="Diameter (km)" step={1} field={field} />}
           </Field>
-          <Field of={form} path={["distanceFromSunAu"]}>
-            {(field) => <NumberField label="Distance from the Sun (AU)" step="any" field={field} />}
+          <Field of={form} path={["population"]}>
+            {(field) => <TextField label="Population" inputMode="numeric" field={field} />}
+          </Field>
+          <Field of={form} path={["rotationPeriodHours"]}>
+            {(field) => <NumberField label="Day (hours)" step={1} field={field} />}
           </Field>
           <Field of={form} path={["orbitalPeriodDays"]}>
-            {(field) => <NumberField label="Orbital period (days)" step="any" field={field} />}
+            {(field) => <NumberField label="Year (days)" step={1} field={field} />}
           </Field>
         </div>
       </FieldGroup>

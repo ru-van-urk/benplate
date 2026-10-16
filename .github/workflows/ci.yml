@@ -40,9 +40,81 @@ jobs:
             exit 1
           fi
 
-      # sherif, oxlint, oxfmt and tsc through uncheck, then knip. It never fixes, so CI fails instead of
-      # rewriting files
-      - run: pnpm check
+      # sherif, oxlint, oxfmt, then tsc. `check` without the fixes, so CI fails instead of rewriting files
+      - run: pnpm check:ci
 
       # Vite build, and the tsdown bundle with its migrations copy
       - run: pnpm build
+
+  # Not a test suite: runs the migrations on a real Postgres, then boots the server on it, which runs Better
+  # Auth's schema check, and makes one call per layer
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        # Same major as docker-compose.yml
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: benplate
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d benplate"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/benplate
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Apply the migrations
+        run: pnpm --filter @benplate/db db:migrate
+
+      - run: pnpm --filter server build
+
+      - name: Start the server and call the API
+        env:
+          NODE_ENV: production
+          PORT: "3000"
+          APP_URL: http://localhost:3000
+          BETTER_AUTH_SECRET: ci-only-secret-at-least-32-characters-long
+        run: |
+          node apps/server/dist/index.mjs > server.log 2>&1 &
+
+          # The server exits on an auth schema mismatch, so health never answers and the calls below fail
+          for _ in $(seq 1 30); do
+            curl -sf http://localhost:3000/api/health > /dev/null && break
+            sleep 1
+          done
+
+          # The seeded planets and people; people embed their homeworld (relational query)
+          planets=$(curl -sf http://localhost:3000/api/planets | jq length)
+          people=$(curl -sf http://localhost:3000/api/people | jq '[.[] | select(.homeworld.publicId)] | length')
+          if [ "$planets" != "13" ] || [ "$people" != "13" ]; then
+            echo "::error::Expected the 13 seeded planets and 13 people with a homeworld, got: $planets and $people"
+            exit 1
+          fi
+
+          # Better Auth writes its tables
+          curl -sf -H "Origin: http://localhost:3000" -H "Content-Type: application/json" \
+            -d '{"name":"CI","email":"ci@example.com","password":"ci-password-123"}' \
+            http://localhost:3000/api/auth/sign-up/email > /dev/null
+
+      - name: Server log
+        if: failure()
+        run: cat server.log

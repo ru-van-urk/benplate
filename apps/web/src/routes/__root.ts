@@ -1,9 +1,9 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext } from "@tanstack/react-router";
 
-import { RootLayout } from "~/features/layout/root-layout";
-import { sessionQueryOptions } from "~/utils/auth";
-import type { orpc } from "~/utils/orpc";
+import { RootLayout } from "#/features/layout/root-layout";
+import { sessionQueryOptions } from "#/utils/auth";
+import type { orpc } from "#/utils/orpc";
 
 import "../index.css";
 

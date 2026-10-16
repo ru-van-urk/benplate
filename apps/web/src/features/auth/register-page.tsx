@@ -6,8 +6,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Link, getRouteApi, useRouter } from "@tanstack/react-router";
 import * as v from "valibot";
 
-import { TextField } from "~/components/form-fields";
-import { loadAuthClient, refreshSession } from "~/utils/auth";
+import { TextField } from "#/components/form-fields";
+import { authClient, refreshSession } from "#/utils/auth";
 
 const route = getRouteApi("/(public)/register");
 
@@ -26,7 +26,6 @@ export const RegisterPage = () => {
         of={form}
         className="grid gap-4"
         onSubmit={async (output) => {
-          const authClient = await loadAuthClient();
           const { error } = await authClient.signUp.email(output);
 
           // Includes "sign-up is disabled" when AUTH_DISABLE_SIGNUP is set

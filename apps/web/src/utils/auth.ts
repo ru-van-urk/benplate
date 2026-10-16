@@ -1,22 +1,24 @@
-import type { createAuthClient } from "@benplate/auth/client";
-import { fetchSession } from "@benplate/auth/session";
+import { createAuthClient } from "@benplate/auth/client";
 import { type QueryClient, queryOptions } from "@tanstack/react-query";
 import type { AnyRouter } from "@tanstack/react-router";
 import * as v from "valibot";
 
-let authClient: Promise<ReturnType<typeof createAuthClient>> | undefined;
+export const authClient = createAuthClient({ origin: window.location.origin });
 
-// Better Auth's client, loaded on first use (signing in, up or out) instead of with every page
-export function loadAuthClient() {
-  return (authClient ??= import("@benplate/auth/client").then(({ createAuthClient }) =>
-    createAuthClient({ origin: window.location.origin }),
-  ));
-}
+export type Session = typeof authClient.$Infer.Session;
 
 // Loaded once by the root route; `refreshSession` drops it whenever the session may have changed
 export const sessionQueryOptions = queryOptions({
   queryKey: ["session"],
-  queryFn: () => fetchSession({ origin: window.location.origin }),
+  queryFn: async (): Promise<Session | null> => {
+    const { data, error } = await authClient.getSession();
+
+    if (error) {
+      throw new Error(error.message ?? "Could not load the session");
+    }
+
+    return data;
+  },
 });
 
 // After signing in or out, and when the API answers UNAUTHORIZED: reload the session, then rerun every route's

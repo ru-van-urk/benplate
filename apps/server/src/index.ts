@@ -68,7 +68,7 @@ const server = serve({ fetch: app.fetch, port: ENV.PORT }, (info) => {
 // Docker sends SIGTERM on redeploy: stop accepting connections, let in-flight requests finish, then close the pool
 const shutdown = () => {
   server.close(() => {
-    void db.destroy();
+    void db.$client.end();
   });
 };
 

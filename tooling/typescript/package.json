@@ -2,7 +2,11 @@
   "name": "@benplate/typescript-config",
   "private": true,
   "files": [
-    "*.json"
+    "*.json",
+    "*.d.ts"
   ],
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@total-typescript/ts-reset": "catalog:"
+  }
 }

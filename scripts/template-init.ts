@@ -51,6 +51,6 @@ execFileSync("pnpm", ["install"], { stdio: "inherit" });
 console.log(`
 Remaining steps:
   1. Describe the app: the description in apps/web/src/routes/__root.ts, and apps/web/public/favicon.svg
-  2. Remove the planets example once you no longer need it (see "Starting a new project" in the README)
-  3. Run pnpm fix and pnpm check, then commit
+  2. Remove the Star Wars example once you no longer need it (see docs/getting-started.md)
+  3. Run pnpm check and pnpm knip, then commit
 `);

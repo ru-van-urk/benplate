@@ -4,15 +4,17 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./client": "./src/client.ts",
-    "./session": "./src/session.ts"
+    "./client": "./src/client.ts"
   },
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "clean": "git clean -xdf .cache .turbo dist node_modules"
   },
   "dependencies": {
     "@benplate/db": "workspace:*",
-    "better-auth": "catalog:"
+    "@better-auth/drizzle-adapter": "catalog:",
+    "better-auth": "catalog:",
+    "drizzle-orm": "catalog:"
   },
   "devDependencies": {
     "@benplate/oxlint-config": "workspace:*",

@@ -1,40 +1,11 @@
-import type { InferInsertModel, InferSelectModel, Table } from "drizzle-orm";
-import { CamelCasePlugin, Kysely, PostgresDialect, type ColumnType } from "kysely";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 import type { DatabaseConfig } from "./config";
-import type * as schema from "./schema";
+import { relations } from "./relations";
 
-export { isUniqueViolation } from "./errors";
-export { newId } from "./ids";
-
-// Drizzle stays the source of truth for the schema and migrations, Kysely is the query builder.
-// v1 dropped `drizzle-orm/kysely`, so this is its `Kyselify` ported to TS keys: `CamelCasePlugin` maps them onto the
-// `snakeCase.table` columns. Keep column names free of digits and acronym runs so both libraries convert them alike.
-//
-// The types come from Drizzle, but Kysely returns values parsed by pg's defaults and Drizzle's own parsers and
-// `$defaultFn` hooks never run. Only use column modes where both agree:
-// - `date({ mode: "date" })`, `bigint({ mode: "string" })`, default-mode `numeric` and
-//   `timestamp({ withTimezone: true })`; `date()` returns a `Date` and number-mode `bigint`/`numeric` a string
-// - SQL defaults only (`.default()`, `.defaultNow()`, `.defaultRandom()`), never `$defaultFn` or `$onUpdate`
-type Kyselify<T> = T extends Table
-  ? {
-      [K in keyof InferSelectModel<T>]: ColumnType<
-        InferSelectModel<T>[K],
-        InferInsertModel<T>[K & keyof InferInsertModel<T>],
-        InferInsertModel<T>[K & keyof InferInsertModel<T>]
-      >;
-    }
-  : never;
-
-// Keyed by the SQL table name Drizzle carries in its type, so the export name does not matter
-type DB = {
-  [
-    K in keyof typeof schema as (typeof schema)[K] extends Table
-      ? (typeof schema)[K]["_"]["name"]
-      : never
-  ]: Kyselify<(typeof schema)[K]>;
-};
+export { isForeignKeyViolation, isUniqueViolation } from "./errors";
+export { newPublicId } from "./ids";
 
 export type CreateDbOptions = {
   // An idle client losing its connection (Postgres restart, failover) emits on the pool, and an unhandled
@@ -42,15 +13,13 @@ export type CreateDbOptions = {
   onError: (error: Error) => void;
 };
 
+// Drizzle runs the queries: `db.query` for reads with relations, `db.insert/update/delete` for writes
 export function createDb(env: DatabaseConfig, { onError }: CreateDbOptions) {
   const pool = new Pool({ connectionString: env.DATABASE_URL });
 
   pool.on("error", onError);
 
-  return new Kysely<DB>({
-    dialect: new PostgresDialect({ pool }),
-    plugins: [new CamelCasePlugin({ maintainNestedObjectKeys: true })],
-  });
+  return drizzle({ client: pool, relations });
 }
 
 export type Database = ReturnType<typeof createDb>;

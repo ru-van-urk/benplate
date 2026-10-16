@@ -3,8 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "uncheck && knip",
-    "fix": "uncheck --fix",
+    "add": "pnpm add",
+    "add:catalog": "pnpm add --save-catalog",
+    "typecheck": "turbo run typecheck",
+    "check": "sherif --fix --select=highest && oxlint --fix && oxfmt && tsc --noEmit && pnpm typecheck",
+    "check:ci": "sherif && oxlint && oxfmt --check && tsc --noEmit && pnpm typecheck",
+    "knip": "knip",
+    "fix": "sherif --fix --select=highest; oxlint --fix; oxfmt",
     "build": "turbo run build",
     "clean": "turbo run clean",
     "postclean": "git clean -xdf .cache .turbo node_modules",
@@ -21,8 +26,7 @@
     "docker:logs": "docker compose logs -f",
     "deps:check": "taze",
     "deps:update": "taze -w",
-    "template:init": "node scripts/template-init.ts",
-    "prepare": "uncheck prepare --pre-commit --only=oxlint --only=oxfmt"
+    "template:init": "node scripts/template-init.ts"
   },
   "devDependencies": {
     "@benplate/oxfmt-config": "workspace:*",
@@ -36,8 +40,7 @@
     "sherif": "catalog:",
     "taze": "catalog:",
     "turbo": "catalog:",
-    "typescript": "catalog:",
-    "uncheck": "catalog:"
+    "typescript": "catalog:"
   },
   "engines": {
     "node": "^24.14.0"

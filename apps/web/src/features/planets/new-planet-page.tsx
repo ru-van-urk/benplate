@@ -14,7 +14,7 @@ export const NewPlanetPage = () => {
     orpc.planet.create.mutationOptions({
       onSuccess: async (planet) => {
         await queryClient.invalidateQueries({ queryKey: orpc.planet.key() });
-        await navigate({ to: "/planets/$id", params: { id: planet.id } });
+        await navigate({ to: "/planets/$publicId", params: { publicId: planet.publicId } });
       },
     }),
   );

@@ -1,4 +1,5 @@
-import { type Database, newId } from "@benplate/db";
+import type { Database } from "@benplate/db";
+import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { betterAuth } from "better-auth";
 
 export type CreateAuthOptions = {
@@ -15,17 +16,14 @@ export function createAuth({ db, appUrl, secret, disableSignUp, log }: CreateAut
   return betterAuth({
     baseURL: appUrl,
     secret,
-    // Our Kysely, CamelCasePlugin included: Better Auth writes camelCase fields and the plugin maps them onto
-    // the snake_case columns of the hand-written schema in @benplate/db
-    database: { db, type: "postgres" },
+    // The app's Drizzle instance: Better Auth finds its tables through its relations (relations v2), and writes
+    // camelCase fields that `snakeCase.table` maps onto the hand-written schema in @benplate/db
+    database: drizzleAdapter(db, { provider: "pg" }),
     emailAndPassword: { enabled: true, autoSignIn: true, disableSignUp },
     // In memory, so per server process; on by default only in production
     rateLimit: { enabled: true },
     // A signed cookie carries the session for 5 minutes, so most protected calls skip the session query
     session: { cookieCache: { enabled: true, maxAge: 5 * 60 } },
-    advanced: {
-      database: { generateId: () => newId() },
-    },
     logger: { log },
   });
 }

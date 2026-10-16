@@ -1,9 +1,6 @@
 import { oc } from "@orpc/contract";
 import * as v from "valibot";
 
-// The shape of `newId()` from @benplate/db, so a malformed id is a 400 before it reaches the database
-export const idSchema = v.pipe(v.string(), v.regex(/^[0-9a-z]{12}$/, "Invalid id"));
-
 // The range of a Postgres `integer` column, so an out-of-range number is a 400 instead of a database error
 export const integerSchema = v.pipe(
   v.number(),
@@ -11,6 +8,31 @@ export const integerSchema = v.pipe(
   v.minValue(-2_147_483_648),
   v.maxValue(2_147_483_647),
 );
+
+// Every resource's public id prefix (`pl_k3m9x0q2a7zd`), in one place so two resources can't pick the same one.
+// Short, like Stripe's `cus_`; the router passes them to `newPublicId` from @benplate/db
+export const publicIdPrefixes = {
+  planet: "pl",
+  person: "ppl",
+} as const;
+
+type PublicIdPrefix = (typeof publicIdPrefixes)[keyof typeof publicIdPrefixes];
+
+// The shape of `newPublicId(prefix)`, so a malformed id, or one of another resource, is a 400 before it reaches the
+// database. Clients only ever see public ids; the integer `id` column stays private
+export const publicIdSchema = (prefix: PublicIdPrefix, message = "Invalid id") =>
+  v.pipe(v.string(message), v.regex(new RegExp(`^${prefix}_[0-9a-z]{12}$`), message));
+
+// Another resource, as a response embeds it (`with: { homeworld: … }`): enough to show and link it
+export const referenceSchema = v.object({
+  publicId: v.string(),
+  name: v.string(),
+});
+
+// For update inputs: something besides the id has to change, since an UPDATE needs a value to set. An empty patch
+// is a 400 instead of a no-op
+export const hasChanges = <TInput extends { publicId: string }>(input: TInput) =>
+  Object.entries(input).some(([key, value]) => key !== "publicId" && value !== undefined);
 
 // Base for routes that need a signed-in user (implemented with `protectedProcedure`), so clients see
 // UNAUTHORIZED as a typed error

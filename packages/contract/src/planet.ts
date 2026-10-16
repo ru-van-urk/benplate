@@ -2,56 +2,77 @@ import { oc } from "@orpc/contract";
 import { openapi } from "@orpc/openapi";
 import * as v from "valibot";
 
-import { authedContract, idSchema, integerSchema } from "./common";
+import {
+  authedContract,
+  hasChanges,
+  integerSchema,
+  publicIdPrefixes,
+  publicIdSchema,
+  referenceSchema,
+} from "./common";
 
 const tags = ["Planets"];
 
-// The same list as the `type` column in @benplate/db; the router stops type-checking when they differ
-export const planetTypes = ["terrestrial", "gas giant", "ice giant"] as const;
+// The values of the `climate` enum in @benplate/db; the router stops type-checking when they differ
+export const climates = ["arid", "temperate", "tropical", "frozen", "murky", "hot"] as const;
 
-// What clients see of a planet: a column added to the table stays private until it is listed here. Types
-// only, no input rules, so a row stored before a rule was tightened still passes response validation
+const planetIdSchema = publicIdSchema(publicIdPrefixes.planet);
+
+// What clients see of a planet: a column added to the table, like the integer `id`, stays private until it is
+// listed here. Types only, no input rules, so a row stored before a rule was tightened still passes response
+// validation
 const planetSchema = v.object({
-  id: idSchema,
+  publicId: v.string(),
   name: v.string(),
   description: v.nullable(v.string()),
-  type: v.picklist(planetTypes),
-  moons: v.number(),
+  climate: v.picklist(climates),
+  terrain: v.string(),
   diameterKm: v.number(),
-  distanceFromSunAu: v.number(),
+  rotationPeriodHours: v.number(),
   orbitalPeriodDays: v.number(),
+  // A Postgres `bigint`, which pg returns as a string of digits
+  population: v.nullable(v.string()),
   createdAt: v.date(),
   updatedAt: v.date(),
 });
 
-// The server sets the id and both timestamps, so clients can't send them. Also the schema of the web forms
+// A planet's own page also lists who lives there
+const planetWithResidentsSchema = v.object({
+  ...planetSchema.entries,
+  residents: v.array(referenceSchema),
+});
+
+// The server sets both ids and both timestamps, so clients can't send them. Also the schema of the web forms
 export const newPlanetSchema = v.object({
   name: v.pipe(v.string(), v.nonEmpty("Enter a name")),
   description: v.optional(v.nullable(v.string())),
-  type: v.picklist(planetTypes),
-  // The column defaults to 0
-  moons: v.optional(v.pipe(integerSchema, v.minValue(0))),
+  climate: v.picklist(climates),
+  terrain: v.pipe(v.string(), v.nonEmpty("Enter the terrain")),
   diameterKm: v.pipe(integerSchema, v.minValue(1)),
-  distanceFromSunAu: v.pipe(v.number(), v.minValue(0)),
-  orbitalPeriodDays: v.pipe(v.number(), v.minValue(0)),
+  rotationPeriodHours: v.pipe(integerSchema, v.minValue(1)),
+  orbitalPeriodDays: v.pipe(integerSchema, v.minValue(1)),
+  // Digits, at most 18 so it always fits a `bigint`; null when unknown
+  population: v.optional(
+    v.nullable(v.pipe(v.string(), v.regex(/^\d{1,18}$/, "Enter a whole number"))),
+  ),
 });
 
 const listPlanets = oc
-  .meta(
-    openapi({
-      method: "GET",
-      path: "/planets",
-      tags,
-      summary: "List planets, ordered from the Sun",
-    }),
-  )
+  .meta(openapi({ method: "GET", path: "/planets", tags, summary: "List planets by name" }))
   .output(v.array(planetSchema));
 
 const getPlanet = oc
-  .meta(openapi({ method: "GET", path: "/planets/{id}", tags, summary: "Get a planet by id" }))
+  .meta(
+    openapi({
+      method: "GET",
+      path: "/planets/{publicId}",
+      tags,
+      summary: "Get a planet and its residents by public id",
+    }),
+  )
   .errors({ NOT_FOUND: {} })
-  .input(v.object({ id: idSchema }))
-  .output(planetSchema);
+  .input(v.object({ publicId: planetIdSchema }))
+  .output(planetWithResidentsSchema);
 
 const createPlanet = authedContract
   .meta(
@@ -68,23 +89,29 @@ const createPlanet = authedContract
   .output(planetSchema);
 
 const updatePlanet = authedContract
-  .meta(openapi({ method: "PATCH", path: "/planets/{id}", tags, summary: "Update a planet" }))
+  .meta(openapi({ method: "PATCH", path: "/planets/{publicId}", tags, summary: "Update a planet" }))
   .errors({ NOT_FOUND: {}, CONFLICT: {} })
-  .input(v.object({ id: idSchema, ...v.partial(newPlanetSchema).entries }))
+  .input(
+    v.pipe(
+      v.object({ publicId: planetIdSchema, ...v.partial(newPlanetSchema).entries }),
+      v.check(hasChanges, "Send at least one field to change"),
+    ),
+  )
   .output(planetSchema);
 
 const deletePlanet = authedContract
   .meta(
     openapi({
       method: "DELETE",
-      path: "/planets/{id}",
+      path: "/planets/{publicId}",
       successStatus: 204,
       tags,
-      summary: "Delete a planet",
+      summary: "Delete a planet that has no residents",
     }),
   )
-  .errors({ NOT_FOUND: {} })
-  .input(v.object({ id: idSchema }));
+  // CONFLICT: people still live there
+  .errors({ NOT_FOUND: {}, CONFLICT: {} })
+  .input(v.object({ publicId: planetIdSchema }));
 
 export const planetContract = {
   list: listPlanets,
